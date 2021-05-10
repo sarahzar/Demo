@@ -1,0 +1,66 @@
+/* label {
+  display: block;
+  margin-top: 10px;
+}
+
+.card-container.card {
+  max-width: 350px !important;
+  padding: 40px 40px;
+}
+
+.card {
+  background-color: #f7f7f7;
+  padding: 20px 25px 30px;
+  margin: 0 auto 25px;
+  margin-top: 50px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-img-card {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+button {
+  border: 1px solid #ed1c24!important;
+  background-color: #ed1c24!important;
+}
+a{
+color: rgb(179, 16, 16);
+} */
+.div-info{
+  float: left;
+  margin-right: 2%;
+}
+button {
+  border: 1px solid #ed1c24!important;
+  background-color: #ed1c24!important;
+}
+.bg-gradient-primary {
+  background-color: #e74a3b!important;
+  background-image: linear-gradient(180deg,#e74a3b 10%,#dc3545 100%)!important;
+  background-size: cover!important;
+}
+.div-info-height-lg{
+  /* min-height: 408px; */
+}
+.div-info-height-md{
+  min-height: 337px;
+}
+.bg-login-image {
+  background: url(img/esprit3.jpg)!important;
+  background-position: center!important;
+  background-size: cover!important;
+}
+.text-primary{
+  color: #e74a3b!important;
+}

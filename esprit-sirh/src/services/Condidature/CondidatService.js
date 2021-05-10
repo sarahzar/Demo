@@ -1,0 +1,36 @@
+import axios from "axios";
+const API_URL = "http://localhost:8085/SIRH_Esprit/";
+
+class CondidatService{
+
+  registerCondidatInfos(username, condidat,files) {
+
+    return axios.post(API_URL + "saveCondidatInfos" + "/" + username,
+      condidat,
+      files
+    )
+  }
+
+  addListParcours(username, listeParcours) {
+    return axios.post(API_URL + "addListParcours" + "/" + username,
+      listeParcours
+    )
+  }
+  addListExperiencesEnseignant(username, condidatExperEnseignt) {
+    return axios.post(API_URL + "addExperienceEnseignant" + "/" + username,
+    condidatExperEnseignt
+    )
+  }
+  addListExperiencesProfessionelles(username, condidatExperProfessionel) {
+    return axios.post(API_URL + "addExperienceProfessionel" + "/" + username,
+    condidatExperProfessionel
+    )
+  }
+  uploadFiles(file){
+    return axios.post(API_URL + "upload",
+    file
+    )
+  }
+
+}
+export default new CondidatService();
