@@ -25,17 +25,6 @@ class Recherche extends Component {
 
         super(props);
         this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this)
-
-        // this.onChangeThematiqueDesciption = this.onChangeThematiqueDesciption.bind(this)
-        // this.onChangeChapitreLivre = this.onChangeChapitreLivre.bind(this)
-        // this.onChangeArticleJornaux = this.onChangeArticleJornaux.bind(this)
-        // this.onChangeArticleConference = this.onChangeArticleConference.bind(this)
-        // this.onChangePfe = this.onChangePfe.bind(this)
-        // this.onChangeMastere = this.onChangeMastere.bind(this)
-        // this.onChangeThese = this.onChangeThese.bind(this)
-        // this.updateTabElements = this.updateTabElements.bind(this)
-        // this.goBack = this.goBack.bind(this)
-
         this.state = {
             currentUser: AuthService.getUserConneced(),
             loading: false,
@@ -107,7 +96,10 @@ class Recherche extends Component {
     updateTabElements = (e) =>{
         e.preventDefault()
         let elements = [...this.state.savedItems]
-        elements.push(this.state.items)
+        this.state.items.forEach(i =>{
+            elements.push(i)
+        })
+      
         let newItems=[{ thematiqueDesciption: "",chapitreLivre:0,articleJornaux:0,articleConference:0,pfe:0,mastere:0,these:0}]
         this.setState({
             savedItems: elements,

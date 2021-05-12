@@ -28,23 +28,6 @@ class Profile extends Component {
   constructor(props) {
 
     super(props);
-    // this.onChangeCin = this.onChangeCin.bind(this)
-    // this.onChangeEtat = this.onChangeEtat.bind(this)
-    // this.onChangeNom = this.onChangeNom.bind(this)
-    // this.onChangePreNom = this.onChangePreNom.bind(this)
-    // this.onChangeTelephone = this.onChangeTelephone.bind(this)
-    // this.onChangeDateNaissance = this.onChangeDateNaissance.bind(this)
-    // this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this)
-    // this.onChangeSexeHomme = this.onChangeSexeHomme.bind(this)
-    // this.onChangeSexeFemme = this.onChangeSexeFemme.bind(this)
-    // this.onChangeEtatCivil=this.onChangeEtatCivil.bind(this);
-    // this.onChangeDernierDiplome=this.onChangeDernierDiplome.bind(this);
-    // this.onChangeSpecialite=this.onChangeSpecialite.bind(this);
-    // this.onChangeEtablissement=this.onChangeEtablissement.bind(this);
-    // this.onChangePosteActuel=this.onChangePosteActuel.bind(this);
-    // this.onChangeDomaine=this.onChangeDomaine.bind(this);
-    // this.onChangTypeCondidature=this.onChangTypeCondidature.bind(this);
-    // this.onChangeAnneeObtention=this.onChangeAnneeObtention.bind(this);
 
     this.state = {
       currentUser: AuthService.getUserConneced(),

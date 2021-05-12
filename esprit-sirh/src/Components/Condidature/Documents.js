@@ -71,66 +71,35 @@ class Documents  extends Component{
                 loading: true
             })  
             const formData = new FormData();
-            // const formDataPhoto = new FormData();
-            // const formDataLM = new FormData();
-            // const formDataDiplome = new FormData();
-            // const formDataAnnexe = new FormData();
 
             formData.append('file', this.state.cv);
             formData.append('file', this.state.photo);
-            // formDataLM.append('file', this.state.lettreMotivation);
-            // formDataDiplome.append('file', this.state.diplome);
-            // formDataAnnexe.append('file', this.state.annexe);
-            
-            let documents=[];
-           //documents.push( {id:1,file:formDataCV})
-                // {id:1,file:formDataCV},
-            //     {id:2,file:formDataPhoto},
-            //     {id:3,file:formDataLM},
-            //     {id:4,file:formDataDiplome},
-            //     {id:5,file:formDataAnnexe},
-            // ]
+            formData.append('file', this.state.lettreMotivation);
+            formData.append('file', this.state.diplome);
+            formData.append('file', this.state.annexe);
+           
+          let documents=[
+                {id:1,fileName:this.state.cv.name},
+                {id:2,fileName:this.state.photo.name},
+                {id:3,fileName:this.state.lettreMotivation.name},
+                {id:4,fileName:this.state.diplome.name},
+                {id:5,fileName:this.state.annexe.name},
+            ]
 
             let condidatToSave=this.state.condidat
             condidatToSave.documents=documents
+            formData.append('condidat', JSON.stringify(condidatToSave));
 
-            // this.setState({
-            //    condidat:condidatToSave
-            //   })
-
-    //    CondidatService.uploadFiles(formData)
-    //       .then(
-    //         resp => {
-    //           if(resp.data.succesMessage){
-    //             this.setState({
-    //               message:resp.data.succesMessage,
-    //               typeMessage: "alert alert-success",
-    //               loading:false,
-    //               changePath:true,
-    //             })
-    //           }else{
-    //             this.setState({
-    //               message:resp.data.errorMessage,
-    //               typeMessage: "alert alert-danger",
-    //               loading:false
-    //             })
-    //           }
-    //         }
-    //       );
-
-         
-      
-          
-          console.log("condidat state",this.state.condidat)
            
-      CondidatService.registerCondidatInfos(this.state.currentUser.login, this.state.condidat,formData)
+      CondidatService.registerCondidatInfos(this.state.currentUser.login,formData)
       .then(
         resp => {
           if(resp.data.succesMessage){
             this.setState({          
-              loading:false
+              loading:false,
+              message:resp.data.succesMessage,
+              typeMessage: "alert alert-success",
             })
-            // history.push("/parcour");
           }else{
             this.setState({
               message:resp.data.errorMessage,

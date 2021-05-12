@@ -1,11 +1,11 @@
 package tn.esprit.esponline.api.DTO;
 
-import org.springframework.web.multipart.MultipartFile;
 
 public class DocumentDto {
 
     private int id;
-    private MultipartFile file;
+
+    private String fileName;
 
     public int getId() {
         return id;
@@ -15,11 +15,11 @@ public class DocumentDto {
         this.id = id;
     }
 
-    public MultipartFile getFile() {
-        return file;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setFile(MultipartFile file) {
-        this.file = file;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

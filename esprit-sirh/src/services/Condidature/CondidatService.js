@@ -3,11 +3,12 @@ const API_URL = "http://localhost:8085/SIRH_Esprit/";
 
 class CondidatService{
 
-  registerCondidatInfos(username, condidat,files) {
+  registerCondidatInfos(username,formdata) {
 
     return axios.post(API_URL + "saveCondidatInfos" + "/" + username,
-      condidat,
-      files
+   
+      formdata
+    
     )
   }
 

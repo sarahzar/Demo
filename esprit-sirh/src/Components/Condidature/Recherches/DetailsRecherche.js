@@ -40,7 +40,7 @@ class DetailsRecherche extends React.Component{
                                           <label  className="col-md-4">Chapitre du livre:</label >
                                           <div  className="col-md-6">
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control form-control-sm col-4"
                                                 name="chapitre"
                                                 value={this.props.recherche.chapitreLivre}
@@ -54,7 +54,7 @@ class DetailsRecherche extends React.Component{
                                           <label  className="col-md-4">Article du journal:</label >
                                           <div  className="col-md-6">
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control form-control-sm col-4"
                                                 name="articlej"
                                                 value={this.props.recherche.articleJornaux}
@@ -68,7 +68,7 @@ class DetailsRecherche extends React.Component{
                                           <label  className="col-md-4">Article du conférence:</label >
                                           <div  className="col-md-6">
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control form-control-sm col-4"
                                                 name="artclec"
                                                 value={this.props.recherche.articleConference}
@@ -92,7 +92,7 @@ class DetailsRecherche extends React.Component{
                                           <label  className="col-md-4">Msstères de recherche:</label >
                                           <div  className="col-md-6">
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control form-control-sm col-4"
                                                 name="mastere"
                                                 value={this.props.recherche.mastere}
@@ -106,7 +106,7 @@ class DetailsRecherche extends React.Component{
                                           <label  className="col-md-4">Théses:</label >
                                           <div  className="col-md-6">
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control form-control-sm col-4"
                                                 name="these"
                                                 value={this.props.recherche.these}

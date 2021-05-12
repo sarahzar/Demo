@@ -1,11 +1,16 @@
 package tn.esprit.esponline.api.controllers;
 
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import tn.esprit.esponline.api.DTO.DocumentDto;
 import tn.esprit.esponline.api.DTO.ResponseDto;
 import tn.esprit.esponline.api.DTO.CondidatDto;
 import tn.esprit.esponline.api.utilities.enums.EDocumentType;
@@ -52,11 +57,12 @@ public class CondidatController {
 
 
     @PostMapping("/saveCondidatInfos/{username}")
-    public ResponseEntity<ResponseDto> saveCondidat(@RequestBody CondidatDto condidat, @PathVariable String username,@RequestBody MultipartFile[] files){
-
+    public ResponseEntity<ResponseDto> saveCondidat(@PathVariable String username,@RequestParam("file") MultipartFile[] files,@RequestParam("condidat") String cdt) throws JsonProcessingException {
 
         ResponseDto response=new ResponseDto();
 
+
+        CondidatDto condidat = new ObjectMapper().readValue(cdt, CondidatDto.class);
         EtatCivil etatCivil=etatCivilService.findById(condidat.getEtatCivilId());
         Poste poste=posteService.findById(condidat.getPosteActuelId());
         Domaine domaine=domaineService.findById(condidat.getDomaineId());
@@ -147,36 +153,48 @@ public class CondidatController {
                 if (condidat.getRecherches() != null && !condidat.getRecherches().isEmpty()) {
                     condidat.getRecherches().forEach(r -> {
                         Thematique thematique=new Thematique(r.getThematiqueDesciption());
-                        Recherche recherche=new Recherche(r.getChapitreLivre(),r.getArticleJornaux(),r.getArticleConference(),r.getPfe(),r.getMastere(),r.getThese(),thematique,condidatBd);
+                        Recherche recherche=new Recherche(r.getChapitreLivre(),r.getArticleJornaux(),r.getArticleConference(),0,r.getMastere(),r.getThese(),thematique,condidatBd);
                         recherchesList.add(recherche);
                     });
                     condidatBd.setRecherches(recherchesList);
                 }
 
+
+                if(files.length > 0){
+                    for(MultipartFile file:files){
+                        String message = "";
+                        try {
+                            storageService.save(file);
+                        } catch (Exception e) {
+                            message = "Could not upload the file: " + file.getOriginalFilename() + e.getMessage()+" !";
+                            response.setErrorMessage(message);
+                            return ResponseEntity.ok().body(response);
+                        }
+                    }
+                }
+
+
                 List<Document> documentsList=new ArrayList<>();
                 if (condidat.getDocuments() != null && !condidat.getDocuments().isEmpty()) {
                     condidat.getDocuments().forEach(d -> {
-                        MultipartFile file=d.getFile();
 
-                          try {
-                              storageService.save(file);
                               Document document=null;
                               if(d.getId() == EDocumentType.Cv.getId()){
-                              document=new Document(file.getOriginalFilename(),EDocumentType.Cv.getLibelle(),condidatBd);
-                              }else if(d.getId() == EDocumentType.PHOTO.getId()){
-                              document=new Document(file.getOriginalFilename(),EDocumentType.PHOTO.getLibelle(),condidatBd);
-                              }else if(d.getId() == EDocumentType.LM.getId()){
-                              document=new Document(file.getOriginalFilename(),EDocumentType.LM.getLibelle(),condidatBd);
-                              }else if(d.getId() == EDocumentType.DIPLOME.getId()){
-                               document=new Document(file.getOriginalFilename(),EDocumentType.DIPLOME.getLibelle(),condidatBd);
-                              }else if(d.getId() == EDocumentType.ANNEXE.getId()){
-                               document=new Document(file.getOriginalFilename(),EDocumentType.ANNEXE.getLibelle(),condidatBd);
+                              document=new Document(d.getFileName(),EDocumentType.Cv.getLibelle(),condidatBd);
+                              }
+                              else if(d.getId() == EDocumentType.PHOTO.getId()){
+                              document=new Document(d.getFileName(),EDocumentType.PHOTO.getLibelle(),condidatBd);
+                              }
+                              else if(d.getId() == EDocumentType.LM.getId()){
+                              document=new Document(d.getFileName(),EDocumentType.LM.getLibelle(),condidatBd);
+                              }
+                              else if(d.getId() == EDocumentType.DIPLOME.getId()){
+                               document=new Document(d.getFileName(),EDocumentType.DIPLOME.getLibelle(),condidatBd);
+                              }
+                              else if(d.getId() == EDocumentType.ANNEXE.getId()){
+                               document=new Document(d.getFileName(),EDocumentType.ANNEXE.getLibelle(),condidatBd);
                               }
                               documentsList.add(document);
-                          }catch (Exception e) {
-                              String message = "Could not upload the file: " + file.getOriginalFilename() + e.getMessage()+" !";
-                              response.setErrorMessage(message);
-                          }
 
                     });
                     condidatBd.setDocuments(documentsList);
