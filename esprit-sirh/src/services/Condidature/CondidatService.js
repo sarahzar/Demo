@@ -32,6 +32,10 @@ class CondidatService{
     file
     )
   }
+  downlodFiles(fileName){
+    return axios.get(API_URL + "files/"+fileName
+    )
+  }
 
 }
 export default new CondidatService();

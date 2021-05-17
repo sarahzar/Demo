@@ -25,15 +25,7 @@ const required = value => {
 class ExperienceProfessionel extends Component {
   constructor(props) {
 
-    super(props);
-    // this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this) 
-    // this.onChangeEtablissement=this.onChangeEtablissement.bind(this);
-    // this.onChangePays=this.onChangePays.bind(this)
-    // this.onChangePoste=this.onChangePoste.bind(this)
-    // this.onChangeDateDeb=this.onChangeDateDeb.bind(this)
-    // this.onChangeDateFin=this.onChangeDateFin.bind(this)
-    // this.updateTabElements=this.updateTabElements.bind(this)    
-    // this.goBack=this.goBack.bind(this)  
+    super(props); 
 
     this.state = {
       currentUser: AuthService.getUserConneced(),
@@ -128,31 +120,6 @@ class ExperienceProfessionel extends Component {
         changePath:true
       })
       
-      // console.log("condidat state",this.state.condidat)
-      // const experiencesProfessionel={
-      //   condidatExperProfessionel:this.state.items
-
-      // }
-      // CondidatService.addListExperiencesProfessionelles(this.state.currentUser.login, experiencesProfessionel)
-      // .then(
-      //   resp => {
-      //     if(resp.data.succesMessage){
-      //       this.setState({
-      //         message:resp.data.succesMessage,
-      //         typeMessage: "alert alert-success",
-      //         loading:false
-      //       })
-      //     }else{
-      //       this.setState({
-      //         message:resp.data.errorMessage,
-      //         typeMessage: "alert alert-danger",
-      //         loading:false
-      //       })
-      //     }
-      //   }
-       
-      // );
-
     }
   }
  

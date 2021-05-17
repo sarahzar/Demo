@@ -26,14 +26,6 @@ class ExperienceEnseignant extends Component {
   constructor(props) {
 
     super(props);
-    // this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this) 
-    // this.onChangeEtablissement=this.onChangeEtablissement.bind(this);
-    // this.onChangeModule=this.onChangeModule.bind(this)
-    // this.onChangePoste=this.onChangePoste.bind(this)
-    // this.onChangeDateDeb=this.onChangeDateDeb.bind(this)
-    // this.onChangeDateFin=this.onChangeDateFin.bind(this)
-    // this.updateTabElements=this.updateTabElements.bind(this)    
-    // this.goBack=this.goBack.bind(this)  
 
     this.state = {
       currentUser: AuthService.getUserConneced(),
@@ -116,31 +108,6 @@ class ExperienceEnseignant extends Component {
         condidat:condidatToSave
       })
       
-      // console.log("condidat state",this.state.condidat)
-      // const experiencesEnseignant={
-      //   condidatExperEnseignt:this.state.items
-
-      // }
-      // CondidatService.addListExperiencesEnseignant(this.state.currentUser.login, experiencesEnseignant)
-      // .then(
-      //   resp => {
-      //     if(resp.data.succesMessage){
-      //       this.setState({
-      //         message:resp.data.succesMessage,
-      //         typeMessage: "alert alert-success",
-      //         loading:false,
-      //         changePath:true,
-      //       })
-      //     }else{
-      //       this.setState({
-      //         message:resp.data.errorMessage,
-      //         typeMessage: "alert alert-danger",
-      //         loading:false
-      //       })
-      //     }
-      //   }
-       
-      // );
 
     }
   }

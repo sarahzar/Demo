@@ -111,14 +111,6 @@ class Parcour extends Component {
         items: elements
       });
   }
-  download = (e) =>{
-    CondidatService.downlodFiles("copie.pdf").then(resp => {
-      console.log(resp)
-      const url = resp.config.url;
-      window.location.href = url;
-
-    });
-  }
   handleSubmitCondidat =(e) => {
     e.preventDefault();
     this.form.validateAll();
@@ -219,7 +211,7 @@ class Parcour extends Component {
                         <table className="table table-striped"  >
                             <thead>
                                 
-                                <tr class="d-flex">
+                                <tr className="d-flex">
                                     <th className="col-1">Année</th>
                                     <th className="col-2">Nom du diplôme</th>
                                     <th className="col-3">Etablissement</th>
@@ -231,7 +223,7 @@ class Parcour extends Component {
                             <tbody>
                            { items.map ((item,index) => 
                                 <tr key={index} className="d-flex">
-                                    <td class="col-1"> <div className="form-group">
+                                    <td className="col-1"> <div className="form-group">
 
                                         <Input
                                             type="text"
@@ -281,7 +273,6 @@ class Parcour extends Component {
                             </tbody>
                         </table>
                         <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
-                        <button type="button"  onClick={this.download}>download</button>
             
             </div>
           </div>

@@ -25,11 +25,6 @@ class Competence extends Component {
         super(props);
         this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this)
 
-        // this.onChangeTitre = this.onChangeTitre.bind(this)
-        // this.onChangeDescription = this.onChangeDescription.bind(this)
-        // this.updateTabElements = this.updateTabElements.bind(this)
-        // this.goBack = this.goBack.bind(this)
-
         this.state = {
             currentUser: AuthService.getUserConneced(),
             loading: false,
