@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import tn.esprit.esponline.api.DTO.DocumentDto;
 import tn.esprit.esponline.api.DTO.ResponseDto;
 import tn.esprit.esponline.metier.upload.IFilesStorageService;
+import tn.esprit.esponline.metier.upload.ResourceDto;
 import tn.esprit.esponline.persistence.entities.Document;
 
 import java.util.List;
@@ -60,8 +61,8 @@ public class FilesController {
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        Resource file = storageService.load(filename);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        ResourceDto resource = storageService.load(filename);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(resource.getType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFile().getFilename() + "\"").body(resource.getFile());
     }
 }

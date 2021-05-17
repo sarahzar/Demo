@@ -35,17 +35,22 @@ public class FilesStorageService implements IFilesStorageService{
     }
 
     @Override
-    public Resource load(String filename) {
+    public ResourceDto load(String filename) {
+        ResourceDto resourceDto=new ResourceDto();
         try {
             Path file = root.resolve(filename);
             Resource resource = new UrlResource(file.toUri());
+            resourceDto.setFile(resource);
+
+            String mimeType = Files.probeContentType(file);
+            resourceDto.setType(mimeType);
 
             if (resource.exists() || resource.isReadable()) {
-                return resource;
+                return resourceDto;
             } else {
                 throw new RuntimeException("Could not read the file!");
             }
-        } catch (MalformedURLException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }

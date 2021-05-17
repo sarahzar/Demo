@@ -26,15 +26,7 @@ class Parcour extends Component {
   constructor(props) {
 
     super(props);
-    // this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this)
-    // this.onChangeSpecialite=this.onChangeSpecialite.bind(this);
-    // this.onChangeEtablissement=this.onChangeEtablissement.bind(this);
-    // this.onChangeAnneeObtention=this.onChangeAnneeObtention.bind(this);
-    // this.onChangeDiplome=this.onChangeDiplome.bind(this)
-    // this.onChangeMention=this.onChangeMention.bind(this)
-    // this.onChangePays=this.onChangePays.bind(this)
-    // this.updateTabElements=this.updateTabElements.bind(this)    
-    // this.goBack=this.goBack.bind(this)            
+      
     this.state = {
       currentUser: AuthService.getUserConneced(),
       loading: false,
@@ -119,6 +111,14 @@ class Parcour extends Component {
         items: elements
       });
   }
+  download = (e) =>{
+    CondidatService.downlodFiles("copie.pdf").then(resp => {
+      console.log(resp)
+      const url = resp.config.url;
+      window.location.href = url;
+
+    });
+  }
   handleSubmitCondidat =(e) => {
     e.preventDefault();
     this.form.validateAll();
@@ -132,32 +132,6 @@ class Parcour extends Component {
         condidat:condidatToSave
       })
       
-      // console.log("condidat state",this.state.condidat)
-      // const condiatParcours={
-      //   listeParcours:this.state.items
-
-      // }
-      // CondidatService.addListParcours(this.state.currentUser.login, condiatParcours)
-      // .then(
-      //   resp => {
-      //     if(resp.data.succesMessage){
-      //       this.setState({
-      //         message:resp.data.succesMessage,
-      //         typeMessage: "alert alert-success",
-      //         loading:false,
-      //         changePath:true,
-      //       })
-      //     }else{
-      //       this.setState({
-      //         message:resp.data.errorMessage,
-      //         typeMessage: "alert alert-danger",
-      //         loading:false
-      //       })
-      //     }
-      //   }
-       
-      // );
-
     }
   }
  
@@ -307,7 +281,7 @@ class Parcour extends Component {
                             </tbody>
                         </table>
                         <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
-             
+                        <button type="button"  onClick={this.download}>download</button>
             
             </div>
           </div>
