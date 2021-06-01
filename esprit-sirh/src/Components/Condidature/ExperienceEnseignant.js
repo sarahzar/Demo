@@ -39,6 +39,24 @@ class ExperienceEnseignant extends Component {
       changePath:false
     };
   }
+  componentDidMount() {
+    let condidatFromPrecedent = null
+    if(this.props.location.state.condidatBackToEnseigant){
+      condidatFromPrecedent = this.props.location.state.condidatBackToEnseigant
+    }else{
+      condidatFromPrecedent = this.props.location.state.condidatFromParcour
+    }
+    if (condidatFromPrecedent.condidatExperEnseignt.length > 0) {
+      this.setState({
+        items: condidatFromPrecedent.condidatExperEnseignt,
+        condidat:condidatFromPrecedent
+      });
+    }else{
+      this.setState({
+        condidat:condidatFromPrecedent
+      });
+    }
+  }
 
   
   onChangeEtablissement = (e,index) => {
@@ -113,20 +131,7 @@ class ExperienceEnseignant extends Component {
   }
  
   render() {
-    // const condidatRecieved=this.props.location.state.condidat
-    // console.log("condidat recived",condidatRecieved)
-
-    //récupérer le condidat au click sue précédent 
-    // if (this.state.retour){
-    //   return <Redirect to={{
-    //     pathname: '/profile',
-    //     state: {
-    //       condidatBack:condidatRecieved
-    //     }
-    //   }} />;
-    // }
-  
-    
+   // const condidatRecieved=this.props.location.state.condidatFromParcour 
     const { loading } = this.state;
     const {etablissements} =this.state;
     const {postes} =this.state;
@@ -134,6 +139,24 @@ class ExperienceEnseignant extends Component {
     const {items}=this.state;
     const {changePath}=this.state;
     const {condidat} =this.state;
+
+    let condidatRecieved = null;
+    if (this.props.location.state.condidatFromParcour) {
+      condidatRecieved = this.props.location.state.condidatFromParcour
+    } else {
+      condidatRecieved = this.props.location.state.condidatBackToEnseigant
+    }
+
+    // récupérer le condidat au click sue précédent 
+    if (this.state.retour) {
+      condidatRecieved.condidatExperEnseignt = items;
+      return <Redirect to={{
+        pathname: '/parcour',
+        state: {
+          condidatBackToParcour: condidatRecieved
+        }
+      }} />;
+    }
 
 
     if (changePath){
@@ -166,9 +189,9 @@ class ExperienceEnseignant extends Component {
           <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
             <h1 className="h3 mb-0 text-gray-800">Expérience d'enseignement</h1>
                 <div className="form-group m-0">
-                    {/* <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
+                    <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
-                  </button> */}
+                  </button>
 
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                       className="fas fa-angle-double-right fa-sm text-white-50"
@@ -226,21 +249,21 @@ class ExperienceEnseignant extends Component {
                                    </div></td>
                                    
                                     <td  class="col-3"><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeEtablissement(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeEtablissement(e,index)}} value={item.etablissementId}>
                                             <option value="-1" key="defaultetablissement"></option>
                                             {etablissements.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>
                                     </div></td>
 
                                     <td  class="col-2"> <div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e)=>{this.onChangePoste(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e)=>{this.onChangePoste(e,index)}} value={item.posteId}>
                                             <option value="-1" key="defaultposte"></option>
                                             {postes.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>
                                     </div></td>
                                    
                                     <td  class="col-3"><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeModule(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeModule(e,index)}} value={item.moduleId}>
                                             <option value="-1" key="defaultmodule"></option>
                                             {modules.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>

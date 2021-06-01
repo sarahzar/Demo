@@ -6,7 +6,7 @@ export class Leftside extends Component {
              
                 <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">  
                     <a className="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">  
-                        <div className="sidebar-brand-text mx-3">React Routing </div>  
+                        <div className="sidebar-brand-text mx-3"> </div>  
                     </a>  
   
                     <hr className="sidebar-divider my-0" />  

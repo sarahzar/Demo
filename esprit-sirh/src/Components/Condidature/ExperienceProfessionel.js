@@ -44,7 +44,24 @@ class ExperienceProfessionel extends Component {
       changePath:false
     };
   }
-
+  componentDidMount() {
+    let condidatFromPrecedent = null
+    if(this.props.location.state.condidatBackToExpPro){
+      condidatFromPrecedent = this.props.location.state.condidatBackToExpPro
+    }else{
+      condidatFromPrecedent = this.props.location.state.condidatFromExpEns
+    }
+    if (condidatFromPrecedent.condidatExperProfessionel.length > 0) {
+      this.setState({
+        items: condidatFromPrecedent.condidatExperProfessionel,
+        condidat:condidatFromPrecedent
+      });
+    }else{
+      this.setState({
+        condidat:condidatFromPrecedent
+      });
+    }
+  }
   
   onChangeEtablissement = (e,index) => {
     let elements=this.state.items;
@@ -127,17 +144,6 @@ class ExperienceProfessionel extends Component {
     // const condidatRecieved=this.props.location.state.condidat
     // console.log("condidat recived",condidatRecieved)
 
-    //récupérer le condidat au click sue précédent 
-    // if (this.state.retour){
-    //   return <Redirect to={{
-    //     pathname: '/profile',
-    //     state: {
-    //       condidatBack:condidatRecieved
-    //     }
-    //   }} />;
-    // }
-  
- 
     const { loading } = this.state;
     const {etablissements} =this.state;
     const {postes} =this.state;
@@ -146,6 +152,22 @@ class ExperienceProfessionel extends Component {
     const changePath=this.state.changePath;
     const {condidat} =this.state;
 
+    let condidatRecieved = null;
+    if (this.props.location.state.condidatFromExpEns) {
+      condidatRecieved = this.props.location.state.condidatFromExpEns
+    } else {
+      condidatRecieved = this.props.location.state.condidatBackToExpPro
+    }
+
+    if (this.state.retour) {
+      condidatRecieved.condidatExperProfessionel = items;
+      return <Redirect to={{
+        pathname: '/expEnseignant',
+        state: {
+          condidatBackToEnseigant: condidatRecieved,
+        }
+      }} />;
+    }
 
     if (changePath){
       return <Redirect to={{
@@ -177,10 +199,10 @@ class ExperienceProfessionel extends Component {
           { /* Page Heading */}
           <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
             <h1 className="h3 mb-0 text-gray-800">Expériences Professionelles</h1>
-                <div className="form-group m-0">
-                    {/* <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
+                  <div className="form-group m-0">
+                    <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
-                  </button> */}
+                  </button>
 
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                       className="fas fa-angle-double-right fa-sm text-white-50"
@@ -189,8 +211,8 @@ class ExperienceProfessionel extends Component {
                         <span className="spinner-border spinner-border-sm"></span>
                       )}
               Suivant </button>
-              
-                 </div>
+
+                  </div>
 
              
               
@@ -239,21 +261,21 @@ class ExperienceProfessionel extends Component {
                                    </div></td>
                                    
                                     <td  class=""><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeEtablissement(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeEtablissement(e,index)}} value={item.etablissementId}>
                                             <option value="-1" key="defaultetablissement"></option>
                                             {etablissements.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>
                                     </div></td>
 
                                     <td  class=""> <div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e)=>{this.onChangePoste(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e)=>{this.onChangePoste(e,index)}} value={item.posteId}>
                                             <option value="-1" key="defaultposte"></option>
                                             {postes.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>
                                     </div></td>
                                    
                                     <td  class=""><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangePays(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangePays(e,index)}} value={item.paysId}>
                                             <option value="-1" key="defaulpays"></option>
                                             {pays.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>

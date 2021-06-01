@@ -35,7 +35,24 @@ class Competence extends Component {
         };
     }
 
-
+    componentDidMount() {
+        let condidatFromPrecedent = null
+        if(this.props.location.state.condidatBackToCompetence){
+          condidatFromPrecedent = this.props.location.state.condidatBackToCompetence
+        }else{
+          condidatFromPrecedent = this.props.location.state.condidatFromExpPro
+        }
+        if (condidatFromPrecedent.competences.length > 0) {
+          this.setState({
+            items: condidatFromPrecedent.competences,
+            condidat:condidatFromPrecedent
+          });
+        }else{
+          this.setState({
+            condidat:condidatFromPrecedent
+          });
+        }
+      }
 
     onChangeTitre = (e, index) => {
         let elements = this.state.items;
@@ -87,23 +104,28 @@ class Competence extends Component {
         // const condidatRecieved=this.props.location.state.condidat
         // console.log("condidat recived",condidatRecieved)
 
-        //récupérer le condidat au click sue précédent 
-        // if (this.state.retour){
-        //   return <Redirect to={{
-        //     pathname: '/profile',
-        //     state: {
-        //       condidatBack:condidatRecieved
-        //     }
-        //   }} />;
-        // }
-
-
+       
         const { loading } = this.state;
         const { items } = this.state;
         const { changePath } = this.state;
         const { condidat } = this.state;
 
-
+        let condidatRecieved = null;
+        if (this.props.location.state.condidatFromExpPro) {
+          condidatRecieved = this.props.location.state.condidatFromExpPro
+        } else {
+          condidatRecieved = this.props.location.state.condidatBackToCompetence
+        }
+        //récupérer le condidat au click sue précédent 
+        if (this.state.retour) {
+            condidatRecieved.competences = items;
+            return <Redirect to={{
+                pathname: '/expPro',
+                state: {
+                    condidatBackToExpPro: condidatRecieved
+                }
+            }} />;
+        }
         if (changePath){
           return <Redirect to={{
             pathname: '/recherche',
@@ -134,9 +156,9 @@ class Competence extends Component {
                                 <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
                                     <h1 className="h3 mb-0 text-gray-800">Compétence (Scientifique, Culturelle, Artistique, ...)</h1>
                                     <div className="form-group m-0">
-                                        {/* <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
-                      <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
-                  </button> */}
+                                        <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
+                                           <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
+                                        </button>
 
                                         <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                             className="fas fa-angle-double-right fa-sm text-white-50"
@@ -144,7 +166,7 @@ class Competence extends Component {
                                             {loading && (
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             )}
-              Suivant </button>
+                                        Suivant </button>
 
                                     </div>
 

@@ -8,7 +8,7 @@ import Leftside from "../../../Layout/Leftside"
 import Header from "../../../Layout/Header"
 import DetailsRecherche from "../Recherches/DetailsRecherche"
 import { Link, Redirect } from "react-router-dom";
-
+import Pagination from "react-js-pagination";
 
 const required = value => {
     if (!value) {
@@ -28,63 +28,82 @@ class Recherche extends Component {
         this.state = {
             currentUser: AuthService.getUserConneced(),
             loading: false,
-            items: [{ thematiqueDesciption: "",chapitreLivre:0,articleJornaux:0,articleConference:0,pfe:0,mastere:0,these:0}],
-            savedItems:[],
+            savedItems:[{ thematiqueDesciption: "",chapitreLivre:0,articleJornaux:0,articleConference:0,pfe:0,mastere:0,these:0}],
             retour: false,
             condidat: this.props.location.state.condidatFromCompetence,
-            changePath: false
+            changePath: false,
+            activePage: 1,
+            itemsCount:1,
         };
     }
 
-
+    componentDidMount() {
+        let condidatFromPrecedent = null
+        if(this.props.location.state.condidatBackToRecherche){
+          condidatFromPrecedent = this.props.location.state.condidatBackToRecherche
+        }else{
+          condidatFromPrecedent = this.props.location.state.condidatFromCompetence
+        }
+        if (condidatFromPrecedent.recherches.length > 0) {
+          this.setState({
+            savedItems: condidatFromPrecedent.recherches,
+            condidat:condidatFromPrecedent,
+            itemsCount:condidatFromPrecedent.recherches.length  
+          });
+        }else{
+          this.setState({
+            condidat:condidatFromPrecedent
+          });
+        }
+      }
 
     onChangeThematiqueDesciption= (e,index) => {
-        let elements = this.state.items;
+        let elements = this.state.savedItems;
         elements[index].thematiqueDesciption = e.target.value;
         this.setState({
-            items: elements,
+            savedItems: elements,
         });
     }
     onChangeChapitreLivre = (e, index) => {
-        let elements = this.state.items;
+        let elements = this.state.savedItems;
         elements[index].chapitreLivre = e.target.value;
         this.setState({
-            items: elements,
+            savedItems: elements,
         });
     }
     onChangeArticleJornaux = (e, index) => {
-        let elements = this.state.items;
+        let elements = this.state.savedItems;
         elements[index].articleJornaux = e.target.value;
         this.setState({
-            items: elements,
+            savedItems: elements,
         });
     }
     onChangeArticleConference = (e, index) => {
-        let elements = this.state.items;
+        let elements = this.state.savedItems;
         elements[index].articleConference = e.target.value;
         this.setState({
-            items: elements,
+            savedItems: elements,
         });
     }
     onChangePfe = (e, index) => {
-        let elements = this.state.items;
+        let elements = this.state.savedItems;
         elements[index].pfe = e.target.value;
         this.setState({
-            items: elements,
+            savedItems: elements,
         });
     }
     onChangeMastere = (e, index) => {
-        let elements = this.state.items;
+        let elements = this.state.savedItems;
         elements[index].mastere = e.target.value;
         this.setState({
-            items: elements,
+            savedItems: elements,
         });
     }
     onChangeThese = (e, index) => {
-        let elements = this.state.items;
+        let elements = this.state.savedItems;
         elements[index].these = e.target.value;
         this.setState({
-            items: elements,
+            savedItems: elements,
         });
     }
     goBack = (e) => {
@@ -96,14 +115,13 @@ class Recherche extends Component {
     updateTabElements = (e) =>{
         e.preventDefault()
         let elements = [...this.state.savedItems]
-        this.state.items.forEach(i =>{
-            elements.push(i)
-        })
-      
-        let newItems=[{ thematiqueDesciption: "",chapitreLivre:0,articleJornaux:0,articleConference:0,pfe:0,mastere:0,these:0}]
+        // this.state.items.forEach(i =>{
+        //     elements.push(i)
+        // })
+        elements.unshift({ thematiqueDesciption: "",chapitreLivre:0,articleJornaux:0,articleConference:0,pfe:0,mastere:0,these:0})
         this.setState({
             savedItems: elements,
-            items:newItems
+            itemsCount:elements.length  
         });
        
     }
@@ -123,27 +141,35 @@ class Recherche extends Component {
 
         }
     }
+    handlePageChange(pageNumber) {
+        console.log(`active page is ${pageNumber}`);
+        this.setState({activePage: pageNumber});
+      }
 
     render() {
-        // const condidatRecieved=this.props.location.state.condidat
-        // console.log("condidat recived",condidatRecieved)
-
-        //récupérer le condidat au click sue précédent 
-        // if (this.state.retour){
-        //   return <Redirect to={{
-        //     pathname: '/profile',
-        //     state: {
-        //       condidatBack:condidatRecieved
-        //     }
-        //   }} />;
-        // }
-
-
+        
         const { loading } = this.state;
-        const { items } = this.state;
         const { changePath } = this.state;
         const { condidat } = this.state;
-        console.log("elements enregistrés",this.state.savedItems)
+        const {savedItems} =this.state;
+
+        let condidatRecieved = null;
+        if (this.props.location.state.condidatFromCompetence) {
+          condidatRecieved = this.props.location.state.condidatFromCompetence
+        } else {
+          condidatRecieved = this.props.location.state.condidatBackToRecherche
+        }
+
+         //récupérer le condidat au click sue précédent 
+         if (this.state.retour) {
+            condidatRecieved.recherches = savedItems;
+            return <Redirect to={{
+                pathname: '/competence',
+                state: {
+                    condidatBackToCompetence: condidatRecieved
+                }
+            }} />;
+        }
 
         if (changePath){
           return <Redirect to={{
@@ -175,17 +201,17 @@ class Recherche extends Component {
                                 <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
                                     <h1 className="h3 mb-0 text-gray-800">Activités de recherche</h1>
                                     <div className="form-group m-0">
-                                        {/* <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
-                      <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
-                  </button> */}
-
+                                        <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
+                                            <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
+                                        </button>
+            
                                         <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                             className="fas fa-angle-double-right fa-sm text-white-50"
                                             disabled={loading}></i>
                                             {loading && (
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             )}
-              Suivant </button>
+                                         Suivant </button>
 
                                     </div>
 
@@ -194,19 +220,35 @@ class Recherche extends Component {
                                 { /* Content Row */}
                                 <div className="row">
                                 <div className="col-lg-12 mb-4 ">
-                                    {items.map((item, index) =>
-                                        <DetailsRecherche recherche={item} indice={index}
+                                    {/* {items.map((item, index) => */}
+                                        <DetailsRecherche recherche={savedItems[(this.state.activePage - 1)]} indice={(this.state.activePage - 1)}
                                          changeThematique={this.onChangeThematiqueDesciption}
                                          changeChapitre={this.onChangeChapitreLivre}
                                          changeArticleJournaux={this.onChangeArticleJornaux}
                                          changeArticleConf={this.onChangeArticleConference}
                                          changeMastere={this.onChangeMastere}
                                          changeThese={this.onChangeThese}
-                                         key={index}
+                                         key={(this.state.activePage - 1)}
                                         />
-                                    )}
+                                    {/* )} */}
+                                    {this.state.activePage ==1 && (
                                     <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
+                                    )}
                                 </div>
+                                <div className="col-7 p-0">
+                                    <div className="d-flex justify-content-center">
+                                        <Pagination
+                                            activePage={this.state.activePage}
+                                            itemsCountPerPage={1}
+                                            totalItemsCount={this.state.itemsCount}
+                                            pageRangeDisplayed={this.state.itemsCount}
+                                            itemClass="page-item"
+                                            linkClass="page-link"
+                                            onChange={this.handlePageChange.bind(this)}
+                                        />
+                                        </div>
+                                        </div>
+                               
                                </div>
                                 <CheckButton
                                     style={{ display: "none" }}

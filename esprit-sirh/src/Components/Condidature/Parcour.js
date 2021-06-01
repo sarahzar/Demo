@@ -48,6 +48,24 @@ class Parcour extends Component {
       changePath:false,
     };
   }
+  componentDidMount() {
+    let condidatFromPrecedent = null
+    if(this.props.location.state.condidatBackToParcour){
+      condidatFromPrecedent = this.props.location.state.condidatBackToParcour
+    }else{
+      condidatFromPrecedent = this.props.location.state.condidatFromProfile
+    }
+    if (condidatFromPrecedent.listeParcours.length > 0) {
+      this.setState({
+        items: condidatFromPrecedent.listeParcours,
+        condidat:condidatFromPrecedent
+      });
+    }else{
+      this.setState({
+        condidat:condidatFromPrecedent
+      });
+    }
+  }
 
   onChangeSpecialite = (e,index) =>{
     let elements=this.state.items;
@@ -129,18 +147,32 @@ class Parcour extends Component {
  
   render() {
 
-    const condidatRecieved=this.props.location.state.condidat   
-    const changePath=this.state.changePath;
-    const {condidat} =this.state;
+    const { loading } = this.state;
+    const { diplomes } = this.state;
+    const { etablissements } = this.state;
+    const { specialites } = this.state;
+    const { pays } = this.state;
+    const { items } = this.state;
+    const changePath = this.state.changePath;
+    const { condidat } = this.state;
+
+    let condidatRecieved = null;
+    if (this.props.location.state.condidatFromProfile) {
+      condidatRecieved = this.props.location.state.condidatFromProfile
+    } else {
+      condidatRecieved = this.props.location.state.condidatBackToParcour
+    }
+
 
 
     //récupérer le condidat au click sur précédent 
-    if (this.state.retour){
+    if (this.state.retour) {
+      condidatRecieved.listeParcours = items;
       return <Redirect to={{
         pathname: '/profile',
         state: {
-          condidatBack:condidatRecieved,
-         
+          condidatBackToProfile: condidatRecieved,
+
         }
       }} />;
     }
@@ -148,21 +180,12 @@ class Parcour extends Component {
       return <Redirect to={{
         pathname: '/expEnseignant',
         state: {
-          condidatBack:condidatRecieved,
           condidatFromParcour:condidat
         }
       }} />;
     }
   
-    // const { message } = this.state;
-    const { loading } = this.state;
-    // const { typeMessage } = this.state;
-    const {diplomes} =this.state;
-    const {etablissements} =this.state;
-    const {specialites} =this.state;
-    const {pays} =this.state;
-    const {items}=this.state;
-    console.log("items",items)
+ 
 
 
     return (
@@ -236,26 +259,26 @@ class Parcour extends Component {
                                     </div></td>
                                     <td  className="col-2">
                                         <div className="form-group">
-                                            <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeDiplome(e,index)}}>
+                                            <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeDiplome(e,index)}} value={item.diplomeId}>
                                                 <option value="-1" key="defaultdiplome"></option>
                                                 {diplomes.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                             </select>
                                         </div>
                                     </td>
                                     <td  className="col-3"><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeEtablissement(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeEtablissement(e,index)}} value={item.etablissementId}>
                                             <option value="-1" key="defaultetablissement"></option>
                                             {etablissements.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>
                                     </div></td>
                                     <td  className="col-2"> <div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e)=>{this.onChangeSpecialite(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e)=>{this.onChangeSpecialite(e,index)}}  value={item.specialiteId}>
                                             <option value="-1" key="defaultspecialite"></option>
                                             {specialites.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>
                                     </div></td>
                                     <td className="col-2"><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeMention(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeMention(e,index)}} value={item.mention}>
                                             <option value="-1" key="defaultspecialite"></option>
                                             <option value="1" key="passable">Passable</option>
                                             <option value="2" key="bien">Bien</option>
@@ -263,7 +286,7 @@ class Parcour extends Component {
                                         </select>
                                     </div></td>
                                     <td  className="col-2"><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangePays(e,index)}}>
+                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangePays(e,index)}} value={item.paysId}>
                                             <option value="-1" key="defaultpays"></option>
                                             {pays.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
                                         </select>

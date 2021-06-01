@@ -6,6 +6,7 @@ import CheckButton from "react-validation/build/button";
 import Form from "react-validation/build/form";
 import CondidatService from "../../services/Condidature/CondidatService";
 import AuthService from "../../services/Authentification/AuthService";
+import { Link, Redirect } from "react-router-dom";
 const required = value => {
     if (!value) {
       return (
@@ -31,7 +32,8 @@ class Documents  extends Component{
           annexe:null,
           loading:false,
           message:"",
-          typeMessage:""
+          typeMessage:"",
+          retour:false
         };
 
     }
@@ -62,7 +64,12 @@ class Documents  extends Component{
             annexe: e.target.files[0],
         });
       }
-
+      goBack = (e) => {
+        e.preventDefault();
+        this.setState({
+            retour: true,
+        });
+    }
       handleSubmitCondidat =(e) => {
         e.preventDefault();
         this.form.validateAll();
@@ -118,7 +125,19 @@ render(){
     const { message } = this.state;
     const { loading } = this.state;
     const { typeMessage } = this.state;
+    const { condidat } = this.state;
     console.log("path",this.state.pathPhoto)
+
+     //récupérer le condidat au click sue précédent 
+     if (this.state.retour) {
+    
+      return <Redirect to={{
+          pathname: '/recherche',
+          state: {
+            condidatBackToRecherche: condidat
+          }
+      }} />;
+  }
     return(
         <div id="wrapper">
         <Leftside></Leftside>
@@ -138,6 +157,10 @@ render(){
                 { /* Page Heading */}
                 <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
                   <h1 className="h3 mb-0 text-gray-800">Joindre vos documents</h1>
+                  <div className="form-group m-0">
+                  <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
+                                           <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
+                                        </button>
                   <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                     className="fas fa-angle-double-right fa-sm text-white-50"
                     disabled={loading}></i>
@@ -145,6 +168,7 @@ render(){
                       <span className="spinner-border spinner-border-sm"></span>
                     )}
               enregistrer </button>
+              </div>
                 </div>
                 {message && (
                   <div className="form-group">
@@ -169,10 +193,11 @@ render(){
                   <div  className="col-md-6">
                     <input
                         type="file"
-                        className="form-control form-control"
+                        className="form-control form-control-sm "
                         name="file"
                         onChange={this.onChangePhoto}
                         validations={[required]}
+                        accept="image/png,image/jpg"
                     />
                     </div>
                 </div>
@@ -182,10 +207,11 @@ render(){
                   <div  className="col-md-6">
                     <input
                         type="file"
-                        className="form-control form-control-sm col-4"
+                        className="form-control form-control-sm"
                         name="file"
                         onChange={this.onChangeCV}
                         validations={[required]}
+                        accept="application/pdf"
                     />
                     </div>
                 </div>
@@ -195,10 +221,11 @@ render(){
                   <div  className="col-md-6">
                     <input
                         type="file"
-                        className="form-control form-control-sm col-4"
+                        className="form-control form-control-sm"
                         name="file"
                         onChange={this.onChangeLM}
                         validations={[required]}
+                        accept="application/pdf"
                     />
                     </div>
                 </div>
@@ -208,10 +235,11 @@ render(){
                   <div  className="col-md-6">
                     <input
                         type="file"
-                        className="form-control form-control-sm col-4"
+                        className="form-control form-control-sm"
                         name="file"
                         onChange={this.onChangeDiplome}
                         validations={[required]}
+                        accept="application/pdf"
                     />
                     </div>
                 </div>
@@ -221,10 +249,11 @@ render(){
                   <div  className="col-md-6">
                     <input
                         type="file"
-                        className="form-control form-control-sm col-4"
+                        className="form-control form-control-sm"
                         name="file"
                         onChange={this.onChangeAnnexe}
                         validations={[required]}
+                        accept="application/pdf"
                     />
                     </div>
                 </div>

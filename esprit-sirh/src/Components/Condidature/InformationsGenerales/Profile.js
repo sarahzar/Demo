@@ -69,16 +69,8 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    // this.setState({
-    //   username:this.props
-    // })
-    // let login=AuthService.getUsername()
-    // if(login.username.username=="" || login.username==""){
-    //   AuthService.setUsername(this.props)
-    // }
-    // console.log("user login",AuthService.getUsername())
     console.log("user login", this.props.location.state.login)
-    let condidatFromPrecedent = this.props.location.state.condidatBack;
+    let condidatFromPrecedent = this.props.location.state.condidatBackToProfile;
     if (condidatFromPrecedent) {
       this.setState({
         nom: condidatFromPrecedent.nom,
@@ -257,15 +249,20 @@ class Profile extends Component {
     const { etablissements } = this.state;
     const { specialites } = this.state;
     const { etatCivils } = this.state;
-    const { condidat } = this.state;
-
+  //  const { condidat } = this.state;
+    let condidatProfile = null;
+    if (this.props.location.state.condidatBackToProfile) {
+      condidatProfile = this.props.location.state.condidatBackToProfile
+    } else {
+      condidatProfile = this.state.condidat
+    }
 
     if (changePath) {
       return <Redirect to={{
         pathname: '/parcour',
         state: {
           login: username,
-          condidatFromProfile: condidat
+          condidatFromProfile: condidatProfile
         }
       }} />;
     }

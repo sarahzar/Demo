@@ -61,6 +61,31 @@ button {
   background-position: center!important;
   background-size: cover!important;
 }
+.bg-logo {
+  background: url(img/logo.jpg)!important;
+  background-position: center!important;
+  background-size: 100% 100%!important;
+  height: 50px;
+  width: 100%;
+}
 .text-primary{
   color: #e74a3b!important;
+}
+
+.page-item.active .page-link {
+  background-color: #e74a3b!important;
+  border-color: #e74a3b!important;
+}
+.page-item.active .page-link {
+  background-color: #e74a3b!important;
+  border-color: #e74a3b!important;
+}
+.page-link {
+  color: #e74a3b;
+}
+.page-link:hover {
+  color: #e74a3b;
+}
+.page-link:focus {
+  box-shadow: 0 0 0 0.2rem #eadddb!important;
 }
