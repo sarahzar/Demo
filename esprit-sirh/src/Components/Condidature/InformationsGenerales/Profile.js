@@ -60,6 +60,8 @@ class Profile extends Component {
       types: this.props.location.state.types,
       etablissements:  this.props.location.state.etablissements,
       specialites:  this.props.location.state.specialites,
+      pays:  this.props.location.state.pays,
+      modules: this.props.location.state.modules,
       condidat: {},
       username: ''
 
@@ -211,26 +213,6 @@ class Profile extends Component {
         condidat: condidat,
         changePath: true
       })
-
-      // CondidatService.registerCondidatInfos(this.state.currentUser.login, condidat)
-      // .then(
-      //   resp => {
-      //     if(resp.data.succesMessage){
-      //       this.setState({
-      //         changePath:true,
-      //         loading:false
-      //       })
-      //       // history.push("/parcour");
-      //     }else{
-      //       this.setState({
-      //         message:resp.data.errorMessage,
-      //         typeMessage: "alert alert-danger",
-      //         loading:false
-      //       })
-      //     }
-      //   }
-
-      // );
     }
   }
 
@@ -249,6 +231,8 @@ class Profile extends Component {
     const { etablissements } = this.state;
     const { specialites } = this.state;
     const { etatCivils } = this.state;
+    const { modules } = this.state;
+    const { pays } = this.state;
     const { condidat } = this.state;
     let condidatProfile = null;
     if (this.props.location.state.condidatBackToProfile) {
@@ -264,7 +248,17 @@ class Profile extends Component {
         pathname: '/parcour',
         state: {
           login: username,
-          condidatFromProfile: condidat
+          condidatFromProfile: condidat,
+          postes: postes,
+          diplomes: diplomes,
+          etablissements: etablissements,
+          modules: modules,
+          etatCivils: etatCivils,
+          pays: pays,
+          types: types,
+          domaines: domaines,
+          specialites: specialites
+          
         }
       }} />;
     }

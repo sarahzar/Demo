@@ -33,6 +33,15 @@ class Recherche extends Component {
             changePath: false,
             activePage: 1,
             itemsCount:1,
+            etatCivils: this.props.location.state.etatCivils,
+            postes: this.props.location.state.postes,
+            diplomes: this.props.location.state.diplomes,
+            domaines: this.props.location.state.domaines,
+            types: this.props.location.state.types,
+            etablissements: this.props.location.state.etablissements,
+            specialites: this.props.location.state.specialites,
+            pays: this.props.location.state.pays,
+            modules: this.props.location.state.modules,
         };
     }
 
@@ -153,6 +162,15 @@ class Recherche extends Component {
         const { changePath } = this.state;
         const { condidat } = this.state;
         const {savedItems} =this.state;
+        const { postes } = this.state;
+        const { diplomes } = this.state;
+        const { domaines } = this.state;
+        const { types } = this.state;
+        const { etablissements } = this.state;
+        const { specialites } = this.state;
+        const { etatCivils } = this.state;
+        const { modules } = this.state;
+        const { pays } = this.state;
 
         let condidatRecieved = null;
         if (this.props.location.state.condidatFromCompetence) {
@@ -167,7 +185,16 @@ class Recherche extends Component {
             return <Redirect to={{
                 pathname: '/competence',
                 state: {
-                    condidatBackToCompetence: condidatRecieved
+                    condidatBackToCompetence: condidatRecieved,
+                    postes: postes,
+                    diplomes: diplomes,
+                    etablissements: etablissements,
+                    modules: modules,
+                    etatCivils: etatCivils,
+                    pays: pays,
+                    types: types,
+                    domaines: domaines,
+                    specialites: specialites
                 }
             }} />;
         }
@@ -176,7 +203,16 @@ class Recherche extends Component {
           return <Redirect to={{
             pathname: '/documents',
             state: {
-                condidatFromRecherche:condidat
+                condidatFromRecherche:condidat,
+                postes: postes,
+                diplomes: diplomes,
+                etablissements: etablissements,
+                modules: modules,
+                etatCivils: etatCivils,
+                pays: pays,
+                types: types,
+                domaines: domaines,
+                specialites: specialites
             }
           }} />;
         }

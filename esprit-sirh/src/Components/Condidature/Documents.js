@@ -33,7 +33,16 @@ class Documents  extends Component{
           loading:false,
           message:"",
           typeMessage:"",
-          retour:false
+          retour:false,
+          etatCivils: this.props.location.state.etatCivils,
+          postes: this.props.location.state.postes,
+          diplomes: this.props.location.state.diplomes,
+          domaines: this.props.location.state.domaines,
+          types: this.props.location.state.types,
+          etablissements: this.props.location.state.etablissements,
+          specialites: this.props.location.state.specialites,
+          pays: this.props.location.state.pays,
+          modules: this.props.location.state.modules,
         };
 
     }
@@ -126,6 +135,15 @@ render(){
   const { loading } = this.state;
   const { typeMessage } = this.state;
   const { condidat } = this.state;
+  const { postes } = this.state;
+  const { diplomes } = this.state;
+  const { domaines } = this.state;
+  const { types } = this.state;
+  const { etablissements } = this.state;
+  const { specialites } = this.state;
+  const { etatCivils } = this.state;
+  const { modules } = this.state;
+  const { pays } = this.state;
   console.log("path", this.state.pathPhoto)
 
   //récupérer le condidat au click sue précédent 
@@ -137,7 +155,16 @@ render(){
     return <Redirect to={{
       pathname: '/recherche',
       state: {
-        condidatBackToRecherche: clonedCondidat
+        condidatBackToRecherche: clonedCondidat,
+        postes: postes,
+        diplomes: diplomes,
+        etablissements: etablissements,
+        modules: modules,
+        etatCivils: etatCivils,
+        pays: pays,
+        types: types,
+        domaines: domaines,
+        specialites: specialites
       }
     }} />;
   }

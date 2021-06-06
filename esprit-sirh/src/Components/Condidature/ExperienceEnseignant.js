@@ -30,9 +30,15 @@ class ExperienceEnseignant extends Component {
     this.state = {
       loading: false,
       items:[{dateDebut:"",dateFin: "",etablissementId:-1,posteId: -1,moduleId: -1}],    
-      etablissements:NomenclaturesService.getSavedEtablissements(),
-      modules:NomenclaturesService.getSavedModules(),
-      postes:NomenclaturesService.getSavedPostes(),
+      etatCivils: this.props.location.state.etatCivils,
+      postes: this.props.location.state.postes,
+      diplomes: this.props.location.state.diplomes,
+      domaines: this.props.location.state.domaines,
+      types: this.props.location.state.types,
+      etablissements:  this.props.location.state.etablissements,
+      specialites:  this.props.location.state.specialites,
+      pays:  this.props.location.state.pays,
+      modules: this.props.location.state.modules,
       retour:false,
       condidat:this.props.location.state.condidatFromParcour,
       changePath:false
@@ -132,9 +138,15 @@ class ExperienceEnseignant extends Component {
   render() {
    // const condidatRecieved=this.props.location.state.condidatFromParcour 
     const { loading } = this.state;
-    const {etablissements} =this.state;
-    const {postes} =this.state;
-    const {modules} =this.state;
+    const { postes } = this.state;
+    const { diplomes } = this.state;
+    const { domaines } = this.state;
+    const { types } = this.state;
+    const { etablissements } = this.state;
+    const { specialites } = this.state;
+    const { etatCivils } = this.state;
+    const { modules } = this.state;
+    const { pays } = this.state;
     const {items}=this.state;
     const {changePath}=this.state;
     const {condidat} =this.state;
@@ -152,7 +164,16 @@ class ExperienceEnseignant extends Component {
       return <Redirect to={{
         pathname: '/parcour',
         state: {
-          condidatBackToParcour: condidatRecieved
+          condidatBackToParcour: condidatRecieved,
+          postes: postes,
+          diplomes: diplomes,
+          etablissements: etablissements,
+          modules: modules,
+          etatCivils: etatCivils,
+          pays: pays,
+          types: types,
+          domaines: domaines,
+          specialites: specialites
         }
       }} />;
     }
@@ -162,7 +183,16 @@ class ExperienceEnseignant extends Component {
       return <Redirect to={{
         pathname: '/expPro',
         state: {
-          condidatFromExpEns:condidat
+          condidatFromExpEns:condidat,
+          postes: postes,
+          diplomes: diplomes,
+          etablissements: etablissements,
+          modules: modules,
+          etatCivils: etatCivils,
+          pays: pays,
+          types: types,
+          domaines: domaines,
+          specialites: specialites
         }
       }} />;
     }

@@ -30,7 +30,16 @@ class Competence extends Component {
             items: [{ titre: "", description: "" }],
             retour: false,
             condidat: this.props.location.state.condidatFromExpPro,
-            changePath: false
+            changePath: false,
+            etatCivils: this.props.location.state.etatCivils,
+            postes: this.props.location.state.postes,
+            diplomes: this.props.location.state.diplomes,
+            domaines: this.props.location.state.domaines,
+            types: this.props.location.state.types,
+            etablissements: this.props.location.state.etablissements,
+            specialites: this.props.location.state.specialites,
+            pays: this.props.location.state.pays,
+            modules: this.props.location.state.modules,
         };
     }
 
@@ -108,6 +117,15 @@ class Competence extends Component {
         const { items } = this.state;
         const { changePath } = this.state;
         const { condidat } = this.state;
+        const { postes } = this.state;
+        const { diplomes } = this.state;
+        const { domaines } = this.state;
+        const { types } = this.state;
+        const { etablissements } = this.state;
+        const { specialites } = this.state;
+        const { etatCivils } = this.state;
+        const { modules } = this.state;
+        const { pays } = this.state;
 
         let condidatRecieved = null;
         if (this.props.location.state.condidatFromExpPro) {
@@ -121,7 +139,16 @@ class Competence extends Component {
             return <Redirect to={{
                 pathname: '/expPro',
                 state: {
-                    condidatBackToExpPro: condidatRecieved
+                    condidatBackToExpPro: condidatRecieved,
+                    postes: postes,
+                    diplomes: diplomes,
+                    etablissements: etablissements,
+                    modules: modules,
+                    etatCivils: etatCivils,
+                    pays: pays,
+                    types: types,
+                    domaines: domaines,
+                    specialites: specialites
                 }
             }} />;
         }
@@ -129,7 +156,16 @@ class Competence extends Component {
           return <Redirect to={{
             pathname: '/recherche',
             state: {
-              condidatFromCompetence:condidat
+              condidatFromCompetence:condidat,
+                postes: postes,
+                diplomes: diplomes,
+                etablissements: etablissements,
+                modules: modules,
+                etatCivils: etatCivils,
+                pays: pays,
+                types: types,
+                domaines: domaines,
+                specialites: specialites
             }
           }} />;
         }
