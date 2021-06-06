@@ -12,7 +12,6 @@ function allDiplomes() {
     NomenclaturesService.getAllDiplomes().then(
 
         resp =>{
-            localStorage.setItem('diplomes',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };

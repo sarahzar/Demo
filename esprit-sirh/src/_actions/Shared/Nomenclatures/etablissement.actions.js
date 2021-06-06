@@ -12,7 +12,6 @@ function allEtablissements() {
     NomenclaturesService.getAllEtablissement().then(
 
         resp =>{
-            localStorage.setItem('etablissements',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };

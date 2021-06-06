@@ -88,11 +88,31 @@ class Login extends Component {
     const { alert } = this.props;
     const { loading } = this.props;
     const { username } = this.props;
+    const { postes } = this.props;
+    const { diplomes } = this.props;
+    const { etablissements } = this.props;
+    const { modules } = this.props;
+    const { etatCivils } = this.props;
+    const { pays } = this.props;
+    const { types } = this.props;
+    const { domaines } = this.props;
+    const { specialites } = this.props;
+    
+    console.log("postes from login",postes)
     if (loggedIn) {
       return <Redirect to={{
         pathname: '/profile',
         state: {
-          login: username
+          login: username,
+          postes: postes,
+          diplomes: diplomes,
+          etablissements: etablissements,
+          modules: modules,
+          etatCivils: etatCivils,
+          pays: pays,
+          types: types,
+          domaines: domaines,
+          specialites: specialites
         }
       }} />;
       // document.getElementById("linkToProfile").click();
@@ -201,7 +221,17 @@ function mapStateToProps(state) {
     const { alert } = state;
     const { username } = state.authentication;
     const { loading } = state.authentication;
-    return { loggedIn,loading,alert ,username};
+    const { postes } = state.poste;
+    const { diplomes } = state.diplome;
+    const { domaines } = state.domaine;
+    const { etablissements } = state.etablissement;
+    const { etatCivils } = state.etatCivil;
+    const { specialites } = state.specialite;
+    const { types } = state.typeCondidature;
+    const { pays } = state.pays;
+    const { modules } = state.module;
+    return { loggedIn,loading,alert ,username,postes,diplomes,domaines,
+      etablissements,etatCivils,specialites,types,pays,modules};
 }
   const actionCreators = {
     login: userActions.login,

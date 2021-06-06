@@ -55,34 +55,5 @@ class NomenclaturesService{
      
    }
 
-   getSavedEtatCivils(){
-      return JSON.parse(localStorage.getItem('etatCivils'));
-   }
-   getSavedDiplomes(){
-      return JSON.parse(localStorage.getItem('diplomes'));
-   }
-   getSavedDomaines(){
-      return JSON.parse(localStorage.getItem('domaines'));
-   }
-   getSavedEtablissements(){
-      return JSON.parse(localStorage.getItem('etablissements'));
-      
-   }
-   getSavedSpecialites(){
-      return JSON.parse(localStorage.getItem('specialites'));
-   }
-   getSavedTypesCondidatures(){
-      return JSON.parse(localStorage.getItem('typeCondidatures'));
-   }
-   getSavedPostes(){
-      return JSON.parse(localStorage.getItem('postes'));
-   }
-   getSavedPays(){
-      return JSON.parse(localStorage.getItem('pays'));
-   }
-   getSavedModules(){
-      return JSON.parse(localStorage.getItem('modules'));
-   }
-
 }
 export default new NomenclaturesService();

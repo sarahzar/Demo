@@ -12,7 +12,6 @@ function allEtatCivil() {
     NomenclaturesService.getAllEtatCivil().then(
 
         resp =>{
-            localStorage.setItem('etatCivils',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };

@@ -53,13 +53,13 @@ class Profile extends Component {
       specialiteId: -1,
       etablissementId: -1,
       anneeObtention: "",
-      etatCivils: NomenclaturesService.getSavedEtatCivils(),
-      postes: NomenclaturesService.getSavedPostes(),
-      diplomes: NomenclaturesService.getSavedDiplomes(),
-      domaines: NomenclaturesService.getSavedDomaines(),
-      types: NomenclaturesService.getSavedTypesCondidatures(),
-      etablissements: NomenclaturesService.getSavedEtablissements(),
-      specialites: NomenclaturesService.getSavedSpecialites(),
+      etatCivils: this.props.location.state.etatCivils,
+      postes: this.props.location.state.postes,
+      diplomes: this.props.location.state.diplomes,
+      domaines: this.props.location.state.domaines,
+      types: this.props.location.state.types,
+      etablissements:  this.props.location.state.etablissements,
+      specialites:  this.props.location.state.specialites,
       condidat: {},
       username: ''
 
@@ -69,6 +69,7 @@ class Profile extends Component {
 
   componentDidMount() {
     console.log("user login", this.props.location.state.login)
+    console.log("profile liste postes", this.props.location.state.postes)
     let condidatFromPrecedent = this.props.location.state.condidatBackToProfile;
     if (condidatFromPrecedent) {
       this.setState({

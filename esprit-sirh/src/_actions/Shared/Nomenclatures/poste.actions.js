@@ -11,7 +11,6 @@ function allPostes() {
     NomenclaturesService.getAllPostes().then(
 
         resp =>{
-            localStorage.setItem('postes',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };

@@ -12,7 +12,6 @@ function allModules() {
     NomenclaturesService.getAllModules().then(
 
         resp =>{
-            localStorage.setItem('modules',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };

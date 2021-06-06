@@ -12,7 +12,6 @@ function allPays() {
     NomenclaturesService.getAllPays().then(
 
         resp =>{
-            localStorage.setItem('pays',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };

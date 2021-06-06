@@ -105,38 +105,7 @@ class Register extends Component {
     this.form.validateAll();
 
     if (this.checkBtn.context._errors.length === 0) {
-      // UserService.register(
-      //   this.state.username,       
-      //   this.state.password,
-      //   this.state.username,
-      //   ROLE_ENSEIGNANT
-      // ).then(
-      //   response => {
-      //     this.setState({
-      //       message: response.data.succesMessage ? 
-      //       response.data.succesMessage : 
-      //       response.data.errorMessage,
-      //       successful: response.data.succesMessage ? true : false
-      //     });
-      //     if(response.data.succesMessage){
-      //       this.props.history.push("/profile");
-      //       window.location.reload();
-      //     }
-      //   },
-      //   error => {
-      //     const resMessage =
-      //       (error.response &&
-      //         error.response.data &&
-      //         error.response.data.message) ||
-      //       error.message ||
-      //       error.toString();
-
-      //     this.setState({
-      //       successful: false,
-      //       message: resMessage
-      //     });
-      //   }
-      // );
+     
       this.props.allPostes();
       this.props.allDiplomes();
       this.props.allEtablissements();
@@ -159,6 +128,16 @@ class Register extends Component {
     const { alert } = this.props;
     const { loading } = this.props;
     const { username } = this.props;
+    const { postes } = this.props;
+    const { diplomes } = this.props;
+    const { etablissements } = this.props;
+    const { modules } = this.props;
+    const { etatCivils } = this.props;
+    const { pays } = this.props;
+    const { types } = this.props;
+    const { domaines } = this.props;
+    const { specialites } = this.props;
+
     const match = value => {
       if (value!=this.state.password) {
         return (
@@ -172,7 +151,16 @@ class Register extends Component {
       return <Redirect to={{
         pathname: '/profile',
         state: {
-          login: username
+          login: username,
+          postes: postes,
+          diplomes: diplomes,
+          etablissements: etablissements,
+          modules: modules,
+          etatCivils: etatCivils,
+          pays: pays,
+          types: types,
+          domaines: domaines,
+          specialites: specialites
         }
       }} />;
       // document.getElementById("linkToProfile").click();
@@ -289,8 +277,18 @@ function mapStateToProps(state) {
   const { registerd } = state.registration;
   const { alert } = state;
   const { loading } = state.registration;
-  const {login} = state.registration;
-  return { loading,alert ,registerd,login};
+  const { login } = state.registration;
+  const { postes } = state.poste;
+  const { diplomes } = state.diplome;
+  const { domaines } = state.domaine;
+  const { etablissements } = state.etablissement;
+  const { etatCivils } = state.etatCivil;
+  const { specialites } = state.specialite;
+  const { types } = state.typeCondidature;
+  const { pays } = state.pays;
+  const { modules } = state.module;
+  return { loading,alert ,registerd,login,postes,diplomes,domaines,
+    etablissements,etatCivils,specialites,types,pays,modules};
 }
 const actionCreators = {
   register: userActions.register,

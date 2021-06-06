@@ -12,7 +12,6 @@ function allDomaines() {
     NomenclaturesService.getAllDomaines().then(
 
         resp =>{
-            localStorage.setItem('domaines',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };

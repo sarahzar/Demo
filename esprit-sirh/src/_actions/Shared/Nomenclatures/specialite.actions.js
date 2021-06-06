@@ -12,7 +12,6 @@ function allSpecialites() {
     NomenclaturesService.getAllSpecialites().then(
 
         resp =>{
-            localStorage.setItem('specialites',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };

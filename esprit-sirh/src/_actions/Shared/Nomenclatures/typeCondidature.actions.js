@@ -12,7 +12,6 @@ function allTypesCondidatures() {
     NomenclaturesService.getAllTypesCondidatures().then(
 
         resp =>{
-            localStorage.setItem('typeCondidatures',JSON.stringify(resp.data));
             dispatch(all(resp.data));
         });
     };
