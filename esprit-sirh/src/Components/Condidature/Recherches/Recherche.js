@@ -26,7 +26,6 @@ class Recherche extends Component {
         super(props);
         this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this)
         this.state = {
-            currentUser: AuthService.getUserConneced(),
             loading: false,
             savedItems:[{ thematiqueDesciption: "",chapitreLivre:0,articleJornaux:0,articleConference:0,pfe:0,mastere:0,these:0}],
             retour: false,
@@ -131,7 +130,9 @@ class Recherche extends Component {
         this.form.validateAll();
         if (this.checkBtn.context._errors.length === 0) {
             let condidatToSave = this.state.condidat
-            condidatToSave.recherches = this.state.savedItems
+            let recherches= this.state.savedItems
+            recherches.shift()     
+            condidatToSave.recherches =  recherches
 
             this.setState({
                 loading: true,

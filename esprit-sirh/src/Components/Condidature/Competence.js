@@ -26,7 +26,6 @@ class Competence extends Component {
         this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this)
 
         this.state = {
-            currentUser: AuthService.getUserConneced(),
             loading: false,
             items: [{ titre: "", description: "" }],
             retour: false,

@@ -28,7 +28,6 @@ class Parcour extends Component {
     super(props);
       
     this.state = {
-      currentUser: AuthService.getUserConneced(),
       loading: false,
       domaineId:-1,
       specialiteId: -1,

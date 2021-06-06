@@ -28,7 +28,6 @@ class ExperienceProfessionel extends Component {
     super(props); 
 
     this.state = {
-      currentUser: AuthService.getUserConneced(),
       loading: false,
       etablissementId:-1,
       moduleId:-1,

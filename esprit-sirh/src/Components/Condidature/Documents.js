@@ -24,7 +24,7 @@ class Documents  extends Component{
 
         this.state = {
           condidat: this.props.location.state.condidatFromRecherche,
-          currentUser: AuthService.getUserConneced(),
+          login: AuthService.getLogin(),
           cv:null,
           photo:null,
           lettreMotivation:null,
@@ -98,7 +98,7 @@ class Documents  extends Component{
             formData.append('condidat', JSON.stringify(condidatToSave));
 
            
-      CondidatService.registerCondidatInfos(this.state.currentUser.login,formData)
+      CondidatService.registerCondidatInfos(this.state.login,formData)
       .then(
         resp => {
           if(resp.data.succesMessage){
@@ -122,21 +122,24 @@ class Documents  extends Component{
       }
 
 render(){
-    const { message } = this.state;
-    const { loading } = this.state;
-    const { typeMessage } = this.state;
-    const { condidat } = this.state;
-    console.log("path",this.state.pathPhoto)
+  const { message } = this.state;
+  const { loading } = this.state;
+  const { typeMessage } = this.state;
+  const { condidat } = this.state;
+  console.log("path", this.state.pathPhoto)
 
-     //récupérer le condidat au click sue précédent 
-     if (this.state.retour) {
-    
-      return <Redirect to={{
-          pathname: '/recherche',
-          state: {
-            condidatBackToRecherche: condidat
-          }
-      }} />;
+  //récupérer le condidat au click sue précédent 
+  if (this.state.retour) {
+    let clonedCondidat = { ...condidat }
+    if (clonedCondidat.recherches.length > 0 && clonedCondidat.recherches[0].thematiqueDesciption) {
+      clonedCondidat.recherches.unshift({ thematiqueDesciption: "", chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 })
+    }
+    return <Redirect to={{
+      pathname: '/recherche',
+      state: {
+        condidatBackToRecherche: clonedCondidat
+      }
+    }} />;
   }
     return(
         <div id="wrapper">

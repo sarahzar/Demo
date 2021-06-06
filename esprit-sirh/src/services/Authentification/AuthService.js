@@ -21,13 +21,13 @@ return   axios.get(
     
     )
     .then(resp => {   
-        localStorage.setItem("userConnected", JSON.stringify(resp.data.user))
+        localStorage.setItem("login", resp.data.user.login)
         return resp.data;  
     });
 
 }
-    getUserConneced(){
-    return JSON.parse(localStorage.getItem("userConnected"));
+    getLogin(){
+    return localStorage.getItem("login");
    // return userLogin;
     }
     setUsername(username){

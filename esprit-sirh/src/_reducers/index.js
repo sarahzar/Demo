@@ -15,7 +15,7 @@ import { pays } from './Shared/Nomenclatures/pays.reducer';
 import { module } from './Shared/Nomenclatures/module.reducer';
 const rootReducer = combineReducers({
   authentication,
-  // registration,
+  registration,
   users,
   alert,
   poste,

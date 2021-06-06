@@ -3,9 +3,22 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
-import { Switch, Route, Link } from "react-router-dom";
+import { Switch, Route, Link ,Redirect} from "react-router-dom";
 import UserService from "../../services/Authentification/UserService";
+import { connect } from "react-redux";
+import { userActions } from '../../_actions';
+import { posteActions } from "../../_actions/Shared/Nomenclatures/poste.actions";
+import { diplomeActions } from "../../_actions/Shared/Nomenclatures/diplome.actions";
+import { domaineActions } from "../../_actions/Shared/Nomenclatures/domaine.actions";
+import { etablissementActions } from "../../_actions/Shared/Nomenclatures/etablissement.actions";
+import { etatCivilActions } from "../../_actions/Shared/Nomenclatures/etatCivil.actions";
+import { specialiteActions } from "../../_actions/Shared/Nomenclatures/specialite.actions";
+import { typeCondidatureActions } from "../../_actions/Shared/Nomenclatures/typeCondidature.actions";
+import { paysActions } from "../../_actions/Shared/Nomenclatures/pays.actions";
+import { modulesActions } from "../../_actions/Shared/Nomenclatures/modules.actions";
+
 const ROLE_ENSEIGNANT =  'ENSEIGNANT';
+
 
 const required = value => {
   if (!value) {
@@ -46,7 +59,7 @@ const vpassword = value => {
   }
 };
 
-export default class Register extends Component {
+class Register extends Component {
   constructor(props) {
     super(props);
     this.handleRegister = this.handleRegister.bind(this);
@@ -92,42 +105,60 @@ export default class Register extends Component {
     this.form.validateAll();
 
     if (this.checkBtn.context._errors.length === 0) {
-      UserService.register(
-        this.state.username,       
-        this.state.password,
-        this.state.username,
-        ROLE_ENSEIGNANT
-      ).then(
-        response => {
-          this.setState({
-            message: response.data.succesMessage ? 
-            response.data.succesMessage : 
-            response.data.errorMessage,
-            successful: response.data.succesMessage ? true : false
-          });
-          if(response.data.succesMessage){
-            this.props.history.push("/profile");
-            window.location.reload();
-          }
-        },
-        error => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
+      // UserService.register(
+      //   this.state.username,       
+      //   this.state.password,
+      //   this.state.username,
+      //   ROLE_ENSEIGNANT
+      // ).then(
+      //   response => {
+      //     this.setState({
+      //       message: response.data.succesMessage ? 
+      //       response.data.succesMessage : 
+      //       response.data.errorMessage,
+      //       successful: response.data.succesMessage ? true : false
+      //     });
+      //     if(response.data.succesMessage){
+      //       this.props.history.push("/profile");
+      //       window.location.reload();
+      //     }
+      //   },
+      //   error => {
+      //     const resMessage =
+      //       (error.response &&
+      //         error.response.data &&
+      //         error.response.data.message) ||
+      //       error.message ||
+      //       error.toString();
 
-          this.setState({
-            successful: false,
-            message: resMessage
-          });
-        }
-      );
+      //     this.setState({
+      //       successful: false,
+      //       message: resMessage
+      //     });
+      //   }
+      // );
+      this.props.allPostes();
+      this.props.allDiplomes();
+      this.props.allEtablissements();
+      this.props.allEtatCivil();
+      this.props.allSpecialites();
+      this.props.allTypesCondidatures();
+      this.props.allDomaines();
+      this.props.allPays();
+      this.props.allModules()
+      this.props.register(this.state.username,this.state.password,this.state.username, ROLE_ENSEIGNANT  )  
+    }else {
+      this.setState({
+        loading: false,
+      });
     }
   }
 
   render() {
+    const { registerd } = this.props;
+    const { alert } = this.props;
+    const { loading } = this.props;
+    const { username } = this.props;
     const match = value => {
       if (value!=this.state.password) {
         return (
@@ -137,6 +168,15 @@ export default class Register extends Component {
         );
       }
     };
+    if (registerd) {
+      return <Redirect to={{
+        pathname: '/profile',
+        state: {
+          login: username
+        }
+      }} />;
+      // document.getElementById("linkToProfile").click();
+    }
     return (
       <div class="container">
       <div className="row justify-content-center">
@@ -201,8 +241,8 @@ export default class Register extends Component {
                         </div>
                       </div>
               
-                  <button className="btn btn-primary btn-user btn-block" disabled={this.state.loading}>
-                  {this.state.loading && (
+                  <button className="btn btn-primary btn-user btn-block" disabled={loading}>
+                  {loading && (
                   <span className="spinner-border spinner-border-sm"></span>
                    )}
                     enregistrer</button>
@@ -210,17 +250,13 @@ export default class Register extends Component {
            
            
 
-            {this.state.message && (
+            {alert.message && (
               <div className="form-group">
                 <div
-                  className={
-                    this.state.successful
-                      ? "alert alert-success"
-                      : "alert alert-danger"
-                  }
+                  className="alert alert-danger"
                   role="alert"
                 >
-                  {this.state.message}
+                  {alert.message}
                 </div>
               </div>
             )}
@@ -249,3 +285,23 @@ export default class Register extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  const { registerd } = state.registration;
+  const { alert } = state;
+  const { loading } = state.registration;
+  const {login} = state.registration;
+  return { loading,alert ,registerd,login};
+}
+const actionCreators = {
+  register: userActions.register,
+  allPostes: posteActions.allPostes,
+  allDiplomes: diplomeActions.allDiplomes,
+  allDomaines: domaineActions.allDomaines,
+  allEtablissements: etablissementActions.allEtablissements,
+  allEtatCivil: etatCivilActions.allEtatCivil,
+  allSpecialites: specialiteActions.allSpecialites,
+  allTypesCondidatures: typeCondidatureActions.allTypesCondidatures,
+  allPays: paysActions.allPays,
+  allModules:modulesActions.allModules
+};
+export default connect(mapStateToProps,actionCreators)(Register);

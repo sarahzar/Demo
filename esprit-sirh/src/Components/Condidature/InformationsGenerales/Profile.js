@@ -30,7 +30,6 @@ class Profile extends Component {
     super(props);
 
     this.state = {
-      currentUser: AuthService.getUserConneced(),
       changePath: false,
       nom: "",
       prenom: "",
@@ -212,25 +211,25 @@ class Profile extends Component {
         changePath: true
       })
 
-      CondidatService.registerCondidatInfos(this.state.currentUser.login, condidat)
-      .then(
-        resp => {
-          if(resp.data.succesMessage){
-            this.setState({
-              changePath:true,
-              loading:false
-            })
-            // history.push("/parcour");
-          }else{
-            this.setState({
-              message:resp.data.errorMessage,
-              typeMessage: "alert alert-danger",
-              loading:false
-            })
-          }
-        }
+      // CondidatService.registerCondidatInfos(this.state.currentUser.login, condidat)
+      // .then(
+      //   resp => {
+      //     if(resp.data.succesMessage){
+      //       this.setState({
+      //         changePath:true,
+      //         loading:false
+      //       })
+      //       // history.push("/parcour");
+      //     }else{
+      //       this.setState({
+      //         message:resp.data.errorMessage,
+      //         typeMessage: "alert alert-danger",
+      //         loading:false
+      //       })
+      //     }
+      //   }
 
-      );
+      // );
     }
   }
 
@@ -249,20 +248,22 @@ class Profile extends Component {
     const { etablissements } = this.state;
     const { specialites } = this.state;
     const { etatCivils } = this.state;
-  //  const { condidat } = this.state;
+    const { condidat } = this.state;
     let condidatProfile = null;
     if (this.props.location.state.condidatBackToProfile) {
-      condidatProfile = this.props.location.state.condidatBackToProfile
-    } else {
-      condidatProfile = this.state.condidat
-    }
-
+      condidat.listeParcours= this.props.location.state.condidatBackToProfile.listeParcours
+      condidat.condidatExperEnseignt=this.props.location.state.condidatBackToProfile.condidatExperEnseignt
+      condidat.condidatExperProfessionel=this.props.location.state.condidatBackToProfile.condidatExperProfessionel
+      condidat.competences=this.props.location.state.condidatBackToProfile.competences
+      condidat.recherches=this.props.location.state.condidatBackToProfile.recherches
+    } 
+    
     if (changePath) {
       return <Redirect to={{
         pathname: '/parcour',
         state: {
           login: username,
-          condidatFromProfile: condidatProfile
+          condidatFromProfile: condidat
         }
       }} />;
     }

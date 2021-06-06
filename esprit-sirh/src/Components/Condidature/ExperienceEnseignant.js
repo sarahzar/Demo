@@ -28,7 +28,6 @@ class ExperienceEnseignant extends Component {
     super(props);
 
     this.state = {
-      currentUser: AuthService.getUserConneced(),
       loading: false,
       items:[{dateDebut:"",dateFin: "",etablissementId:-1,posteId: -1,moduleId: -1}],    
       etablissements:NomenclaturesService.getSavedEtablissements(),
