@@ -12,15 +12,6 @@ import Header from "../../Layout/Header"
 import { Link,Redirect } from "react-router-dom";
 
 
-const required = value => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
 
 class ExperienceProfessionel extends Component {
   constructor(props) {
@@ -46,7 +37,8 @@ class ExperienceProfessionel extends Component {
       modules: this.props.location.state.modules,
       retour:false,
       condidat:this.props.location.state.condidatFromExpEns,
-      changePath:false
+      changePath:false,
+      ignorer: false,
     };
   }
   componentDidMount() {
@@ -120,6 +112,12 @@ class ExperienceProfessionel extends Component {
       retour: true,
     });
   }
+  ignorerEtape = (e) =>{
+    this.setState({
+      ignorer: true,
+      changePath:true
+    });
+  }
   updateTabElements = (e) => {
     e.preventDefault();
     let elements=this.state.items;
@@ -146,8 +144,15 @@ class ExperienceProfessionel extends Component {
   }
  
   render() {
-    // const condidatRecieved=this.props.location.state.condidat
-    // console.log("condidat recived",condidatRecieved)
+    const required = value => {
+      if (!this.state.ignorer && !value) {
+          return (
+              <div className="alert alert-danger" role="alert">
+                  This field is required!
+              </div>
+          );
+      }
+  };
 
     const { loading } = this.state;
     const { postes } = this.state;
@@ -325,7 +330,7 @@ class ExperienceProfessionel extends Component {
                             </tbody>
                         </table>
                         <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
-             
+                        <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={this.ignorerEtape}>Ignorer cette étape</button>  
             
             </div>
           </div>

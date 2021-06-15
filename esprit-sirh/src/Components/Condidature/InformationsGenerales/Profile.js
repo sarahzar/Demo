@@ -1,34 +1,69 @@
 import React, { Component } from "react";
 import { connect, Provider } from "react-redux";
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import AuthService from "../../../services/Authentification/AuthService";
-import CondidatService from "../../../services/Condidature/CondidatService";
-import UserService from "../../../services/Authentification/UserService";
-import NomenclaturesService from "../../../services/Shared/NomenclaturesService";
-import { history } from '../../../_helpers';
 import Leftside from "../../../Layout/Leftside"
 import Header from "../../../Layout/Header"
 import { Redirect, Link } from 'react-router-dom';
 import InfoPersonelles from "./InfoPersonelles";
 import NiveauAcademique from "./NiveauAcademique";
 import DomaineCompetence from "./DomaineCompetence";
-const required = value => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
+import SimpleReactValidator from 'simple-react-validator';
+import moment from 'moment';
 
 class Profile extends Component {
   constructor(props) {
 
     super(props);
-
+  //validations des champs 
+    SimpleReactValidator.addLocale('fr', {
+      required: 'champ obligatoire.',
+      alpha: 'Le champ :attribute ne peut contenir que des lettres.',
+      numeric: 'Le champ :attribute doit être numérique.',
+      size: 'Le champ :attribute doit être 8 chiffres.',
+      min: 'la valeur du champ :attribute ne peut pas être négative',
+      before: 'Le champ :attribute doit être avant le :date.',
+    });
+    this.validator = new SimpleReactValidator({
+      autoForceUpdate: this,
+      locale: 'fr',
+      validators: {
+        requiredSelect: {  // name the rule
+          message: 'champ obligatoire.',
+          rule: (val) => {
+            return val != -1
+          },
+        },
+        dateAfterToday: {  // name the rule
+          message: "Le champ :attribute doit être inférieure à aujourd'hui.",
+          rule: (val) => {
+           let  momentObject=  moment(val, 'YYYY-MM-DD');
+           let today= moment(new Date(), 'YYYY-MM-DD');
+           let isAfter=momentObject.isAfter(today)
+           let isSame=momentObject.isSame(today,'day')
+           
+         
+            return !isSame && !isAfter 
+          },
+        },
+        telephone: {  // name the rule
+        message: "Le champ :attribute est invalide.",      
+         rule: (val) => {
+            return this.validator.helpers.testRegex(val,/^((\+|00)216)?([7]{1}[0-9]{1}|[5]{1}[0-9]{1}|[2-3]{1}[0-9]{1})[0-9]{6}$/i);
+          },
+        },
+        afterCurrentYear: {  // name the rule
+          message: "valeur supérieure à l'année courrante",      
+           rule: (val) => {
+             let currentYear= new Date().getFullYear()
+              return ! (val > currentYear);
+            },
+          },
+      }
+      
+      
+    });
+   // states et méthodes 
     this.state = {
       changePath: false,
       nom: "",
@@ -63,15 +98,14 @@ class Profile extends Component {
       pays:  this.props.location.state.pays,
       modules: this.props.location.state.modules,
       condidat: {},
-      username: ''
+      username: '',
+      touched:{}
 
 
     };
   }
 
   componentDidMount() {
-    console.log("user login", this.props.location.state.login)
-    console.log("profile liste postes", this.props.location.state.postes)
     let condidatFromPrecedent = this.props.location.state.condidatBackToProfile;
     if (condidatFromPrecedent) {
       this.setState({
@@ -99,15 +133,25 @@ class Profile extends Component {
     }
   }
 
-
   onChangeNom = (e) => {
+
+    let touchedElements = {...this.state.touched}
+    touchedElements['nom'] =true;
+
     this.setState({
       nom: e.target.value,
-    });
+      touched:touchedElements
+    });   
+    
   }
   onChangePreNom = (e) => {
+
+    let touchedElements = {...this.state.touched}
+    touchedElements['prenom'] =true;
+
     this.setState({
       prenom: e.target.value,
+      touched:touchedElements
     });
   }
   onChangeSexeHomme = (e) => {
@@ -121,69 +165,129 @@ class Profile extends Component {
     });
   }
   onChangeEtat = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['etat'] =true;
+
     this.setState({
       etat: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeTelephone = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['tel'] =true;
+
     this.setState({
       telephone: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeCin = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['cin'] =true;
+
     this.setState({
       cin: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeDateNaissance = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['datenaiss'] =true;
+
     this.setState({
       dateNaissance: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeEtatCivil = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['etatCivil'] =true;
+
     this.setState({
       etatCivilId: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeDernierDiplome = (e) => {
+    
+    let touchedElement = {...this.state.touched}
+    touchedElement['diplome'] =true;
+
     this.setState({
       dernierDiplomeId: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeSpecialite = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['specialite'] =true;
+
     this.setState({
       specialiteId: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeEtablissement = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['etablissement'] =true;
+
     this.setState({
       etablissementId: e.target.value,
+      touched:touchedElement
     });
   }
   onChangePosteActuel = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['poste'] =true;
+
     this.setState({
       posteActuelId: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeDomaine = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['domaine'] =true;
+
     this.setState({
       domaineId: e.target.value,
+      touched:touchedElement
     });
   }
   onChangTypeCondidature = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['typeCondidat'] =true;
+
     this.setState({
       typeCondidatureId: e.target.value,
+      touched:touchedElement
     });
   }
   onChangeAnneeObtention = (e) => {
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['anneObt'] =true;
+
     this.setState({
       anneeObtention: e.target.value,
+      touched:touchedElement
     });
   }
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-    this.form.validateAll();
-    if (this.checkBtn.context._errors.length === 0) {
+    // this.form.validateAll();
+    if (this.validator.allValid()) {
 
       const condidat = {
         nom: this.state.nom,
@@ -213,6 +317,8 @@ class Profile extends Component {
         condidat: condidat,
         changePath: true
       })
+    }else{
+      this.validator.showMessages();
     }
   }
 
@@ -316,7 +422,8 @@ class Profile extends Component {
                       modifEtatCivil={this.onChangeEtatCivil}
                       modifTel={this.onChangeTelephone}
                       etats={etatCivils}
-                      required={required}
+                      validator ={this.validator}
+                      touched ={this.state.touched}
                     />
 
                     <NiveauAcademique
@@ -328,7 +435,8 @@ class Profile extends Component {
                       diplomes={diplomes}
                       etablissements={etablissements}
                       specialites={specialites}
-                      required={required}
+                      validator ={this.validator}
+                      touched ={this.state.touched}
                     />
 
                     <DomaineCompetence
@@ -339,7 +447,8 @@ class Profile extends Component {
                       postes={postes}
                       domaines={domaines}
                       types={types}
-                      required={required}
+                      validator ={this.validator}
+                      touched ={this.state.touched}
                     />
 
 

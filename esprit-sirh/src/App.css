@@ -51,7 +51,7 @@ button {
   background-size: cover!important;
 }
 .div-info-height-lg{
-  /* min-height: 408px; */
+  min-height: 27rem!important;
 }
 .div-info-height-md{
   min-height: 337px;
@@ -89,3 +89,9 @@ button {
 .page-link:focus {
   box-shadow: 0 0 0 0.2rem #eadddb!important;
 }
+
+.control-label:after {
+  content:"*";
+  color:#dc3545;
+}
+

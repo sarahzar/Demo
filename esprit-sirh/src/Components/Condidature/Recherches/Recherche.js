@@ -10,15 +10,7 @@ import DetailsRecherche from "../Recherches/DetailsRecherche"
 import { Link, Redirect } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
+
 
 class Recherche extends Component {
     constructor(props) {
@@ -42,6 +34,7 @@ class Recherche extends Component {
             specialites: this.props.location.state.specialites,
             pays: this.props.location.state.pays,
             modules: this.props.location.state.modules,
+            ignorer: false,
         };
     }
 
@@ -120,6 +113,12 @@ class Recherche extends Component {
             retour: true,
         });
     }
+    ignorerEtape = (e) =>{
+        this.setState({
+          ignorer: true,
+          changePath:true
+        });
+      }
     updateTabElements = (e) =>{
         e.preventDefault()
         let elements = [...this.state.savedItems]
@@ -157,7 +156,15 @@ class Recherche extends Component {
       }
 
     render() {
-        
+        const required = value => {
+            if (!this.state.ignorer && !value) {
+                return (
+                    <div className="alert alert-danger" role="alert">
+                        This field is required!
+                    </div>
+                );
+            }
+        };
         const { loading } = this.state;
         const { changePath } = this.state;
         const { condidat } = this.state;
@@ -270,6 +277,9 @@ class Recherche extends Component {
                                     {/* )} */}
                                     {this.state.activePage ==1 && (
                                     <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
+                                    )}
+                                     {this.state.activePage ==1 && (
+                                     <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={this.ignorerEtape}>Ignorer cette étape</button>  
                                     )}
                                 </div>
                                 <div className="col-7 p-0">

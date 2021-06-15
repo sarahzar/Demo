@@ -9,15 +9,7 @@ import Header from "../../Layout/Header"
 import { Link, Redirect } from "react-router-dom";
 
 
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
+
 
 class Competence extends Component {
     constructor(props) {
@@ -40,6 +32,7 @@ class Competence extends Component {
             specialites: this.props.location.state.specialites,
             pays: this.props.location.state.pays,
             modules: this.props.location.state.modules,
+            ignorer: false,
         };
     }
 
@@ -83,6 +76,12 @@ class Competence extends Component {
             retour: true,
         });
     }
+    ignorerEtape = (e) =>{
+        this.setState({
+          ignorer: true,
+          changePath:true
+        });
+      }
     updateTabElements = (e) => {
         e.preventDefault();
         let elements = this.state.items;
@@ -109,9 +108,15 @@ class Competence extends Component {
     }
 
     render() {
-        // const condidatRecieved=this.props.location.state.condidat
-        // console.log("condidat recived",condidatRecieved)
-
+        const required = value => {
+            if (!this.state.ignorer && !value) {
+                return (
+                    <div className="alert alert-danger" role="alert">
+                        This field is required!
+                    </div>
+                );
+            }
+        };
        
         const { loading } = this.state;
         const { items } = this.state;
@@ -252,7 +257,7 @@ class Competence extends Component {
                                             </tbody>
                                         </table>
                                         <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
-
+                                        <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={this.ignorerEtape}>Ignorer cette étape</button>  
 
                                     </div>
                                 </div>

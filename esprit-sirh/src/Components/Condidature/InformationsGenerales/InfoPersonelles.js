@@ -1,6 +1,7 @@
 
 import React, { Component } from "react";
 import Input from "react-validation/build/input";
+
 class InfoPersonelles extends React.Component{
 
     render(){
@@ -8,153 +9,162 @@ class InfoPersonelles extends React.Component{
         return(
   
  <div>
-  <div className="card border-left-danger shadow h-40 py-2 col-5 div-info div-info-height-lg">
+  <div className="card border-left-danger shadow h-40 col-5 div-info div-info-height-lg">
       <div className="card-body">
-        <h4 className="small font-weight-bold">Nom </h4>
+
+         {/* nom */} 
         <div>
           <div className="form-group">
-
-            <Input
+          <label className="small font-weight-bold control-label">Nom </label>
+            <input
               type="text"
-              className="form-control form-control-sm"
               name="nom"
               value={this.props.infoPersonelle.nom}
               onChange={this.props.modfierNom}
-              validations={[this.props.required]}
+              onBlur={() => this.props.validator.showMessageFor('nom')}
+              className={this.props.touched  && this.props.touched['nom'] && !this.props.infoPersonelle.nom ? "form-control form-control-sm is-invalid" : "form-control form-control-sm" }
             />
+             {/* msg erreur*/}
+             {this.props.validator.message('nom', this.props.infoPersonelle.nom, 'required|alpha_space', { className: 'text-danger' })}    
           </div>
         </div>
-        <h4 className="small font-weight-bold">Prenom </h4>
+
+         {/* prenom*/}
         <div>
           <div className="form-group">
-
-            <Input
+          <label className="small font-weight-bold control-label">Prenom </label>
+            <input
               type="text"
-              className="form-control form-control-sm"
+              className={this.props.touched  && this.props.touched['prenom'] && !this.props.infoPersonelle.prenom ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
               name="prenom"
               value={this.props.infoPersonelle.prenom}
               onChange={this.props.modifPrenom}
-              validations={[this.props.required]}
+              onBlur={() => this.props.validator.showMessageFor('prenom')}
             />
+             {/* msg erreur*/}
+             {this.props.validator.message('prenom', this.props.infoPersonelle.prenom, 'required|alpha_space', { className: 'text-danger' })}    
           </div>
         </div>
-        <h4 className="small font-weight-bold">CIN</h4>
+          {/* cin*/}
         <div>
           <div className="form-group">
-
-            <Input
+          <label className="small font-weight-bold control-label">CIN </label>
+            <input
               type="text"
-              className="form-control form-control-sm"
+              className={this.props.touched  && this.props.touched['cin'] && (!this.props.infoPersonelle.cin || isNaN(this.props.infoPersonelle.cin) || this.props.infoPersonelle.cin.length > 10 ) ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
               name="cin"
               value={this.props.infoPersonelle.cin}
               onChange={this.props.modifCin}
-              validations={[this.props.required]}
+              onBlur={() => this.props.validator.showMessageFor('cin')}
             />
+             {/* msg erreur*/}
+             {this.props.validator.message('cin', this.props.infoPersonelle.cin, 'required|numeric|min:0,num|size:8', { className: 'text-danger' })}    
           </div>
         </div>
-        <h4 className="small font-weight-bold">Date de naissance</h4>
+   {/* date naissance*/}
         <div className="col-md-6 pl-0">
-          <div className="form-group">
-
-            <Input
+          <div className="form-group mb-0">
+          <label className="small font-weight-bold control-label">Date de naissance </label>      
+            <input
               type="date"
-              className="form-control form-control-sm"
+              className={this.props.touched  && this.props.touched['datenaiss'] && (!this.props.infoPersonelle.dateNaissance || new Date(this.props.infoPersonelle.dateNaissance) >= new Date()) ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
               name="dateNaissance"
               value={this.props.infoPersonelle.dateNaissance}
               onChange={this.props.modifDateNaissance}
-              validations={[this.props.required]}
+              onBlur={() => this.props.validator.showMessageFor('dateNaissance')}
             />
-          </div>
+            
+          </div>       
         </div>
-      
-
+       {/* msg erreur*/}
+       <div className="col-md-12 pl-0">
+       {this.props.validator.message('dateNaissance', this.props.infoPersonelle.dateNaissance , 'required|dateAfterToday', { className: 'text-danger' })}    
+       </div>
       </div>
     </div>
    
 
   
-   <div className="card border-left-danger shadow h-40 py-2 col-5 div-info-height-lg">
+   <div className="card border-left-danger shadow h-40 col-5 div-info-height-lg">
      <div className="card-body">
 
-
-       <h4 className="small font-weight-bold">Sexe</h4>
-       <div>
-         <div className="row">
-           <div className="col-sm-5">
+  {/* sexe*/}
+       <label className="small font-weight-bold control-label">Sexe </label>  
+       <div class="form-group">     
+         <div className="row">  
+           <div className="col-sm-8">
              <div className="form-check">
-               <Input
+               <input
                  type="radio"
                  className="form-check-input"
                  name="sexe"
                  value={this.props.infoPersonelle.sexe}
                  checked={this.props.infoPersonelle.sexe === "homme"}
                  onChange={this.props.modifSexeHomme}
-                 validations={[this.props.required]}
+                 onBlur={() => this.props.validator.showMessageFor('sexe')}
                /> <label className="form-check-label">
                  Homme
              </label>
              </div>
 
              <div className="form-check">
-               <Input
+               <input
                  type="radio"
                  className="form-check-input"
                  name="sexe"
                  value={this.props.infoPersonelle.sexe}
                  checked={this.props.infoPersonelle.sexe === "femme"}
                  onChange={this.props.modifSexeFemme}
-                 validations={[this.props.required]}
+                 onBlur={() => this.props.validator.showMessageFor('sexe')}
                />
                <label className="form-check-label">
                  Femme
               </label>
              </div>
+             {this.props.validator.message('sexe', this.props.infoPersonelle.sexe , 'required', { className: 'text-danger' })}    
            </div>
+            {/* msg erreur*/}
+          
          </div>
        </div>
-
-       <h4 className="small font-weight-bold">Etat civile</h4>
+       {/* ETAT CIVIL */}
        <div>
          <div className="form-group">
-           <select className="form-control form-control-sm" id="sel1" onChange={this.props.modifEtatCivil} value={this.props.infoPersonelle.etatCivilId}>
+         <label className="small font-weight-bold control-label">Etat civile </label>      
+           <select className={this.props.touched  && this.props.touched['etatCivil'] && this.props.infoPersonelle.etatCivilId == -1 ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+           id="sel1" onChange={this.props.modifEtatCivil} value={this.props.infoPersonelle.etatCivilId} onBlur={() => this.props.validator.showMessageFor('Etat civile')}>
              <option value="-1" key="defaultetat"></option>
              {this.props.etats.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
            </select>
+                {/* msg erreur */}
+           {this.props.validator.message('Etat civile', this.props.infoPersonelle.etatCivilId, 'requiredSelect', { className: 'text-danger' })}
+       
+       </div>    
        </div>
-       </div>
-       <h4 className="small font-weight-bold">Téléphone </h4>
+      {/* Téléphone */}
        <div>
          <div className="form-group">
-
-           <Input
+         <label className="small font-weight-bold control-label">Téléphone </label>      
+           <input
              type="text"
-             className="form-control form-control-sm"
+             className={this.props.touched  && this.props.touched['tel'] && (!this.props.infoPersonelle.telephone || !this.props.validator.helpers.testRegex(this.props.infoPersonelle.telephone,/^((\+|00)216)?([7]{1}[0-9]{1}|[5]{1}[0-9]{1}|[2-3]{1}[0-9]{1})[0-9]{6}$/i)) ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
              name="telephone"
              value={this.props.infoPersonelle.telephone}
              onChange={this.props.modifTel}
-             validations={[this.props.required]}
+             onBlur={() => this.props.validator.showMessageFor('téléphone')}
+             placeholder='exemple: 50515253/+21650515253'
            />
+             {/* msg erreur */}
+             {this.props.validator.message('téléphone', this.props.infoPersonelle.telephone, 'required|telephone', { className: 'text-danger' })}
+       
          </div>
        </div>
-       {/* <h4 className="small font-weight-bold">Adresse mail </h4>
+     
+      
        <div>
          <div className="form-group">
-
-           <Input
-             type="text"
-             className="form-control form-control-sm"
-             name="telephone"
-             // value={this.props.infoPersonelle.telephone}
-             // onChange={this.onChangeTelephone}
-             // validations={[required]}
-           />
-         </div>
-       </div> */}
-       <h4 className="small font-weight-bold">Adresse </h4>
-       <div>
-         <div className="form-group">
-
-           <Input
+         <label className="small font-weight-bold control-label">Adresse  </label>  
+           <input
              type="text"
              className="form-control form-control-sm"
              name="nom"

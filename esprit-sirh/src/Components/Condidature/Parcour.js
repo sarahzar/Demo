@@ -1,31 +1,59 @@
 import React, { Component } from "react";
 import { connect, Provider } from "react-redux";
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import AuthService from "../../services/Authentification/AuthService";
-import CondidatService from "../../services/Condidature/CondidatService";
-import UserService from "../../services/Authentification/UserService";
-import NomenclaturesService from  "../../services/Shared/NomenclaturesService";
 import Leftside from "../../Layout/Leftside"
 import Header from "../../Layout/Header"
 import { Link,Redirect } from "react-router-dom";
+import SimpleReactValidator from 'simple-react-validator';
+import ReactTooltip from "react-tooltip";
 
-
-const required = value => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
+import Fab from '@material-ui/core/Fab';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { withStyles } from "@material-ui/core/styles";
+const styles = theme => ({
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(-1),
+    right: theme.spacing(-1),
+    "&:focus": {
+      outline: "none"
+    }
   }
-};
-
+});
 class Parcour extends Component {
   constructor(props) {
 
     super(props);
+
+    //validations des champs 
+    SimpleReactValidator.addLocale('fr', {
+      required: 'champ obligatoire.',
+      numeric: 'Le champ :attribute doit être numérique.',
+    });
+    this.validator = new SimpleReactValidator({
+      autoForceUpdate: this,
+      locale: 'fr',
+      validators: {
+        requiredSelect: {  // name the rule
+          message: 'champ obligatoire.',
+          rule: (val) => {
+            return val != -1
+          },
+        },
+
+        afterCurrentYear: {  // name the rule
+          message: "valeur supérieure à l'année courrante",      
+           rule: (val) => {
+             let currentYear= new Date().getFullYear()
+              return ! (val > currentYear);
+            },
+          },
+      }
+      
+      
+    });
       
     this.state = {
       loading: false,
@@ -50,6 +78,8 @@ class Parcour extends Component {
       retour:false,
       condidat:this.props.location.state.condidatFromProfile,
       changePath:false,
+      touched:{},
+      message:""
     };
   }
   componentDidMount() {
@@ -71,49 +101,88 @@ class Parcour extends Component {
     }
   }
 
+  
   onChangeSpecialite = (e,index) =>{
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['spetialite'+index] =true;
+
     let elements=this.state.items;
     elements[index].specialiteId=e.target.value;
     this.setState({
         items: elements,
+        touched: touchedElement
       });
+    this.validator.showMessageFor('spetialite'+index)
   }
   onChangeEtablissement = (e,index) =>{
+    
+    let touchedElement = {...this.state.touched}
+    touchedElement['etablissement'+index] =true;
+
     let elements=this.state.items;
     elements[index].etablissementId=e.target.value;
     this.setState({
         items: elements,
+        touched: touchedElement
       });
+    this.validator.showMessageFor('etablissement'+index)
   }
   
   onChangeAnneeObtention = (e,index) =>{
+
+    let touchedElement = {...this.state.touched}
+    touchedElement['annee'+index] =true;
+
     let elements=this.state.items;
-    elements[index].anneeObtention=Number(e.target.value);
+    elements[index].anneeObtention=e.target.value;
     this.setState({
         items: elements,
+        touched:touchedElement
       });
+    this.validator.showMessageFor('annee'+index)
+   
   }
+
   onChangeDiplome = (e,index) =>{
+    
+    let touchedElement = {...this.state.touched}
+    touchedElement['diplome'+index] =true;
+
     let elements=this.state.items;
     elements[index].diplomeId=e.target.value;
     this.setState({
         items: elements,
+        touched:touchedElement
       });
+    this.validator.showMessageFor('diplome'+index)  
   }
 
   onChangeMention = (e,index) =>{
+     
+    let touchedElement = {...this.state.touched}
+    touchedElement['mention'+index] =true;
+
     let elements=this.state.items;
     elements[index].mention=e.target.value;
     this.setState({
         items: elements,
+        touched:touchedElement
       });
+    this.validator.showMessageFor('mention'+index)   
   }
   onChangePays = (e,index) =>{
+     
+    let touchedElement = {...this.state.touched}
+    touchedElement['pays'+index] =true;
+
     let elements=this.state.items;
     elements[index].paysId=e.target.value;
     this.setState({
         items: elements,
+        touched:touchedElement
       });
+    this.validator.showMessageFor('pays'+index)    
   }
 
   goBack = (e) => {
@@ -122,21 +191,26 @@ class Parcour extends Component {
       retour: true,
     });
   }
-  updateTabElements = (e) =>{
+
+  updateTabElements = (e) => {
     e.preventDefault();
-    // let updatedIndex= this.state.index;
-    let elements=this.state.items;
-    // updatedIndex++;
-    elements.push({anneeObtention:"",diplomeId: -1,etablissementId:-1,specialiteId: -1,mention: -1,paysId: -1});
+    let elements = this.state.items;
+    elements.push({ anneeObtention: "", diplomeId: -1, etablissementId: -1, specialiteId: -1, mention: -1, paysId: -1 });
     this.setState({
-        // index: updatedIndex,
-        items: elements
-      });
+      items: elements
+    });
+    this.markUsUntouched()
   }
+
+  deleteTabElement(){
+
+  }
+
   handleSubmitCondidat =(e) => {
     e.preventDefault();
-    this.form.validateAll();
-    if (this.checkBtn.context._errors.length === 0) {
+    this.addMessages();
+    
+    if (this.validator.allValid()) {
      
       let condidatToSave=this.state.condidat
       condidatToSave.listeParcours=this.state.items
@@ -147,10 +221,45 @@ class Parcour extends Component {
       })
       
     }
+    else{
+      
+      this.markUsTouched(); 
+    this.validator.showMessages();
+    }
+  }
+ 
+  addMessages() {
+    this.state.items.forEach((elem,i) => {
+      this.validator.message('annee'+i, elem.anneeObtention, 'required|afterCurrentYear');
+      this.validator.message('diplome'+i, elem.diplomeId, 'requiredSelect');
+      this.validator.message('etablissement'+i, elem.etablissementId, 'requiredSelect');
+      this.validator.message('spetialite'+i, elem.specialiteId, 'requiredSelect');
+      this.validator.message('mention'+i, elem.mention, 'requiredSelect');
+      this.validator.message('pays'+i, elem.paysId, 'requiredSelect');
+    });
+  }
+
+  markUsTouched() {
+    this.state.items.forEach((item, i) => {
+      this.state.touched['annee' + i] = true;
+      this.state.touched['diplome' + i] = true;
+      this.state.touched['etablissement' + i] = true;
+      this.state.touched['spetialite' + i] = true;
+      this.state.touched['mention' + i] = true;
+      this.state.touched['pays' + i] = true;
+    });
+  }
+  markUsUntouched() {
+    this.state.touched['annee'+this.state.items.length - 1] = false
+    this.state.touched['diplome'+this.state.items.length - 1] = false
+    this.state.touched['etablissement'+this.state.items.length - 1] = false
+    this.state.touched['spetialite'+this.state.items.length - 1] = false
+    this.state.touched['mention'+this.state.items.length - 1] = false
+    this.state.touched['pays'+this.state.items.length - 1] = false
   }
  
   render() {
-
+    const { classes } = this.props;
     const { loading } = this.state;
     const { postes } = this.state;
     const { diplomes } = this.state;
@@ -258,73 +367,170 @@ class Parcour extends Component {
           { /* Content Row */}
           <div className="row">
             <div className="col-lg-12 mb-4 ">
-            
-                        <table className="table table-striped"  >
-                            <thead>
-                                
-                                <tr className="d-flex">
-                                    <th className="col-1">Année</th>
-                                    <th className="col-2">Nom du diplôme</th>
-                                    <th className="col-3">Etablissement</th>
-                                    <th className="col-2">Spécialité</th>
-                                    <th className="col-2">Mention</th>
-                                    <th className="col-2">Pays</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                           { items.map ((item,index) => 
-                                <tr key={index} className="d-flex">
-                                    <td className="col-1"> <div className="form-group">
+           
+                    <table className="table table-striped"  >
+                      <thead>
 
-                                        <Input
-                                            type="text"
-                                            className="form-control form-control-sm"
-                                            name="telephone"
-                                            value={item.anneeObtention}
-                                            onBlur={(e) => {this.onChangeAnneeObtention(e,index)}}
-                                            validations={[required]}
-                                        />
-                                    </div></td>
-                                    <td  className="col-2">
-                                        <div className="form-group">
-                                            <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeDiplome(e,index)}} value={item.diplomeId}>
-                                                <option value="-1" key="defaultdiplome"></option>
-                                                {diplomes.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td  className="col-3"><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeEtablissement(e,index)}} value={item.etablissementId}>
-                                            <option value="-1" key="defaultetablissement"></option>
-                                            {etablissements.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
-                                        </select>
-                                    </div></td>
-                                    <td  className="col-2"> <div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e)=>{this.onChangeSpecialite(e,index)}}  value={item.specialiteId}>
-                                            <option value="-1" key="defaultspecialite"></option>
-                                            {specialites.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
-                                        </select>
-                                    </div></td>
-                                    <td className="col-2"><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangeMention(e,index)}} value={item.mention}>
-                                            <option value="-1" key="defaultspecialite"></option>
-                                            <option value="1" key="passable">Passable</option>
-                                            <option value="2" key="bien">Bien</option>
-                                            <option value="3" key="tbien">Très bien</option>
-                                        </select>
-                                    </div></td>
-                                    <td  className="col-2"><div className="form-group">
-                                        <select className="form-control form-control-sm" id="sel1" onChange={(e) => {this.onChangePays(e,index)}} value={item.paysId}>
-                                            <option value="-1" key="defaultpays"></option>
-                                            {pays.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
-                                        </select>
-                                    </div></td>
-                                </tr>
-                            )}
-                            </tbody>
-                        </table>
-                        <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
-            
+                        <tr className="d-flex">
+                          <th className="col-1 control-label">Année </th>
+                          <th className="col-2 control-label">Nom du diplôme </th>
+                          <th className="col-3 control-label">Etablissement </th>
+                          <th className="col-2 control-label">Spécialité </th>
+                          <th className="col-2 control-label">Mention </th>
+                          <th className="col-2 control-label">Pays </th>
+                        </tr>
+                      </thead>
+                      {items.map((item, index) =>
+                      <tbody>
+                       
+                          <tr key={index} className="d-flex">
+                            {/* annee obtention */}
+                            <td className="col-1"> <div className="form-group">
+
+                              <input
+                                type="text"
+                                name="annee"
+                                value={item.anneeObtention}
+                                onChange={(e) => { this.onChangeAnneeObtention(e, index) }}
+                                className={this.state.touched && this.state.touched['annee' + index] && (!item.anneeObtention || item.anneeObtention > new Date().getFullYear()) ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                                data-tip
+                                data-for={"anneeTip"+index}
+                              />
+                                
+                              {/* msg erreur */}
+                              {this.state.touched && this.state.touched['annee' + index] && (!item.anneeObtention || item.anneeObtention > new Date().getFullYear()) && (
+                                <ReactTooltip id={"anneeTip"+index} place="top" effect="solid">
+                                  {this.validator.message('annee' + index, item.anneeObtention, 'required|afterCurrentYear')}
+                                </ReactTooltip>
+                             )} 
+
+                            </div>
+                            </td>
+                            {/* diplome */}
+                            <td className="col-2">
+                              <div className="form-group">
+                                <select
+                                  className={this.state.touched && this.state.touched['diplome' + index] && item.diplomeId == -1 ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                                  id="sel1"
+                                  onChange={(e) => { this.onChangeDiplome(e, index) }}
+                                  value={item.diplomeId}
+                                  data-tip
+                                  data-for={"diplomeTip"+index}>
+                                  <option value="-1" key="defaultdiplome"></option>
+                                  {diplomes.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
+                                </select>
+                               
+                                {/* msg erreur */}
+                                {this.state.touched && this.state.touched['diplome' + index] && item.diplomeId == -1  && (
+                                  <ReactTooltip id={"diplomeTip"+index} place="top" effect="solid">
+                                    {this.validator.message('diplome' + index, item.diplomeId, 'requiredSelect')}
+                                  </ReactTooltip>
+                                )}
+                              </div>
+                            </td>
+                            {/* etablissement */}
+                            <td className="col-3"><div className="form-group">
+                              <select
+                                className={this.state.touched && this.state.touched['etablissement' + index] && item.etablissementId == -1 ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                                id="sel1"
+                                onChange={(e) => { this.onChangeEtablissement(e, index) }}
+                                value={item.etablissementId}
+                                data-tip
+                                data-for={"etablissementTip"+index}>
+                                <option value="-1" key="defaultetablissement"></option>
+                                {etablissements.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
+                              </select>
+
+                              {/* msg erreur */}
+                              {this.state.touched && this.state.touched['etablissement' + index] && item.etablissementId == -1  && (
+                                <ReactTooltip id={"etablissementTip"+index} place="top" effect="solid">
+                                  {this.validator.message('etablissement' + index, item.etablissementId, 'requiredSelect')}
+                                </ReactTooltip>
+                              )}
+                            </div>
+                            </td>
+                            {/* spetialite */}
+                            <td className="col-2"> <div className="form-group">
+                              <select
+                                className={this.state.touched && this.state.touched['spetialite' + index] && item.specialiteId == -1 ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                                id="sel1"
+                                onChange={(e) => { this.onChangeSpecialite(e, index) }}
+                                value={item.specialiteId}
+                                data-tip
+                                data-for={"spetialiteTip"+index}>
+                                <option value="-1" key="defaultspecialite"></option>
+                                {specialites.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
+                              </select>
+
+                              {/* msg erreur */}
+                              {this.state.touched && this.state.touched['spetialite' + index] && item.specialiteId == -1 && (
+                                <ReactTooltip id={"spetialiteTip"+index} place="top" effect="solid">
+                                  {this.validator.message('spetialite' + index, item.specialiteId, 'requiredSelect')}
+                                </ReactTooltip>
+                              )}
+                            </div>
+                            </td>
+                            {/* mention */}
+                            <td className="col-2"><div className="form-group">
+                              <select
+                                className={this.state.touched && this.state.touched['mention' + index] && item.mention == -1 ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                                id="sel1"
+                                onChange={(e) => { this.onChangeMention(e, index) }}
+                                value={item.mention}
+                                data-tip
+                                data-for={"mentionTip"+index}
+                              >
+                                <option value="-1" key="defaultspecialite"></option>
+                                <option value="1" key="passable">Passable</option>
+                                <option value="2" key="bien">Bien</option>
+                                <option value="3" key="tbien">Très bien</option>
+                              </select>
+
+                              {/* msg erreur */}
+                              {this.state.touched && this.state.touched['mention' + index] && item.mention == -1  && (
+                                <ReactTooltip id={"mentionTip"+index} place="top" effect="solid">
+                                  {this.validator.message('mention' + index, item.mention, 'requiredSelect')}
+                                </ReactTooltip>
+                              )}
+                            </div>
+                            </td>
+                            {/* pays */}
+                            <td className="col-2"><div className="form-group">
+                              <select
+                                className={this.state.touched && this.state.touched['pays' + index] && item.paysId == -1 ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                                id="sel1"
+                                onChange={(e) => { this.onChangePays(e, index) }}
+                                value={item.paysId}
+                                data-tip
+                                data-for={"paysTip"+index}>
+                                <option value="-1" key="defaultpays"></option>
+                                {pays.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
+                              </select>
+
+                              {/* msg erreur */}
+                              {this.state.touched && this.state.touched['pays' + index] && item.paysId == -1 && (
+                                <ReactTooltip id={"paysTip"+index} place="top" effect="solid">
+                                  {this.validator.message('pays' + index, item.paysId, 'requiredSelect')}
+                                </ReactTooltip>
+                              )}
+                            </div>
+                            <Fab color="secondary" aria-label="delete" size="small" className={classes.fab} style={{zIndex:100}}> 
+                            <DeleteIcon />
+                          </Fab>
+                            </td>
+                          </tr>
+       
+                          {/* <Fab color="secondary" aria-label="delete" size="small" className={classes.fab}> 
+                            <DeleteIcon />
+                          </Fab> */}
+                   
+
+                      </tbody>
+                      )}
+                    </table>
+
+                        <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"   onClick={this.updateTabElements}>+Ajouter</button>
+                       
             </div>
           </div>
   
@@ -354,4 +560,4 @@ function mapStateToProps(state) {
   return { diplomes,etablissements,specialites};
 }
 
-export default connect(mapStateToProps)(Parcour);   
+export default withStyles(styles, { withTheme: true })(connect(mapStateToProps)(Parcour));   
