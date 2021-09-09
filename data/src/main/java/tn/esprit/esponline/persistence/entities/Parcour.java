@@ -2,6 +2,8 @@ package tn.esprit.esponline.persistence.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -20,9 +22,11 @@ public class Parcour {
     @ManyToOne
     private Specialite specialite;
     @ManyToOne
-    private Condidat condidat;
-    @ManyToOne
     private Pays pays;
+    @JsonIgnore
+    @ManyToOne
+    private Condidat condidat;
+
     public Parcour() {
     }
 
@@ -90,5 +94,13 @@ public class Parcour {
 
     public void setCondidat(Condidat condidat) {
         this.condidat = condidat;
+    }
+
+    public Pays getPays() {
+        return pays;
+    }
+
+    public void setPays(Pays pays) {
+        this.pays = pays;
     }
 }

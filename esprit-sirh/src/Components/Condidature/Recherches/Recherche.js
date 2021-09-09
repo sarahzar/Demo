@@ -9,7 +9,9 @@ import Header from "../../../Layout/Header"
 import DetailsRecherche from "../Recherches/DetailsRecherche"
 import { Link, Redirect } from "react-router-dom";
 import Pagination from "react-js-pagination";
-
+import { ignorerEtapeActions } from '../../../_actions/Shared/ignorer.etape.actions';
+import { condidatActions } from "../../../_actions/Shared/condidat.actions";
+import RechercheLecture from "./RechercheLecture";
 
 
 class Recherche extends Component {
@@ -19,48 +21,64 @@ class Recherche extends Component {
         this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this)
         this.state = {
             loading: false,
-            savedItems:[{ thematiqueDesciption: "",chapitreLivre:0,articleJornaux:0,articleConference:0,pfe:0,mastere:0,these:0}],
+            savedItems: [{ thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }],
             retour: false,
-            condidat: this.props.location.state.condidatFromCompetence,
+            condidat: null,
             changePath: false,
             activePage: 1,
-            itemsCount:1,
-            etatCivils: this.props.location.state.etatCivils,
-            postes: this.props.location.state.postes,
-            diplomes: this.props.location.state.diplomes,
-            domaines: this.props.location.state.domaines,
-            types: this.props.location.state.types,
-            etablissements: this.props.location.state.etablissements,
-            specialites: this.props.location.state.specialites,
-            pays: this.props.location.state.pays,
-            modules: this.props.location.state.modules,
+            itemsCount: 1,
             ignorer: false,
         };
     }
 
     componentDidMount() {
-        let condidatFromPrecedent = null
-        if(this.props.location.state.condidatBackToRecherche){
-          condidatFromPrecedent = this.props.location.state.condidatBackToRecherche
-        }else{
-          condidatFromPrecedent = this.props.location.state.condidatFromCompetence
-        }
-        if (condidatFromPrecedent.recherches.length > 0) {
+
+        const { condidatReducer } = this.props
+        
+        if (condidatReducer) {
           this.setState({
-            savedItems: condidatFromPrecedent.recherches,
-            condidat:condidatFromPrecedent,
-            itemsCount:condidatFromPrecedent.recherches.length  
+            condidat: condidatReducer,
           });
-        }else{
-          this.setState({
-            condidat:condidatFromPrecedent
-          });
+
+            if (condidatReducer.recherches && condidatReducer.recherches.length > 0) {
+
+                const defaultElem = { thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
+                if (!condidatReducer.aConfirmer && JSON.stringify(defaultElem) != JSON.stringify(condidatReducer.recherches[0])) {
+                    condidatReducer.recherches.unshift({ thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 })
+                }
+
+                let count = condidatReducer.recherches.length;
+                this.setState({
+                    savedItems: condidatReducer.recherches,
+                    itemsCount: count
+                });
+            }
         }
+    }
+
+    componentWillUnmount() {
+
+        if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
+
+        let elements = [...this.state.savedItems]
+        elements = this.initListeExp(elements)
+
+        if (localStorage.getItem('persist:root')) {
+            this.props.condidatReducer.recherches = [...this.state.savedItems];
+            this.props.setCondidat(this.props.condidatReducer)
+            if (elements.length > 0) {
+                this.props.ignorerRecherche(false);
+            } else {
+                this.props.ignorerRecherche(true);
+            }
+        }
+    }
+
       }
 
-    onChangeThematiqueDesciption= (e,index) => {
+    onChangeThematiqueDesciption = (e, index) => {
         let elements = this.state.savedItems;
-        elements[index].thematiqueDesciption = e.target.value;
+        elements[index].thematique.description = e.target.value;
         this.setState({
             savedItems: elements,
         });
@@ -113,34 +131,65 @@ class Recherche extends Component {
             retour: true,
         });
     }
-    ignorerEtape = (e) =>{
+    ignorerEtape = (e) => {
+
         this.setState({
-          ignorer: true,
-          changePath:true
+            ignorer: true,
+            changePath: true,
         });
+
+        this.props.ignorerRecherche(true)
+    }
+    deleteTabElement = (e, index) => {
+        //declaration variables copies du state
+        const recherches = this.state.savedItems.slice()
+       
+        //spprimer l'élément sélectionner
+        recherches.splice(index, 1)
+        
+        let currentPage = this.state.activePage - 1
+
+        //mise à jour du state
+        this.setState({
+          savedItems: recherches,
+          itemsCount: recherches.length,
+          activePage: currentPage
+        })
       }
-    updateTabElements = (e) =>{
+    
+    updateTabElements = (e) => {
         e.preventDefault()
         let elements = [...this.state.savedItems]
-        // this.state.items.forEach(i =>{
-        //     elements.push(i)
-        // })
-        elements.unshift({ thematiqueDesciption: "",chapitreLivre:0,articleJornaux:0,articleConference:0,pfe:0,mastere:0,these:0})
+
+        elements.unshift({ thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 })
         this.setState({
             savedItems: elements,
-            itemsCount:elements.length  
+            itemsCount: elements.length
         });
-       
+
     }
+
+    initListeExp(liste) {
+
+        const defaultElem = { thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
+        const firstElem = this.state.savedItems[0];
+    
+        if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
+          liste = this.state.savedItems.slice();
+          liste.splice(0,1)
+        }
+        return liste;
+      }
 
     handleSubmitCondidat = (e) => {
         e.preventDefault();
+       if(!this.props.condidatReducer.aConfirmer){
         this.form.validateAll();
         if (this.checkBtn.context._errors.length === 0) {
             let condidatToSave = this.state.condidat
-            let recherches= this.state.savedItems
-            recherches.shift()     
-            condidatToSave.recherches =  recherches
+            let recherches = this.state.savedItems
+            recherches.shift()
+            condidatToSave.recherches = recherches
 
             this.setState({
                 loading: true,
@@ -149,83 +198,43 @@ class Recherche extends Component {
             })
 
         }
+    }else{
+        this.setState({
+            loading: true,
+            changePath: true,
+        })
+
     }
+    }
+
     handlePageChange(pageNumber) {
         console.log(`active page is ${pageNumber}`);
-        this.setState({activePage: pageNumber});
-      }
+        this.setState({ activePage: pageNumber });
+    }
 
     render() {
-        const required = value => {
-            if (!this.state.ignorer && !value) {
-                return (
-                    <div className="alert alert-danger" role="alert">
-                        This field is required!
-                    </div>
-                );
-            }
-        };
+        
         const { loading } = this.state;
-        const { changePath } = this.state;
-        const { condidat } = this.state;
-        const {savedItems} =this.state;
-        const { postes } = this.state;
-        const { diplomes } = this.state;
-        const { domaines } = this.state;
-        const { types } = this.state;
-        const { etablissements } = this.state;
-        const { specialites } = this.state;
-        const { etatCivils } = this.state;
-        const { modules } = this.state;
-        const { pays } = this.state;
+        const { changePath } = this.state
+        const { savedItems } = this.state;
 
-        let condidatRecieved = null;
-        if (this.props.location.state.condidatFromCompetence) {
-          condidatRecieved = this.props.location.state.condidatFromCompetence
-        } else {
-          condidatRecieved = this.props.location.state.condidatBackToRecherche
-        }
-
-         //récupérer le condidat au click sue précédent 
-         if (this.state.retour) {
-            condidatRecieved.recherches = savedItems;
+        console.log("items",savedItems,"num page",this.state.activePage)
+      
+        if (this.state.retour) {
+          
             return <Redirect to={{
-                pathname: '/competence',
-                state: {
-                    condidatBackToCompetence: condidatRecieved,
-                    postes: postes,
-                    diplomes: diplomes,
-                    etablissements: etablissements,
-                    modules: modules,
-                    etatCivils: etatCivils,
-                    pays: pays,
-                    types: types,
-                    domaines: domaines,
-                    specialites: specialites
-                }
+                pathname: '/competence'
             }} />;
         }
 
-        if (changePath){
-          return <Redirect to={{
-            pathname: '/documents',
-            state: {
-                condidatFromRecherche:condidat,
-                postes: postes,
-                diplomes: diplomes,
-                etablissements: etablissements,
-                modules: modules,
-                etatCivils: etatCivils,
-                pays: pays,
-                types: types,
-                domaines: domaines,
-                specialites: specialites
-            }
-          }} />;
+        if (changePath) {
+            return <Redirect to={{
+                pathname: '/documents',
+            }} />;
         }
 
         return (
-        
+
             <div id="wrapper">
                 <Leftside></Leftside>
                 <div id="content-wrapper" className="d-flex flex-column">
@@ -248,55 +257,69 @@ class Recherche extends Component {
                                         <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
                                             <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                                         </button>
-            
+
                                         <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                             className="fas fa-angle-double-right fa-sm text-white-50"
                                             disabled={loading}></i>
                                             {loading && (
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             )}
-                                         Suivant </button>
+                                            Suivant </button>
 
                                     </div>
 
                                 </div>
 
                                 { /* Content Row */}
+                           
+                                      
                                 <div className="row">
-                                <div className="col-lg-12 mb-4 ">
-                                    {/* {items.map((item, index) => */}
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&       
+                                    <div className="col-lg-12 mb-4 ">
+
+                                   
                                         <DetailsRecherche recherche={savedItems[(this.state.activePage - 1)]} indice={(this.state.activePage - 1)}
-                                         changeThematique={this.onChangeThematiqueDesciption}
-                                         changeChapitre={this.onChangeChapitreLivre}
-                                         changeArticleJournaux={this.onChangeArticleJornaux}
-                                         changeArticleConf={this.onChangeArticleConference}
-                                         changeMastere={this.onChangeMastere}
-                                         changeThese={this.onChangeThese}
-                                         key={(this.state.activePage - 1)}
+                                            changeThematique={this.onChangeThematiqueDesciption}
+                                            changeChapitre={this.onChangeChapitreLivre}
+                                            changeArticleJournaux={this.onChangeArticleJornaux}
+                                            changeArticleConf={this.onChangeArticleConference}
+                                            changeMastere={this.onChangeMastere}
+                                            changeThese={this.onChangeThese}
+                                            key={(this.state.activePage - 1)}
                                         />
-                                    {/* )} */}
-                                    {this.state.activePage ==1 && (
-                                    <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
+                                  
+
+                                        {this.state.activePage == 1 && (
+                                            <div>
+                                            <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
+                                            <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={this.ignorerEtape}>Ignorer cette étape</button>                                         
+                                          </div>
+                                        )}
+                                         {this.state.activePage > 1 && (
+                                            <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={(e) => this.deleteTabElement(e, this.state.activePage - 1)}>Supprimer</button>
+                                        )}
+                                    </div>
                                     )}
-                                     {this.state.activePage ==1 && (
-                                     <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={this.ignorerEtape}>Ignorer cette étape</button>  
+                                    {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                        <div className="col-7 p-0">
+                                            <div className="d-flex justify-content-center">
+                                                <Pagination
+                                                    activePage={this.state.activePage}
+                                                    itemsCountPerPage={1}
+                                                    totalItemsCount={this.state.itemsCount}
+                                                    pageRangeDisplayed={this.state.itemsCount}
+                                                    itemClass="page-item"
+                                                    linkClass="page-link"
+                                                    onChange={this.handlePageChange.bind(this)}
+                                                />
+                                            </div>
+                                        </div>
                                     )}
+                                    {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                        <RechercheLecture items={savedItems} />
+                                    )}
+
                                 </div>
-                                <div className="col-7 p-0">
-                                    <div className="d-flex justify-content-center">
-                                        <Pagination
-                                            activePage={this.state.activePage}
-                                            itemsCountPerPage={1}
-                                            totalItemsCount={this.state.itemsCount}
-                                            pageRangeDisplayed={this.state.itemsCount}
-                                            itemClass="page-item"
-                                            linkClass="page-link"
-                                            onChange={this.handlePageChange.bind(this)}
-                                        />
-                                        </div>
-                                        </div>
-                               
-                               </div>
                                 <CheckButton
                                     style={{ display: "none" }}
                                     ref={(c) => {
@@ -314,13 +337,11 @@ class Recherche extends Component {
     }
 }
 function mapStateToProps(state) {
-
-    const { diplomes } = state.diplome;
-
-    const { etablissements } = state.etablissement;
-    const { specialites } = state.specialite;
-
-    return { diplomes, etablissements, specialites };
+    const { condidatReducer } = state.condidat;
+  return { condidatReducer };
 }
-
-export default connect(mapStateToProps)(Recherche);
+const actionCreators = {
+    ignorerRecherche: ignorerEtapeActions.ignorerRecherche,
+    setCondidat: condidatActions.setCondidat,
+};
+export default connect(mapStateToProps, actionCreators)(Recherche);

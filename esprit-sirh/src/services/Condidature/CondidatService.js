@@ -32,10 +32,24 @@ class CondidatService{
     file
     )
   }
-  downlodFiles(fileName){
-    return axios.get(API_URL + "files/"+fileName
+  downlodFiles(fileName,username){
+    return axios.get(API_URL + "files/"+fileName+"/"+username
     )
   }
+  getCondidat(username){
+    const config = {
+      method: 'get',
+      url: API_URL + "getCondidat/"+username,
+  }
+    return axios.get(API_URL + "getCondidat/"+username)
+    .then(resp => {   
+      return resp.data;  
+  }
+    );
+  }
 
+  confirmerCondidature(username) {
+    return axios.post(API_URL + "confirmer" + "/" + username)
+  }
 }
 export default new CondidatService();

@@ -1,4 +1,5 @@
 
+import { PURGE } from 'redux-persist/es/constants';
 import { NomenclaturesConstants } from '../../../_constants/NomenclaturesConstants';
 const initialState = { postes: []};
 export function poste(state = initialState, action) {
@@ -12,7 +13,8 @@ export function poste(state = initialState, action) {
 
 
             };
-      
+            case PURGE:
+                return {initialState};
       
         default:
             return state

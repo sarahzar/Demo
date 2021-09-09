@@ -1,55 +1,58 @@
 package tn.esprit.esponline.api.DTO;
 
+import tn.esprit.esponline.persistence.entities.Etablissement;
+import tn.esprit.esponline.persistence.entities.Poste;
+import tn.esprit.esponline.persistence.entities.Module;
 import java.util.Date;
 
 public class ExperienceEnseignantDTO {
 
-    private Date dateDebut;
-    private Date dateFin;
-    private int posteId;
-    private int etablissementId;
-    private int moduleId;
+    private String dateDebut;
+    private String dateFin;
+    private Poste poste;
+    private Etablissement etablissement;
+    private Module moduleEnseigne;
 
     public ExperienceEnseignantDTO() {
     }
 
-    public Date getDateDebut() {
+    public String getDateDebut() {
         return dateDebut;
     }
 
-    public void setDateDebut(Date dateDebut) {
+    public void setDateDebut(String dateDebut) {
         this.dateDebut = dateDebut;
     }
 
-    public Date getDateFin() {
+    public String getDateFin() {
         return dateFin;
     }
 
-    public void setDateFin(Date dateFin) {
+    public void setDateFin(String dateFin) {
         this.dateFin = dateFin;
     }
 
-    public int getPosteId() {
-        return posteId;
+    public Poste getPoste() {
+        return poste;
     }
 
-    public void setPosteId(int posteId) {
-        this.posteId = posteId;
+    public void setPoste(Poste poste) {
+        this.poste = poste;
     }
 
-    public int getEtablissementId() {
-        return etablissementId;
+    public Etablissement getEtablissement() {
+        return etablissement;
     }
 
-    public void setEtablissementId(int etablissementId) {
-        this.etablissementId = etablissementId;
+    public void setEtablissement(Etablissement etablissement) {
+        this.etablissement = etablissement;
     }
 
-    public int getModuleId() {
-        return moduleId;
+    public Module getModuleEnseigne() {
+        return moduleEnseigne;
     }
 
-    public void setModuleId(int moduleId) {
-        this.moduleId = moduleId;
+    public void setModuleEnseigne(Module moduleEnseigne) {
+        this.moduleEnseigne = moduleEnseigne;
     }
 }

@@ -31,9 +31,9 @@ public class FilesController {
         String message = "";
         ResponseDto responseDto=new ResponseDto();
         try {
-            storageService.save(file);
-
-            message = "Uploaded the file successfully: " + file.getOriginalFilename();
+//            storageService.save(file);
+//
+//            message = "Uploaded the file successfully: " + file.getOriginalFilename();
             responseDto.setSuccesMessage(message);
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         } catch (Exception e) {
@@ -58,10 +58,10 @@ public class FilesController {
         return ResponseEntity.status(HttpStatus.OK).body(fileInfos);
     }
 
-    @GetMapping("/files/{filename:.+}")
+    @GetMapping("/files/{filename:.+}/{username}")
     @ResponseBody
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        ResourceDto resource = storageService.load(filename);
+    public ResponseEntity<Resource> getFile(@PathVariable String filename,@PathVariable String username) {
+        ResourceDto resource = storageService.load(filename,username);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(resource.getType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFile().getFilename() + "\"").body(resource.getFile());
     }

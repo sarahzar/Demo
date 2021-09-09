@@ -2,6 +2,8 @@ package tn.esprit.esponline.persistence.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class Document {
     private int id;
     private String nom;
     private String type;
+    @JsonIgnore
     @ManyToOne
     private Condidat condidat;
 

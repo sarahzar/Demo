@@ -1,4 +1,5 @@
 
+import { PURGE } from 'redux-persist/es/constants';
 import { NomenclaturesConstants } from '../../../_constants/NomenclaturesConstants';
 const initialState = { types: [] };
 export function typeCondidature(state = initialState, action) {
@@ -12,7 +13,8 @@ export function typeCondidature(state = initialState, action) {
                 types: action.types,
 
             };
-       
+            case PURGE:
+                return {initialState};
         default:
             return state
     }

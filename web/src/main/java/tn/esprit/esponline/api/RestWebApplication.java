@@ -69,8 +69,8 @@ public class RestWebApplication {
 	@Bean
 	CommandLineRunner init() {
 		return (args) -> {
-			filesStorageService.deleteAll();
-			filesStorageService.init();
+			//filesStorageService.deleteAll();
+			filesStorageService.initRootDirectory();
 		};
 	}
 }

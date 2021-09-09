@@ -13,6 +13,44 @@ import { etatCivil } from './Shared/Nomenclatures/etatCivil.reducer';
 import { typeCondidature } from './Shared/Nomenclatures/typeCondidature.reducer';
 import { pays } from './Shared/Nomenclatures/pays.reducer';
 import { module } from './Shared/Nomenclatures/module.reducer';
+import { ignorerExpEns } from './Shared/ignorerExpEns.reducer';
+import { ignorerCompetence } from './Shared/ignorerCompetence.reducer';
+import { ignorerExpPro } from './Shared/ignorerExpPro.reducer';
+import { ignorerRecherche } from './Shared/ignorerRecherche.reducer';
+import { condidat } from './Shared/condidat.reducer';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import { validerEtapeParcours } from './Shared/validerEtapeParcours.reducer';
+import { validerEtapeDocuments } from './Shared/validerEtapeDocuments.reducer'; 
+import { terminerInscription } from './Shared/terminerInscription.reducer'; 
+
+
+const persistConfig ={
+  key: 'root',
+  storage,
+  whitelist : [
+  'poste',
+  'diplome',
+  'etablissement',
+  'specialite',
+  'etatCivil',
+  'typeCondidature',
+  'domaine',
+  'pays',
+  'module',
+  'ignorerExpEns',
+  'ignorerCompetence',
+  'ignorerExpPro',
+  'ignorerRecherche',
+  'condidat',
+  'validerEtapeParcours',
+  'validerEtapeDocuments',
+  'terminerInscription',
+  
+]
+
+}
+
 const rootReducer = combineReducers({
   authentication,
   registration,
@@ -26,7 +64,15 @@ const rootReducer = combineReducers({
   typeCondidature,
   domaine,
   pays,
-  module
+  module,
+  ignorerExpEns,
+  ignorerCompetence,
+  ignorerExpPro,
+  ignorerRecherche,
+  condidat,
+  validerEtapeParcours,
+  validerEtapeDocuments,
+  terminerInscription,
 });
 
-export default rootReducer;
+export default persistReducer(persistConfig,rootReducer);

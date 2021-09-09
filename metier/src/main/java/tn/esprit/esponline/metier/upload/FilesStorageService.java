@@ -6,36 +6,89 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.stream.Stream;
 @Service
 public class FilesStorageService implements IFilesStorageService{
 
-    private final Path root = Paths.get("C:/Users/Sarah/Documents/PFE/uploads");
+    static {
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        date = simpleDateFormat.format(new Date());
+    }
+    private  Path root = null;
+    public static String date;
+
     @Override
-    public void init() {
+    public void init(String username) {
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        this.addDirectory(year+"/"+username);
+    }
+    public void initRootDirectory(){
+
+        this.root =Paths.get("C:/wamp/www/uploads/");
         try {
-            Files.createDirectory(root);
+            Files.createDirectories(root);
         } catch (IOException e) {
-            throw new RuntimeException("Could not initialize folder for upload!");
+            e.printStackTrace();
+        }
+
+    }
+    public void addDirectory(String path){
+
+        this.root= Paths.get("C:/wamp/www/uploads/"+path);
+        try {
+
+            //Files.deleteIfExists(root);
+            if(!Files.isDirectory(root)){
+                Files.createDirectories(root);
+            }else{
+
+                File[] files = new File("C:/wamp/www/uploads/"+path).listFiles();
+                for(File f:files){
+                    f.delete();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void save(MultipartFile file) {
+    public void save(MultipartFile file,String username) throws FileExistException {
+        String fileExistMsg=null;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
         try {
-            Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+            File rechercheFile = new File("C:/wamp/www/uploads/"+year+"/"+username+"/"+file.getOriginalFilename());
+            if(!rechercheFile.exists()) {
+                Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+            }else{
+                fileExistMsg="le fichier existe déjà";
+                throw new FileExistException(fileExistMsg);
+            }
         } catch (Exception e) {
+            if(e.getMessage()==fileExistMsg)
+                throw new FileExistException(fileExistMsg);
+            else
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
     }
 
     @Override
-    public ResourceDto load(String filename) {
+    public ResourceDto load(String filename,String username) {
+
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        this.root =Paths.get("C:/wamp/www/uploads/"+year+"/"+username);
         ResourceDto resourceDto=new ResourceDto();
         try {
             Path file = root.resolve(filename);
@@ -57,7 +110,10 @@ public class FilesStorageService implements IFilesStorageService{
 
     @Override
     public void deleteAll() {
-        FileSystemUtils.deleteRecursively(root.toFile());
+        if(root!=null) {
+            FileSystemUtils.deleteRecursively(root.toFile());
+        }
+
     }
 
     @Override
@@ -68,4 +124,5 @@ public class FilesStorageService implements IFilesStorageService{
             throw new RuntimeException("Could not load the files!");
         }
     }
+
 }

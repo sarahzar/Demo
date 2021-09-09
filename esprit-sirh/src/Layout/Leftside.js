@@ -1,7 +1,63 @@
 import React, { Component } from 'react'  
-import { Link } from 'react-router-dom';  
+import { Link, Redirect } from 'react-router-dom';  
+import { connect, Provider } from "react-redux";
 export class Leftside extends Component {  
+
+    constructor(props) {
+        super(props)
+        this.state ={
+
+            navigate:false
+        }
+    }
+
+    go = () => {
+        let valideProfile = false;
+        let validateParcours = false
+        let validerDocs = false
+        if (this.props.validerEtapeProfile) {
+            valideProfile = this.props.validerEtapeProfile();
+             
+            if (valideProfile) {
+                this.setState({
+                    navigate: true
+                })
+            }
+        }else if(this.props.validerEtapeParcour){
+            validateParcours = this.props.validerEtapeParcour();
+             
+            if (validateParcours) {
+                this.setState({
+                    navigate: true
+                })
+            }
+        }else if(this.props.validerEtapeDocuments){
+            validerDocs = this.props.validerEtapeDocuments();
+             
+            if (validerDocs) {
+                this.setState({
+                    navigate: true
+                })
+            }
+        }else {
+            this.setState({
+                navigate: true
+            })
+        }
+
+    }
     render() {  
+      
+     const {navigate} = this.state
+     const {condidatReducer} = this.props
+
+     console.log()
+
+        if(navigate){
+           return  <Redirect
+                to={{ pathname:"/terminer" }}
+          ></Redirect>
+        }
         return (  
              
                 <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">  
@@ -23,13 +79,21 @@ export class Leftside extends Component {
                     <li className="nav-item">  
                         <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">  
                             <i className="fas fa-fw fa-cog"></i>  
-                            <span>Components</span>  
+                            <span>Condidature</span>  
                         </a>  
                         <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">  
                             <div className="bg-white py-2 collapse-inner rounded">  
-                                <h6 className="collapse-header">Custom Components:</h6>  
-                                <Link className="collapse-item" to="/home">Buttons</Link>  
-                                <Link className="collapse-item" to="/button">Chart</Link>  
+                                {/* <h6 className="collapse-header">Custom Components:</h6>   */}
+                                <Link className="collapse-item" to="/profile">Informations générales</Link>  
+                                <Link className="collapse-item" to="/parcour">Parcours académique</Link>  
+                                <Link className="collapse-item" to="/expEnseignant">Expériences enseignant</Link>  
+                                <Link className="collapse-item" to="/expPro">Expériences professionnels</Link>
+                                <Link className="collapse-item" to="/competence">Compétences</Link>   
+                                <Link className="collapse-item" to="/recherche">activités de recherches</Link> 
+                                <Link className="collapse-item" to="/documents">documents</Link> 
+                               {condidatReducer && !condidatReducer.aConfirmer && (
+                                <Link className="collapse-item" onClick={this.go}>terminer l'inscription</Link>
+                               )} 
                             </div>  
                         </div>  
                     </li>  
@@ -93,5 +157,11 @@ export class Leftside extends Component {
         )  
     }  
 }  
-  
-export default Leftside  
+function mapStateToProps(state) {
+    const {condidatReducer} = state.condidat;  
+    return { 
+        condidatReducer
+    };
+  }
+ 
+export default connect(mapStateToProps)(Leftside) 

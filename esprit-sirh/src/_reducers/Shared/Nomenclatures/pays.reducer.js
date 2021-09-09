@@ -1,3 +1,4 @@
+import { PURGE } from 'redux-persist/es/constants';
 import { NomenclaturesConstants } from '../../../_constants/NomenclaturesConstants';
 const initialState = {  pays: [] };
 export function pays(state = initialState, action) {
@@ -11,7 +12,8 @@ export function pays(state = initialState, action) {
 
             };
 
-       
+            case PURGE:
+                return {initialState};
         default:
             return state
     }

@@ -6,7 +6,7 @@ package tn.esprit.esponline.api.DTO;
 
 
 
-import tn.esprit.esponline.persistence.entities.Competence;
+import tn.esprit.esponline.persistence.entities.*;
 
 import java.util.Date;
 import java.util.List;
@@ -14,25 +14,25 @@ import java.util.List;
 public class CondidatDto {
     private String nom;
     private String prenom;
-    private Date dateNaissance;
+    private String dateNaissance;
     private String sexe;
     private int etat;
     private int cin;
     private int telephone;
     private int anneeObtention;
-    private int typeCondidatureId;
-    private int posteActuelId;
-    private int dernierDiplomeId;
-    private int domaineId;
-    private int etatCivilId;
-    private int specialiteId;
-    private int etablissementId;
-    List<ParcoursDTO> listeParcours;
-    List<ExperienceEnseignantDTO> condidatExperEnseignt;
-    List<ExperienceProfessionelDTO> condidatExperProfessionel;
+    private TypeCondidature typeCondidature;
+    private Poste posteActuel;
+    private Parcour dernierDiplome;
+    private Domaine domaine;
+    private EtatCivil etatCivil;
+    private boolean aConfirmer;
+    private  Date dateInscrit;
+    List<Parcour> parcourScolaire;
+    List<ExperienceEnseignantDTO> experienceEnseignants;
+    List<ExperienceProfessionelDTO> experienceProfessionels;
     List<Competence> competences;
-    List<RechercheDTO> recherches;
-    List<DocumentDto> documents;
+    List<Recherche> recherches;
+    List<Document> documents;
 
     public CondidatDto() {
     }
@@ -53,11 +53,11 @@ public class CondidatDto {
         this.prenom = prenom;
     }
 
-    public Date getDateNaissance() {
+    public String getDateNaissance() {
         return dateNaissance;
     }
 
-    public void setDateNaissance(Date dateNaissance) {
+    public void setDateNaissance(String dateNaissance) {
         this.dateNaissance = dateNaissance;
     }
 
@@ -93,62 +93,6 @@ public class CondidatDto {
         this.telephone = telephone;
     }
 
-    public int getTypeCondidatureId() {
-        return typeCondidatureId;
-    }
-
-    public void setTypeCondidatureId(int typeCondidatureId) {
-        this.typeCondidatureId = typeCondidatureId;
-    }
-
-    public int getPosteActuelId() {
-        return posteActuelId;
-    }
-
-    public void setPosteActuelId(int posteActuelId) {
-        this.posteActuelId = posteActuelId;
-    }
-
-    public int getDernierDiplomeId() {
-        return dernierDiplomeId;
-    }
-
-    public void setDernierDiplomeId(int dernierDiplomeId) {
-        this.dernierDiplomeId = dernierDiplomeId;
-    }
-
-    public int getDomaineId() {
-        return domaineId;
-    }
-
-    public void setDomaineId(int domaineId) {
-        this.domaineId = domaineId;
-    }
-
-    public int getEtatCivilId() {
-        return etatCivilId;
-    }
-
-    public void setEtatCivilId(int etatCivilId) {
-        this.etatCivilId = etatCivilId;
-    }
-
-    public int getSpecialiteId() {
-        return specialiteId;
-    }
-
-    public void setSpecialiteId(int specialiteId) {
-        this.specialiteId = specialiteId;
-    }
-
-    public int getEtablissementId() {
-        return etablissementId;
-    }
-
-    public void setEtablissementId(int etablissementId) {
-        this.etablissementId = etablissementId;
-    }
-
     public int getAnneeObtention() {
         return anneeObtention;
     }
@@ -157,28 +101,84 @@ public class CondidatDto {
         this.anneeObtention = anneeObtention;
     }
 
-    public List<ParcoursDTO> getListeParcours() {
-        return listeParcours;
+    public TypeCondidature getTypeCondidature() {
+        return typeCondidature;
     }
 
-    public void setListeParcours(List<ParcoursDTO> listeParcours) {
-        this.listeParcours = listeParcours;
+    public void setTypeCondidature(TypeCondidature typeCondidature) {
+        this.typeCondidature = typeCondidature;
     }
 
-    public List<ExperienceEnseignantDTO> getCondidatExperEnseignt() {
-        return condidatExperEnseignt;
+    public Poste getPosteActuel() {
+        return posteActuel;
     }
 
-    public void setCondidatExperEnseignt(List<ExperienceEnseignantDTO> condidatExperEnseignt) {
-        this.condidatExperEnseignt = condidatExperEnseignt;
+    public void setPosteActuel(Poste posteActuel) {
+        this.posteActuel = posteActuel;
     }
 
-    public List<ExperienceProfessionelDTO> getCondidatExperProfessionel() {
-        return condidatExperProfessionel;
+    public Parcour getDernierDiplome() {
+        return dernierDiplome;
     }
 
-    public void setCondidatExperProfessionel(List<ExperienceProfessionelDTO> condidatExperProfessionel) {
-        this.condidatExperProfessionel = condidatExperProfessionel;
+    public void setDernierDiplome(Parcour dernierDiplome) {
+        this.dernierDiplome = dernierDiplome;
+    }
+
+    public Domaine getDomaine() {
+        return domaine;
+    }
+
+    public void setDomaine(Domaine domaine) {
+        this.domaine = domaine;
+    }
+
+    public EtatCivil getEtatCivil() {
+        return etatCivil;
+    }
+
+    public void setEtatCivil(EtatCivil etatCivil) {
+        this.etatCivil = etatCivil;
+    }
+
+    public boolean isaConfirmer() {
+        return aConfirmer;
+    }
+
+    public void setaConfirmer(boolean aConfirmer) {
+        this.aConfirmer = aConfirmer;
+    }
+
+    public Date getDateInscrit() {
+        return dateInscrit;
+    }
+
+    public void setDateInscrit(Date dateInscrit) {
+        this.dateInscrit = dateInscrit;
+    }
+
+    public List<Parcour> getParcourScolaire() {
+        return parcourScolaire;
+    }
+
+    public void setParcourScolaire(List<Parcour> parcourScolaire) {
+        this.parcourScolaire = parcourScolaire;
+    }
+
+    public List<ExperienceEnseignantDTO> getExperienceEnseignants() {
+        return experienceEnseignants;
+    }
+
+    public void setExperienceEnseignants(List<ExperienceEnseignantDTO> experienceEnseignants) {
+        this.experienceEnseignants = experienceEnseignants;
+    }
+
+    public List<ExperienceProfessionelDTO> getExperienceProfessionels() {
+        return experienceProfessionels;
+    }
+
+    public void setExperienceProfessionels(List<ExperienceProfessionelDTO> experienceProfessionels) {
+        this.experienceProfessionels = experienceProfessionels;
     }
 
     public List<Competence> getCompetences() {
@@ -189,19 +189,19 @@ public class CondidatDto {
         this.competences = competences;
     }
 
-    public List<RechercheDTO> getRecherches() {
+    public List<Recherche> getRecherches() {
         return recherches;
     }
 
-    public void setRecherches(List<RechercheDTO> recherches) {
+    public void setRecherches(List<Recherche> recherches) {
         this.recherches = recherches;
     }
 
-    public List<DocumentDto> getDocuments() {
+    public List<Document> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(List<DocumentDto> documents) {
+    public void setDocuments(List<Document> documents) {
         this.documents = documents;
     }
 }

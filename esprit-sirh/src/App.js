@@ -10,13 +10,14 @@ import Login from './Components/Authentification/Login';
 import Header from "./Layout/Header"
 import Leftside from "./Layout/Leftside"
 import Footer from  "./Layout/Footer"
-import Parcour from "./Components/Condidature/Parcour"
+import Parcour from "./Components/Condidature/Parcours/Parcour"
 import { useLocation } from 'react-router-dom'
-import ExperienceEnseignant from './Components/Condidature/ExperienceEnseignant';
-import ExperienceProfessionel from './Components/Condidature/ExperienceProfessionel';
-import Competence from './Components/Condidature/Competence';
+import ExperienceEnseignant from './Components/Condidature/Experiences/ExperienceEnseignant';
+import ExperienceProfessionel from './Components/Condidature/Experiences/ExperienceProfessionel';
+import Competence from './Components/Condidature/Competences/Competence';
 import Recherche from './Components/Condidature/Recherches/Recherche';
-import Documents from './Components/Condidature/Documents';
+import Documents from './Components/Condidature/Documents/Documents';
+import TerminerInscription from './Components/Condidature/ValidationInscription/TerminerInscription';
 class App extends Component {
   constructor(props){
     super(props);
@@ -69,6 +70,7 @@ class App extends Component {
               <Route path="/competence" component={Competence} />
               <Route path="/recherche" component={Recherche} />
               <Route path="/documents" component={Documents} />
+              <Route path="/terminer" component={TerminerInscription} />
             </Switch>
 
           {/* </div> */}

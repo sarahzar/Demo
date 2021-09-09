@@ -1,54 +1,61 @@
 package tn.esprit.esponline.api.DTO;
 
 
-import java.util.Date;
+import tn.esprit.esponline.persistence.entities.Etablissement;
+import tn.esprit.esponline.persistence.entities.Pays;
+import tn.esprit.esponline.persistence.entities.Poste;
+
+
 
 public class ExperienceProfessionelDTO {
-    private Date dateDebut;
-    private Date dateFin;
-    private int paysId;
-    private int etablissementId;
-    private int posteId;
+    private String dateDebut;
+    private String dateFin;
+    private Pays pays;
+    private Etablissement etablissement;
+    private Poste poste;
     private String ville;
 
-    public Date getDateDebut() {
+    public ExperienceProfessionelDTO() {
+    }
+
+    public String getDateDebut() {
         return dateDebut;
     }
 
-    public void setDateDebut(Date dateDebut) {
+    public void setDateDebut(String dateDebut) {
         this.dateDebut = dateDebut;
     }
 
-    public Date getDateFin() {
+    public String getDateFin() {
         return dateFin;
     }
 
-    public void setDateFin(Date dateFin) {
+    public void setDateFin(String dateFin) {
         this.dateFin = dateFin;
     }
 
-    public int getPaysId() {
-        return paysId;
+    public Pays getPays() {
+        return pays;
     }
 
-    public void setPaysId(int paysId) {
-        this.paysId = paysId;
+    public void setPays(Pays pays) {
+        this.pays = pays;
     }
 
-    public int getEtablissementId() {
-        return etablissementId;
+    public Etablissement getEtablissement() {
+        return etablissement;
     }
 
-    public void setEtablissementId(int etablissementId) {
-        this.etablissementId = etablissementId;
+    public void setEtablissement(Etablissement etablissement) {
+        this.etablissement = etablissement;
     }
 
-    public int getPosteId() {
-        return posteId;
+    public Poste getPoste() {
+        return poste;
     }
 
-    public void setPosteId(int posteId) {
-        this.posteId = posteId;
+    public void setPoste(Poste poste) {
+        this.poste = poste;
     }
 
     public String getVille() {

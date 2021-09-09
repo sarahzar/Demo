@@ -41,7 +41,7 @@ color: rgb(179, 16, 16);
   float: left;
   margin-right: 2%;
 }
-button {
+.btn-primary {
   border: 1px solid #ed1c24!important;
   background-color: #ed1c24!important;
 }
@@ -93,5 +93,27 @@ button {
 .control-label:after {
   content:"*";
   color:#dc3545;
+}
+.invalide-field{
+  border-color: #dc3545;
+}
+.invalide-field:focus{
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgb(220 53 69 / 25%);
+}
+input[type="file"] {
+  padding-bottom: 2rem;
+}
+.height-main-container{
+  height: 14rem;
+}
+.height-info-container{
+  height: 12rem;
+}
+.width-empty{
+  width: 30rem;
+}
+.selectedFile{
+  display: none
 }
 

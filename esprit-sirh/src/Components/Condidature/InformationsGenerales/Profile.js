@@ -8,62 +8,41 @@ import { Redirect, Link } from 'react-router-dom';
 import InfoPersonelles from "./InfoPersonelles";
 import NiveauAcademique from "./NiveauAcademique";
 import DomaineCompetence from "./DomaineCompetence";
-import SimpleReactValidator from 'simple-react-validator';
-import moment from 'moment';
+import ValidationService from "../../../services/Validation/ValidationService"
+import { condidatActions } from "../../../_actions/Shared/condidat.actions";
+import CondidatService from "../../../services/Condidature/CondidatService";
+import AuthService from "../../../services/Authentification/AuthService";
+import { ignorerEtapeActions } from "../../../_actions/Shared/ignorer.etape.actions";
+import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.actions";
 
+
+const FILES_LOCATION = "http://localhost/uploads/"
+
+export const profilFields = {
+
+  etablissement: 'etablissement',
+  nom: 'nom',
+  prenom: 'prenom',
+  etat: 'etat',
+  tel: 'tel',
+  cin: 'cin',
+  datenaiss: 'datenaiss',
+  etatCivil: 'etatCivil',
+  diplome: 'diplome',
+  specialite: 'specialite',
+  poste: 'poste',
+  domaine: 'domaine',
+  typeCondidat: 'typeCondidat',
+  anneObt: 'anneObt',
+  sexe: 'sexe',
+
+}
 class Profile extends Component {
   constructor(props) {
 
     super(props);
-  //validations des champs 
-    SimpleReactValidator.addLocale('fr', {
-      required: 'champ obligatoire.',
-      alpha: 'Le champ :attribute ne peut contenir que des lettres.',
-      numeric: 'Le champ :attribute doit être numérique.',
-      size: 'Le champ :attribute doit être 8 chiffres.',
-      min: 'la valeur du champ :attribute ne peut pas être négative',
-      before: 'Le champ :attribute doit être avant le :date.',
-    });
-    this.validator = new SimpleReactValidator({
-      autoForceUpdate: this,
-      locale: 'fr',
-      validators: {
-        requiredSelect: {  // name the rule
-          message: 'champ obligatoire.',
-          rule: (val) => {
-            return val != -1
-          },
-        },
-        dateAfterToday: {  // name the rule
-          message: "Le champ :attribute doit être inférieure à aujourd'hui.",
-          rule: (val) => {
-           let  momentObject=  moment(val, 'YYYY-MM-DD');
-           let today= moment(new Date(), 'YYYY-MM-DD');
-           let isAfter=momentObject.isAfter(today)
-           let isSame=momentObject.isSame(today,'day')
-           
-         
-            return !isSame && !isAfter 
-          },
-        },
-        telephone: {  // name the rule
-        message: "Le champ :attribute est invalide.",      
-         rule: (val) => {
-            return this.validator.helpers.testRegex(val,/^((\+|00)216)?([7]{1}[0-9]{1}|[5]{1}[0-9]{1}|[2-3]{1}[0-9]{1})[0-9]{6}$/i);
-          },
-        },
-        afterCurrentYear: {  // name the rule
-          message: "valeur supérieure à l'année courrante",      
-           rule: (val) => {
-             let currentYear= new Date().getFullYear()
-              return ! (val > currentYear);
-            },
-          },
-      }
-      
-      
-    });
-   // states et méthodes 
+    ValidationService.validator.autoForceUpdate = this;
+    // states et méthodes 
     this.state = {
       changePath: false,
       nom: "",
@@ -80,291 +59,507 @@ class Profile extends Component {
       loading: false,
       message: "",
       typeMessage: "",
-      typeCondidatureId: -1,
-      posteActuelId: -1,
-      dernierDiplomeId: -1,
-      domaineId: -1,
-      etatCivilId: -1,
-      specialiteId: -1,
-      etablissementId: -1,
+      typeCondidature: {id:-1,libelle:""},
+      posteActuel:{id:-1,libelle:""},
+      domaine: {id:-1,libelle:""},
+      etatCivil: {id:-1,libelle:""},
+      diplome:{id:-1,libelle:""},
+      etablissement:{id:-1,libelle:"",telephone:-1,mail:""},
+      specialite:{id:-1,libelle:""},
       anneeObtention: "",
-      etatCivils: this.props.location.state.etatCivils,
-      postes: this.props.location.state.postes,
-      diplomes: this.props.location.state.diplomes,
-      domaines: this.props.location.state.domaines,
-      types: this.props.location.state.types,
-      etablissements:  this.props.location.state.etablissements,
-      specialites:  this.props.location.state.specialites,
-      pays:  this.props.location.state.pays,
-      modules: this.props.location.state.modules,
       condidat: {},
       username: '',
-      touched:{}
-
-
+      touched: {},
+      invalide:false,
+      fromPl:false,
+      validePl:false,
+      login: AuthService.getLogin(),
+      confirmed:false,
+      imageProfilePath:"",
+      nomPrenom:""
     };
   }
 
   componentDidMount() {
-    let condidatFromPrecedent = this.props.location.state.condidatBackToProfile;
-    if (condidatFromPrecedent) {
-      this.setState({
-        nom: condidatFromPrecedent.nom,
-        prenom: condidatFromPrecedent.prenom,
-        dateNaissance: condidatFromPrecedent.dateNaissance,
-        sexe: condidatFromPrecedent.sexe,
-        cin: condidatFromPrecedent.cin,
-        telephone: condidatFromPrecedent.telephone,
-        typeCondidatureId: condidatFromPrecedent.typeCondidatureId,
-        posteActuelId: condidatFromPrecedent.posteActuelId,
-        dernierDiplomeId: condidatFromPrecedent.dernierDiplomeId,
-        domaineId: condidatFromPrecedent.domaineId,
-        etatCivilId: condidatFromPrecedent.etatCivilId,
-        specialiteId: condidatFromPrecedent.specialiteId,
-        etablissementId: condidatFromPrecedent.etablissementId,
-        anneeObtention: condidatFromPrecedent.anneeObtention,
-        listeParcours: [],
-        condidatExperEnseignt: [],
-        condidatExperProfessionel: [],
-        competences: [],
-        recherches: [],
-        documents:[]
-      });
+
+    const { condidatReducer } = this.props
+    this.updateUserInfos(condidatReducer);
+  }
+  
+  componentWillUnmount() {
+    if (localStorage.getItem('persist:root')) {
+      let condidat = this.updateCondidatInfos()
+      this.getCondidatLists(condidat)
+      this.props.setCondidat(condidat)
+    }
+
+  }
+
+  updateUserInfos(condidatReducer) {
+    let year = new Date().getFullYear()
+    CondidatService.getCondidat(this.state.login).then(
+
+      resp => {
+        let cdt = null;
+        let condidat =null
+        cdt = resp;
+        console.log("from profile", resp)
+        if (cdt) {
+
+          console.log("condiadat from profile",cdt)
+          this.setState({
+            confirmed: cdt.aConfirmer
+          });
+
+          if(cdt.documents && cdt.documents.length > 0){
+            cdt.documents.forEach(d => {
+               if(d.type == 'PHOTO'){
+                   this.setState({
+                     imageProfilePath: FILES_LOCATION+"/"+year+"/"+this.state.login+"/"+d.nom
+                   })
+               }
+            })
+          }
+
+          this.setState({
+            nomPrenom: cdt.nom +" "+cdt.prenom
+          })
+             
+          if (condidatReducer) {
+            condidat = condidatReducer
+            this.updateState(condidatReducer)
+            this.props.setCondidat(condidatReducer)
+
+          } else {
+            condidat = cdt
+            this.updateState(cdt);
+            this.props.setCondidat(cdt)
+
+          }
+
+
+          
+          this.setIgnorerVariables(condidat)
+          this.setValiderEtapeVariables(condidat)
+         
+        }
+      }
+    );
+  }
+
+  setIgnorerVariables(condidat) {
+    if (condidat.experienceEnseignants && condidat.experienceEnseignants.length > 0) {
+      this.props.ignorerExpEns(false);
+    }
+    if (condidat.experienceProfessionels && condidat.experienceProfessionels.length > 0) {
+      this.props.ignorerExpPro(false);
+    }
+    if (condidat.competences && condidat.competences.length > 0) {
+      this.props.ignorerCompetence(false);
+    }
+    if (condidat.competences && condidat.recherches.length > 0) {
+      this.props.ignorerRecherche(false);
+    }
+    
+  }
+
+  setValiderEtapeVariables(condidat){
+    if (condidat.parcourScolaire.length > 0) {
+      this.props.validerParcours(true)
+    }
+    if (condidat.documents.length > 0) {
+      this.props.validerDocuments(true)
     }
   }
 
+  updateState(condidatReducer) {
+    this.setState({
+      nom: condidatReducer.nom,
+      prenom: condidatReducer.prenom,
+      dateNaissance: condidatReducer.dateNaissance,
+      sexe: condidatReducer.sexe,
+      cin: condidatReducer.cin !=0 ? condidatReducer.cin : this.state.cin,
+      telephone: condidatReducer.telephone != 0 ? condidatReducer.telephone  : this.state.telephone,
+      typeCondidature: condidatReducer.typeCondidature ? condidatReducer.typeCondidature : this.state.typeCondidature,
+      posteActuel: condidatReducer.posteActuel ? condidatReducer.posteActuel : this.state.posteActuel,
+      dernierDiplome: condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome : null,
+      diplome:  condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.diplome : this.state.diplome ,
+      etablissement: condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.etablissement : this.state.diplome,
+      specialite:  condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.specialite : this.state.specialite,
+      domaine: condidatReducer.domaine ? condidatReducer.domaine : this.state.domaine,
+      etatCivil: condidatReducer.etatCivil ? condidatReducer.etatCivil : this.state.etatCivil,
+      anneeObtention:  condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.annee : this.state.anneeObtention ,
+      parcourScolaire: condidatReducer.parcourScolaire,
+      experienceEnseignants: condidatReducer.experienceEnseignants,
+      experienceProfessionels: condidatReducer.experienceProfessionels,
+      competences: condidatReducer.competences,
+      recherches: condidatReducer.recherches,
+      documents: condidatReducer.documents,
+    });
+  }
+
+ 
+  validerEtapeProfile = () => {
+   if (!this.state.confirmed) {
+      ValidationService.validator.purgeFields();
+      this.addMessages();
+      this.markUsTouched()
+
+      if (!ValidationService.validator.allValid()) {
+        ValidationService.validator.showMessages()
+        return false
+      } else {
+        return true;
+      }
+
+    } else {
+      return true;
+    }
+
+  }
   onChangeNom = (e) => {
 
-    let touchedElements = {...this.state.touched}
-    touchedElements['nom'] =true;
+    let touchedElements = { ...this.state.touched }
+    touchedElements[profilFields.nom] = true;
 
     this.setState({
       nom: e.target.value,
-      touched:touchedElements
-    });   
-    
+      touched: touchedElements
+    });
+
   }
   onChangePreNom = (e) => {
 
-    let touchedElements = {...this.state.touched}
-    touchedElements['prenom'] =true;
+    let touchedElements = { ...this.state.touched }
+    touchedElements[profilFields.prenom] = true;
 
     this.setState({
       prenom: e.target.value,
-      touched:touchedElements
+      touched: touchedElements
     });
   }
   onChangeSexeHomme = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements[profilFields.sexe] = true;
+
     this.setState({
       sexe: "homme",
+      touched: touchedElements
     });
   }
+  
   onChangeSexeFemme = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements[profilFields.sexe] = true;
+
     this.setState({
       sexe: "femme",
+      touched: touchedElements
     });
   }
+
   onChangeEtat = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['etat'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement['etat'] = true;
 
     this.setState({
       etat: e.target.value,
-      touched:touchedElement
+      touched: touchedElement
     });
   }
+
   onChangeTelephone = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['tel'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.tel] = true;
 
     this.setState({
       telephone: e.target.value,
-      touched:touchedElement
+      touched: touchedElement
     });
   }
+
   onChangeCin = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['cin'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.cin] = true;
 
     this.setState({
       cin: e.target.value,
-      touched:touchedElement
+      touched: touchedElement
     });
   }
+
   onChangeDateNaissance = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['datenaiss'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.datenaiss] = true;
 
     this.setState({
       dateNaissance: e.target.value,
-      touched:touchedElement
+      touched: touchedElement
     });
   }
+
   onChangeEtatCivil = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['etatCivil'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.etatCivil] = true;
+    let id =e.target.value;
 
+    let etatCvl = this.props.etatCivils.filter(elem => elem.id == id).shift()
+      
     this.setState({
-      etatCivilId: e.target.value,
-      touched:touchedElement
+      etatCivil: etatCvl,
+      touched: touchedElement
     });
   }
+
   onChangeDernierDiplome = (e) => {
-    
-    let touchedElement = {...this.state.touched}
-    touchedElement['diplome'] =true;
+
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.diplome] = true;
+
+    let id =e.target.value;
+    let diplome = this.props.diplomes.filter(elem => elem.id == id).shift()
+      
 
     this.setState({
-      dernierDiplomeId: e.target.value,
-      touched:touchedElement
+      diplome: diplome,
+      touched: touchedElement
     });
   }
+
   onChangeSpecialite = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['specialite'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.specialite] = true;
+
+    let id =e.target.value;
+    let specialite = this.props.specialites.filter(elem => elem.id == id).shift()
 
     this.setState({
-      specialiteId: e.target.value,
-      touched:touchedElement
+      specialite: specialite,
+      touched: touchedElement
     });
   }
+
   onChangeEtablissement = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['etablissement'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.etablissement] = true;
+
+    let id =e.target.value;
+    let etblissement = this.props.etablissements.filter(elem => elem.id == id).shift()
 
     this.setState({
-      etablissementId: e.target.value,
-      touched:touchedElement
+      etablissement: etblissement,
+      touched: touchedElement
     });
   }
+
   onChangePosteActuel = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['poste'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.poste] = true;
+
+    let id =e.target.value;
+    let poste = this.props.postes.filter(elem => elem.id == id).shift()
 
     this.setState({
-      posteActuelId: e.target.value,
-      touched:touchedElement
+      posteActuel: poste,
+      touched: touchedElement
     });
   }
+
   onChangeDomaine = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['domaine'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.domaine] = true;
+
+    let id =e.target.value;
+    let domaine = this.props.domaines.filter(elem => elem.id == id).shift()
 
     this.setState({
-      domaineId: e.target.value,
-      touched:touchedElement
+      domaine: domaine,
+      touched: touchedElement
     });
   }
+
   onChangTypeCondidature = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['typeCondidat'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.typeCondidat] = true;
+
+    let id =e.target.value;
+    let typeCondidature = this.props.types.filter(elem => elem.id == id).shift()
 
     this.setState({
-      typeCondidatureId: e.target.value,
-      touched:touchedElement
+      typeCondidature: typeCondidature,
+      touched: touchedElement
     });
   }
+
   onChangeAnneeObtention = (e) => {
 
-    let touchedElement = {...this.state.touched}
-    touchedElement['anneObt'] =true;
+    let touchedElement = { ...this.state.touched }
+    touchedElement[profilFields.anneObt] = true;
 
     this.setState({
       anneeObtention: e.target.value,
-      touched:touchedElement
+      touched: touchedElement
     });
   }
-  handleSubmitCondidat = (e) => {
-    e.preventDefault();
-    // this.form.validateAll();
-    if (this.validator.allValid()) {
 
-      const condidat = {
-        nom: this.state.nom,
-        prenom: this.state.prenom,
-        dateNaissance: this.state.dateNaissance,
-        sexe: this.state.sexe,
-        etat: this.state.etat,
-        cin: this.state.cin,
-        telephone: this.state.telephone,
-        typeCondidatureId: this.state.typeCondidatureId,
-        posteActuelId: this.state.posteActuelId,
-        dernierDiplomeId: this.state.dernierDiplomeId,
-        domaineId: this.state.domaineId,
-        etatCivilId: this.state.etatCivilId,
-        etablissementId: this.state.etablissementId,
-        specialiteId: this.state.specialiteId,
-        anneeObtention: this.state.anneeObtention,
-        listeParcours: [],
-        condidatExperEnseignt: [],
-        condidatExperProfessionel: [],
-        competences: [],
-        recherches: [],
-        documents:[]
+  handleSubmitCondidat = (e) => {
+    
+    e.preventDefault();
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    console.log("vld", ValidationService.validator)
+    if (!this.state.confirmed) {
+      if (ValidationService.validator.allValid()) {
+
+        let condidatToSave = this.updateCondidatInfos();
+
+        this.setState({
+          // loading:true,
+          condidat: condidatToSave,
+          changePath: true
+        })
+
+        this.getCondidatLists(condidatToSave)
+        this.props.setCondidat(condidatToSave)
+
+      } else {
+        this.markUsTouched();
+        ValidationService.validator.showMessages();
       }
+    }else{
       this.setState({
-        // loading:true,
-        condidat: condidat,
         changePath: true
       })
-    }else{
-      this.validator.showMessages();
     }
+  }
+
+  updateCondidatInfos(){
+
+    const dernierDiplome = {
+      annee : this.state.anneeObtention,
+      diplome: this.state.diplome,
+      etablissement: this.state.etablissement,
+      specialite: this.state.specialite,
+
+    }
+   const condidat = { nom: this.state.nom,
+      aConfirmer: this.state.confirmed,
+      prenom: this.state.prenom,
+      dateNaissance: this.state.dateNaissance,
+      sexe: this.state.sexe,
+      etat: this.state.etat,
+      cin: this.state.cin,
+      telephone: this.state.telephone,
+      typeCondidature: this.state.typeCondidature,
+      posteActuel: this.state.posteActuel.id != -1 ? this.state.posteActuel : null,
+      dernierDiplome: dernierDiplome,
+      domaine: this.state.domaine,
+      etatCivil: this.state.etatCivil,
+      parcourScolaire: [],
+      experienceEnseignants: [],
+      experienceProfessionels: [],
+      competences: [],
+      recherches: [],
+      documents: [],
+    }
+      return  condidat;
+  }
+
+
+  getCondidatLists(condidat) {
+    const { condidatReducer } = this.props;
+
+    if (condidatReducer) {
+
+      if (condidatReducer.parcourScolaire && condidatReducer.parcourScolaire.length > 0) {
+        condidat.parcourScolaire = condidatReducer.parcourScolaire;
+      }
+      if (condidatReducer.experienceEnseignants && condidatReducer.experienceEnseignants.length > 0) {
+        condidat.experienceEnseignants = condidatReducer.experienceEnseignants;
+      }
+      if (condidatReducer.experienceProfessionels && condidatReducer.experienceProfessionels.length > 0) {
+        condidat.experienceProfessionels = condidatReducer.experienceProfessionels;
+      }
+      if (condidatReducer.competences && condidatReducer.competences.length > 0) {
+        condidat.competences = condidatReducer.competences;
+      }
+      if (condidatReducer.recherches && condidatReducer.recherches.length > 0) {
+        condidat.recherches = condidatReducer.recherches;
+      }
+      if (condidatReducer.documents && condidatReducer.documents.length > 0) {
+        condidat.documents = condidatReducer.documents;
+      }  
+    }
+  }
+
+  markUsTouched() {
+
+    this.state.touched[profilFields.etablissement] = true;
+    this.state.touched[profilFields.nom] = true;
+    this.state.touched[profilFields.prenom] = true;
+    this.state.touched[profilFields.specialite] = true;
+    this.state.touched[profilFields.tel] = true;
+    this.state.touched[profilFields.typeCondidat] = true;
+    this.state.touched[profilFields.poste] = true;
+    this.state.touched[profilFields.etatCivil] = true;
+    this.state.touched[profilFields.cin] = true;
+    this.state.touched[profilFields.datenaiss] = true;
+    this.state.touched[profilFields.domaine] = true;
+    this.state.touched[profilFields.diplome] = true;
+    this.state.touched[profilFields.anneObt] = true;
+    this.state.touched[profilFields.sexe] = true;
+
+  }
+  addMessages() {
+
+    ValidationService.validator.message(profilFields.nom, this.state.nom, 'required|alpha_space');
+    ValidationService.validator.message(profilFields.prenom, this.state.prenom, 'required|alpha_space');
+    ValidationService.validator.message(profilFields.cin, this.state.cin, 'required|numeric|min:0,num|size:8');
+    ValidationService.validator.message(profilFields.datenaiss, this.state.dateNaissance, 'required|dateAfterToday');
+    ValidationService.validator.message(profilFields.etatCivil, this.state.etatCivilId, 'requiredSelect');
+    ValidationService.validator.message(profilFields.tel, this.state.telephone, 'required|telephone');
+    ValidationService.validator.message(profilFields.diplome, this.state.dernierDiplomeId, 'requiredSelect');
+    ValidationService.validator.message(profilFields.typeCondidat, this.state.typeCondidatureId, 'requiredSelect');
+    ValidationService.validator.message(profilFields.domaine, this.state.domaineId, 'requiredSelect');
+    ValidationService.validator.message(profilFields.specialite, this.state.specialiteId, 'requiredSelect');
+    ValidationService.validator.message(profilFields.etablissement, this.state.etablissementId, 'requiredSelect');
+    ValidationService.validator.message(profilFields.anneObt, this.state.anneeObtention, 'required|numeric|afterCurrentYear');
+    ValidationService.validator.message(profilFields.sexe, this.state.sexe, 'required');
   }
 
   render() {
 
-
+    console.log("etat civil",this.state.etatCivil)
     const { message } = this.state;
     const { loading } = this.state;
     const { typeMessage } = this.state;
     const { changePath } = this.state;
     const { username } = this.props;
-    const { postes } = this.state;
-    const { diplomes } = this.state;
-    const { domaines } = this.state;
-    const { types } = this.state;
-    const { etablissements } = this.state;
-    const { specialites } = this.state;
-    const { etatCivils } = this.state;
-    const { modules } = this.state;
-    const { pays } = this.state;
-    const { condidat } = this.state;
-    let condidatProfile = null;
-    if (this.props.location.state.condidatBackToProfile) {
-      condidat.listeParcours= this.props.location.state.condidatBackToProfile.listeParcours
-      condidat.condidatExperEnseignt=this.props.location.state.condidatBackToProfile.condidatExperEnseignt
-      condidat.condidatExperProfessionel=this.props.location.state.condidatBackToProfile.condidatExperProfessionel
-      condidat.competences=this.props.location.state.condidatBackToProfile.competences
-      condidat.recherches=this.props.location.state.condidatBackToProfile.recherches
-    } 
-    
+    const { postes } = this.props;
+    const { diplomes } = this.props;
+    const { domaines } = this.props;
+    const { types } = this.props;
+    const { etablissements } = this.props;
+    const { specialites } = this.props;
+    const { etatCivils } = this.props;
+    const { invalide } = this.state;
+    const {condidatReducer} = this.props
+   
     if (changePath) {
       return <Redirect to={{
         pathname: '/parcour',
         state: {
           login: username,
-          condidatFromProfile: condidat,
-          postes: postes,
-          diplomes: diplomes,
-          etablissements: etablissements,
-          modules: modules,
-          etatCivils: etatCivils,
-          pays: pays,
-          types: types,
-          domaines: domaines,
-          specialites: specialites
-          
         }
       }} />;
     }
@@ -372,10 +567,15 @@ class Profile extends Component {
 
 
       <div id="wrapper">
-        <Leftside></Leftside>
+        <Leftside 
+         validerEtapeProfile={this.validerEtapeProfile}    
+        ></Leftside>
         <div id="content-wrapper" className="d-flex flex-column">
           <div id="content">
-            <Header />
+            <Header 
+             imagePath={this.state.imageProfilePath}
+             nomPrenom={this.state.nomPrenom}
+             />
 
 
             <div className="container-fluid pl-5">
@@ -394,7 +594,7 @@ class Profile extends Component {
                     {loading && (
                       <span className="spinner-border spinner-border-sm"></span>
                     )}
-              Suivant </button>
+                    Suivant </button>
                 </div>
                 {message && (
                   <div className="form-group">
@@ -422,8 +622,10 @@ class Profile extends Component {
                       modifEtatCivil={this.onChangeEtatCivil}
                       modifTel={this.onChangeTelephone}
                       etats={etatCivils}
-                      validator ={this.validator}
-                      touched ={this.state.touched}
+                      validator={ValidationService.validator}
+                      touched={this.state.touched}
+                      confirmed = {this.state.confirmed}
+                      condidatReducer = {condidatReducer}
                     />
 
                     <NiveauAcademique
@@ -435,8 +637,9 @@ class Profile extends Component {
                       diplomes={diplomes}
                       etablissements={etablissements}
                       specialites={specialites}
-                      validator ={this.validator}
-                      touched ={this.state.touched}
+                      validator={ValidationService.validator}
+                      touched={this.state.touched}
+                      condidatReducer = {condidatReducer}
                     />
 
                     <DomaineCompetence
@@ -447,8 +650,9 @@ class Profile extends Component {
                       postes={postes}
                       domaines={domaines}
                       types={types}
-                      validator ={this.validator}
-                      touched ={this.state.touched}
+                      validator={ValidationService.validator}
+                      touched={this.state.touched}
+                      condidatReducer = {condidatReducer}
                     />
 
 
@@ -481,7 +685,16 @@ function mapStateToProps(state) {
   const { etablissements } = state.etablissement;
   const { specialites } = state.specialite;
   const { etatCivils } = state.etatCivil;
-  return { username, user, postes, diplomes, domaines, types, etablissements, specialites, etatCivils };
+  const { condidatReducer } = state.condidat;
+  return { username, user, postes, diplomes, domaines, types, etablissements, specialites, etatCivils, condidatReducer };
 }
-
-export default connect(mapStateToProps)(Profile);
+const actionCreators = {
+  setCondidat: condidatActions.setCondidat,
+  ignorerExpEns: ignorerEtapeActions.ignorerExpEns,
+  ignorerExpPro: ignorerEtapeActions.ignorerExpPro,
+  ignorerCompetence: ignorerEtapeActions.ignorerCompetence,
+  ignorerRecherche: ignorerEtapeActions.ignorerRecherche,
+  validerParcours: validerEtapeActions.validerParcours,
+  validerDocuments: validerEtapeActions.validerDocuments,
+};
+export default connect(mapStateToProps, actionCreators)(Profile);

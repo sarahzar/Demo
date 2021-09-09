@@ -38,7 +38,7 @@ return   axios.get(
     }
 
     logout() {
-        localStorage.removeItem("userConnected");     
+        localStorage.clear()
     }
     
 }

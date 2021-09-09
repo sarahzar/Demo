@@ -23,7 +23,7 @@ class DetailsRecherche extends React.Component{
                                                 type="text"
                                                 className="form-control form-control-sm"
                                                 name="prenom"
-                                                value={this.props.recherche.thematiqueDesciption}
+                                                value={this.props.recherche.thematique.description}
                                                 onChange={(e) => {this.props.changeThematique(e,this.props.indice)}}
                                                 validations={[required]}
                                                 placeholder="Ajouter une thématique"

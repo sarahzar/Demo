@@ -2,6 +2,8 @@ package tn.esprit.esponline.persistence.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,11 +16,15 @@ public class Utilisateur {
     @GeneratedValue(strategy=GenerationType.TABLE)
     @Column(name="id_user")
     private int id;
+
     private String username;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     @Column(length = 45)
     private String resetPasswordToken;
     private String mail;
+    @JsonIgnore
     @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(
             name="UTILISATEUR_ROLES" ,
@@ -28,6 +34,7 @@ public class Utilisateur {
     )
   //  @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<Role> roles;
+    @JsonIgnore
     private boolean active;
 
 

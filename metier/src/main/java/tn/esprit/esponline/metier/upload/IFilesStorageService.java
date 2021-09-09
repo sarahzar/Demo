@@ -8,15 +8,18 @@ import java.util.stream.Stream;
 
 public interface IFilesStorageService {
 
-    public void init();
+    public void init(String username);
 
-    public void save(MultipartFile file);
+    public void save(MultipartFile file,String username) throws FileExistException;
 
-    public ResourceDto load(String filename);
+    public ResourceDto load(String filename,String username);
 
     public void deleteAll();
 
     public Stream<Path> loadAll();
+
+    public void initRootDirectory();
+    public void addDirectory(String path);
 
 
 }

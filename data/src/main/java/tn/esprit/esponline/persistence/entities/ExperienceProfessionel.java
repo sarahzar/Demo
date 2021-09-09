@@ -2,10 +2,12 @@ package tn.esprit.esponline.persistence.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
-@Inheritance(strategy=InheritanceType.JOINED)
+//@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @Entity
 public class ExperienceProfessionel {
     @Id
@@ -20,6 +22,7 @@ public class ExperienceProfessionel {
     private Etablissement etablissement;
     @ManyToOne
     private Pays pays;
+    @JsonIgnore
     @ManyToOne
     private Condidat condidat;
     private String ville;

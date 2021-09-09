@@ -1,6 +1,8 @@
 package tn.esprit.esponline.persistence.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,6 +18,7 @@ public class Recherche {
     private int these;
     @OneToOne(cascade = CascadeType.ALL)
     private Thematique thematique;
+    @JsonIgnore
     @ManyToOne
     private Condidat condidat;
 

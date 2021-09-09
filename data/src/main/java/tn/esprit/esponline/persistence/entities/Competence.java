@@ -2,6 +2,8 @@ package tn.esprit.esponline.persistence.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,6 +13,7 @@ public class Competence {
     private int id;
     private String titre;
     private String description;
+    @JsonIgnore
     @ManyToOne
     private Condidat condidat;
 
