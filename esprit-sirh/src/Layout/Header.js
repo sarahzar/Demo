@@ -179,7 +179,7 @@ export class Header extends Component {
   <li className="nav-item dropdown no-arrow">  
     <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  
       <span className="mr-2 d-none d-lg-inline text-gray-600 small">{this.props.nomPrenom}</span>  
-      <img className="img-profile rounded-circle" src={this.props.imagePath} />  
+      <img className="img-profile rounded-circle" src={this.props.imagePath ? this.props.imagePath : this.props.imageProfilePath} />  
     </a>  
   
     <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">  
@@ -211,8 +211,8 @@ export class Header extends Component {
     }  
 }  
 function mapStateToProps(state) {
-  
-  return { };
+  const {imagePath} = state.imageProfile;
+  return { imagePath};
 }
 const actionCreators = {
   login: userActions.login,

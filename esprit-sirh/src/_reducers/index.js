@@ -23,6 +23,7 @@ import storage from 'redux-persist/lib/storage';
 import { validerEtapeParcours } from './Shared/validerEtapeParcours.reducer';
 import { validerEtapeDocuments } from './Shared/validerEtapeDocuments.reducer'; 
 import { terminerInscription } from './Shared/terminerInscription.reducer'; 
+import { imageProfile } from './imageProfile.reducer';
 
 
 const persistConfig ={
@@ -46,6 +47,7 @@ const persistConfig ={
   'validerEtapeParcours',
   'validerEtapeDocuments',
   'terminerInscription',
+  'imageProfile'
   
 ]
 
@@ -73,6 +75,7 @@ const rootReducer = combineReducers({
   validerEtapeParcours,
   validerEtapeDocuments,
   terminerInscription,
+  imageProfile
 });
 
 export default persistReducer(persistConfig,rootReducer);

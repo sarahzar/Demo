@@ -14,6 +14,7 @@ import CondidatService from "../../../services/Condidature/CondidatService";
 import AuthService from "../../../services/Authentification/AuthService";
 import { ignorerEtapeActions } from "../../../_actions/Shared/ignorer.etape.actions";
 import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.actions";
+import { imageProfileAtions } from "../../../_actions/Shared/image.profile.ations";
 
 
 const FILES_LOCATION = "http://localhost/uploads/"
@@ -81,7 +82,6 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-
     const { condidatReducer } = this.props
     this.updateUserInfos(condidatReducer);
   }
@@ -114,8 +114,10 @@ class Profile extends Component {
           if(cdt.documents && cdt.documents.length > 0){
             cdt.documents.forEach(d => {
                if(d.type == 'PHOTO'){
+                   let path=FILES_LOCATION+"/"+year+"/"+this.state.login+"/"+d.nom;
+                   this.props.setImage(path)
                    this.setState({
-                     imageProfilePath: FILES_LOCATION+"/"+year+"/"+this.state.login+"/"+d.nom
+                     imageProfilePath: path
                    })
                }
             })
@@ -573,7 +575,7 @@ class Profile extends Component {
         <div id="content-wrapper" className="d-flex flex-column">
           <div id="content">
             <Header 
-             imagePath={this.state.imageProfilePath}
+             imageProfilePath={this.state.imageProfilePath}
              nomPrenom={this.state.nomPrenom}
              />
 
@@ -696,5 +698,6 @@ const actionCreators = {
   ignorerRecherche: ignorerEtapeActions.ignorerRecherche,
   validerParcours: validerEtapeActions.validerParcours,
   validerDocuments: validerEtapeActions.validerDocuments,
+  setImage: imageProfileAtions.setImage
 };
 export default connect(mapStateToProps, actionCreators)(Profile);
