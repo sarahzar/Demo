@@ -7,4 +7,5 @@ public interface ICondidatService  {
 
     public Condidat getCondidatByUsername(String username);
     public  void  saveCondidat(Condidat condidat);
+    public  void  deleteCondidat(Condidat condidat);
 }

@@ -53,7 +53,6 @@ class Profile extends Component {
       etat: "",
       cin: "",
       telephone: "",
-      dateInscrit: "",
       dateModif: "",
       aConfirmer: "",
       demandeModif: "",
@@ -74,10 +73,9 @@ class Profile extends Component {
       invalide:false,
       fromPl:false,
       validePl:false,
-      login: AuthService.getLogin(),
       confirmed:false,
       imageProfilePath:"",
-      nomPrenom:""
+      nomPrenom:"",
     };
   }
 
@@ -96,8 +94,12 @@ class Profile extends Component {
   }
 
   updateUserInfos(condidatReducer) {
+
     let year = new Date().getFullYear()
-    CondidatService.getCondidat(this.state.login).then(
+    let pathLogin= AuthService.getLogin()?  AuthService.getLogin() : this.props.location.state.userlogin
+    
+  
+    CondidatService.getCondidat(pathLogin).then(
 
       resp => {
         let cdt = null;
@@ -108,13 +110,19 @@ class Profile extends Component {
 
           console.log("condiadat from profile",cdt)
           this.setState({
-            confirmed: cdt.aConfirmer
+            confirmed: cdt.aConfirmer,
+            username: pathLogin,
           });
+
+          // this.setState({
+          //   username: pathLogin
+          // });
+      
 
           if(cdt.documents && cdt.documents.length > 0){
             cdt.documents.forEach(d => {
                if(d.type == 'PHOTO'){
-                   let path=FILES_LOCATION+"/"+year+"/"+this.state.login+"/"+d.nom;
+                   let path=FILES_LOCATION+"/"+year+"/"+pathLogin+"/"+d.nom;
                    this.props.setImage(path)
                    this.setState({
                      imageProfilePath: path
@@ -447,7 +455,10 @@ class Profile extends Component {
 
   updateCondidatInfos(){
 
+    const {condidatReducer} = this.props;
+
     const dernierDiplome = {
+      id: condidatReducer.dernierDiplome && condidatReducer.dernierDiplome.id != -1 ? condidatReducer.dernierDiplome.id : -1,
       annee : this.state.anneeObtention,
       diplome: this.state.diplome,
       etablissement: this.state.etablissement,
@@ -467,12 +478,13 @@ class Profile extends Component {
       dernierDiplome: dernierDiplome,
       domaine: this.state.domaine,
       etatCivil: this.state.etatCivil,
-      parcourScolaire: [],
-      experienceEnseignants: [],
-      experienceProfessionels: [],
-      competences: [],
-      recherches: [],
-      documents: [],
+      dateModif:condidatReducer ? condidatReducer.dateModif : null,
+      parcourScolaire: condidatReducer ? condidatReducer.parcourScolaire :  [],
+      experienceEnseignants: condidatReducer ? condidatReducer.experienceEnseignants :  [],
+      experienceProfessionels: condidatReducer ? condidatReducer.experienceProfessionels :  [],
+      competences: condidatReducer ? condidatReducer.competences :  [],
+      recherches: condidatReducer ? condidatReducer.recherches :  [],
+      documents: condidatReducer ? condidatReducer.documents :  [],
     }
       return  condidat;
   }
@@ -539,6 +551,55 @@ class Profile extends Component {
     ValidationService.validator.message(profilFields.sexe, this.state.sexe, 'required');
   }
 
+  modifierCondidat= (e) => {
+
+    e.preventDefault();
+
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    console.log("vld", ValidationService.validator)
+    const formData = new FormData();
+   
+    if (ValidationService.validator.allValid()) {
+
+      let condidatToSave = this.updateCondidatInfos();
+
+      this.setState({
+        condidat: condidatToSave,
+      })
+
+      this.getCondidatLists(condidatToSave)
+      this.props.setCondidat(condidatToSave)
+
+      condidatToSave = CondidatService.updateListEmpty(condidatToSave);
+      formData.append('condidat', JSON.stringify(condidatToSave));
+
+      CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
+      .then(
+        resp => {
+          if (resp.data.succesMessage) {
+            this.setState({
+              message: resp.data.succesMessage,
+              typeMessage: "alert alert-success",
+            })
+          } else {
+            this.setState({
+              message: resp.data.errorMessage,
+              typeMessage: "alert alert-danger",
+            })
+          }
+        }
+
+      );
+
+
+    } else {
+      this.markUsTouched();
+      ValidationService.validator.showMessages();
+    }
+    
+  }
+
   render() {
 
     console.log("etat civil",this.state.etatCivil)
@@ -576,7 +637,9 @@ class Profile extends Component {
           <div id="content">
             <Header 
              imageProfilePath={this.state.imageProfilePath}
-             nomPrenom={this.state.nomPrenom}
+             nom={this.state.nom}
+             prenom={this.state.prenom}
+             userlogin={this.state.username}
              />
 
 
@@ -590,13 +653,19 @@ class Profile extends Component {
                 { /* Page Heading */}
                 <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
                   <h1 className="h3 mb-0 text-gray-800">Informations générales</h1>
-                  <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                    className="fas fa-angle-double-right fa-sm text-white-50"
-                    disabled={loading}></i>
-                    {loading && (
-                      <span className="spinner-border spinner-border-sm"></span>
+                  <div>
+                    {condidatReducer && !condidatReducer.aConfirmer && condidatReducer.dateModif && (
+                      <button  className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" onClick={this.modifierCondidat}>modifier</button>
                     )}
-                    Suivant </button>
+
+                    <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                      className="fas fa-angle-double-right fa-sm text-white-50"
+                      disabled={loading}></i>
+                      {loading && (
+                        <span className="spinner-border spinner-border-sm"></span>
+                      )}
+                      Suivant </button>
+                  </div>
                 </div>
                 {message && (
                   <div className="form-group">

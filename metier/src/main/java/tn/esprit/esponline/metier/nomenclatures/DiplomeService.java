@@ -24,4 +24,9 @@ public class DiplomeService implements IDiplomeService {
     public Diplome findById(int id) {
         return diplomeRepository.findById(id);
     }
+
+    @Override
+    public void delete(Diplome entity) {
+        diplomeRepository.delete(entity);
+    }
 }

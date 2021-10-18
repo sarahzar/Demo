@@ -15,6 +15,8 @@ import { userActions } from "../../../_actions";
 import { condidatActions } from "../../../_actions/Shared/condidat.actions";
 import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.actions";
 import ParcourLecture from "./ParcourLecture";
+import AuthService from "../../../services/Authentification/AuthService";
+import CondidatService from "../../../services/Condidature/CondidatService";
 
 
 export const parcourFields = {
@@ -49,13 +51,14 @@ class Parcour extends Component {
       mention: -1,
       paysId: -1,
       anneeObtention: "",
-      items: [{annee:"",mention:-1,diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}],
+      items: [{ id:-1, annee:"",mention:-1,diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}],
       // index:0,     
       retour: false,
       condidat: null,
       changePath: false,
       touched: {},
-      message: ""
+      message: "",
+      typeMessage: "",
     };
   }
   componentDidMount() {
@@ -217,9 +220,10 @@ class Parcour extends Component {
   }
 
   updateTabElements = (e) => {
+    const defaultElem = {id:-1, annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
     e.preventDefault();
     let elements = this.state.items;
-    elements.push({annee:"",mention:-1,diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}});
+    elements.push(defaultElem);
     this.setState({
       items: elements
     });
@@ -231,6 +235,7 @@ class Parcour extends Component {
     const parcours = this.state.items.slice()
     const touchedcp = { ...this.state.touched }
     const replacedTouched = []
+    const defaultElem = {id:-1, annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
 
     //spprimer l'élément sélectionner
     parcours.splice(index, 1)
@@ -243,6 +248,11 @@ class Parcour extends Component {
         this.updateTouched(replacedTouched, i, (i + 1), touchedcp);
       }
     })
+
+     //rajouter l'élément par défaut si la liste est vide
+     if (parcours.length == 0) {
+      parcours.unshift(defaultElem)
+    }
     //mise à jour du state
     this.setState({
       items: parcours,
@@ -254,7 +264,7 @@ class Parcour extends Component {
 
   initListeParcours(liste) {
 
-    const defaultElem = {annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}};
+    const defaultElem = {id:-1, annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
     const firstElem = this.state.items[0];
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
@@ -337,6 +347,58 @@ class Parcour extends Component {
     })
   }
 
+  modifierCondidat= (e) => {
+
+    e.preventDefault();
+
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    console.log("vld", ValidationService.validator)
+    const formData = new FormData();
+   
+    if (ValidationService.validator.allValid()) {
+
+      let condidatToSave = this.state.condidat
+      condidatToSave.parcourScolaire = this.state.items
+
+      this.setState({
+        condidat: condidatToSave,
+      })
+       
+      condidatToSave = CondidatService.updateListEmpty(condidatToSave);
+      formData.append('condidat', JSON.stringify(condidatToSave));
+
+      CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
+      .then(
+        resp => {
+          if (resp.data.succesMessage) {
+            this.setState({
+              message: resp.data.succesMessage,
+              typeMessage: "alert alert-success",
+            })
+            CondidatService.getCondidat(AuthService.getLogin()).then(
+              data =>{
+                this.props.setCondidat(data)
+              }
+            )
+          } else {
+            this.setState({
+              message: resp.data.errorMessage,
+              typeMessage: "alert alert-danger",
+            })
+          }
+        }
+
+      );
+
+
+    } else {
+      this.markUsTouched();
+      ValidationService.validator.showMessages();
+    }
+    
+  }
+
   render() {
     const { classes } = this.props;
     const { loading } = this.state;
@@ -346,7 +408,8 @@ class Parcour extends Component {
     const { pays } = this.props;
     const { items } = this.state;
     const changePath = this.state.changePath;
-   
+    const { message } = this.state;
+    const { typeMessage } = this.state;
  
     if (this.state.retour) {
    
@@ -385,10 +448,16 @@ class Parcour extends Component {
                 { /* Page Heading */}
                 <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
                   <h1 className="h3 mb-0 text-gray-800">Parcours académique (tous les diplômes y compris le BAC)</h1>
-                  <div className="form-group m-0">
+                  <div className="form-group m-0">   
+                  <div>
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
+
+                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                      <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat}>modifier</button>
+                    )}
+
 
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                       className="fas fa-angle-double-right fa-sm text-white-50"
@@ -397,12 +466,19 @@ class Parcour extends Component {
                         <span className="spinner-border spinner-border-sm"></span>
                       )}
                       Suivant </button>
-
+                    </div>
                   </div>
-
-
-
                 </div>
+
+                {message && (
+                  <div className="form-group">
+                    <div className={typeMessage} role="alert">
+                      {message}
+                    </div>
+                  </div>
+                )}
+
+
 
                 { /* Content Row */}
                 <div className="row">
@@ -555,11 +631,11 @@ class Parcour extends Component {
                                 </ReactTooltip>
                               )}
                             </div>
-                              {index != 0 && (
+                           
                                 <Fab color="secondary" aria-label="delete" size="small" className={classes.fab} style={{ zIndex: 100 }} >
                                   <DeleteIcon onClick={(e) => this.deleteTabElement(e, index)} />
                                 </Fab>
-                              )}
+
                             </td>
                           </tr>
 
@@ -568,8 +644,7 @@ class Parcour extends Component {
                       )}
                     </table>
                 
-                    <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
-
+                    <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button> 
                   </div>
                   )}
                   {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&

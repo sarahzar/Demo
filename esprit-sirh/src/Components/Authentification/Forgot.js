@@ -24,7 +24,7 @@ const email = value => {
     );
   }
 };
-export default class Forgot extends Component {
+ class Forgot extends Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -62,40 +62,40 @@ export default class Forgot extends Component {
 
     if (this.checkBtn.context._errors.length === 0) {
 
-      axios.post("http://localhost:8085/SIRH_Esprit/forgot_password",mailInfos).then(
+      axios.post("http://localhost:8085/SIRH_Esprit/forgot_password", mailInfos).then(
         resp => {
           if (resp.data.succesMessage) {
             const resMessage =
-                (resp.data.succesMessage)
+              (resp.data.succesMessage)
             this.setState({
-                loading: false,
-                messageSuccess: resMessage
+              loading: false,
+              messageSuccess: resMessage
             });
-        } else {
+          } else {
             const resMessage =
-                (resp.data.errorMessage)
+              (resp.data.errorMessage)
             this.setState({
-                loading: false,
-                message: resMessage
+              loading: false,
+              message: resMessage
             });
-        }
-      },
-      error => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
+          }
+        },
+        error => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
 
-        this.setState({
-          loading: false,
-          message: resMessage
-        });
-      }
+          this.setState({
+            loading: false,
+            message: resMessage
+          });
+        }
       );
-     
-    }else {
+
+    } else {
       this.setState({
         loading: false
       });
@@ -104,66 +104,89 @@ export default class Forgot extends Component {
 
   render() {
     return (
-      <div className="col-md-12">
-        <div className="card card-container">
-        
+      <div class="container">
+        <div className="row justify-content-center">
 
-          <Form
-            onSubmit={this.handleSubmit}
-            ref={c => {
-              this.form = c;
-            }}
-          >
-            <div className="form-group">
-              <label htmlFor="mail">e-mail</label>
-              <Input
-                type="text"
-                className="form-control"
-                name="mail"
-                value={this.state.mail}
-                onChange={this.onChangeUsername}
-                validations={[required,email]}
-              />
-            </div>
+          <div className="col-xl-10 col-lg-12 col-md-9">
 
-          
+            <div className="card o-hidden border-0 shadow-lg my-5">
+              <div className="card-body">
 
-            <div className="form-group">
-              <button
-                className="btn btn-primary btn-block"
-                disabled={this.state.loading}
-              >
-                {this.state.loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
-                )}
-                <span>Confirmer</span>
-              </button>
-            </div>
+                <div className="row justify-content-center">
 
-             {this.state.message && (
-              <div className="form-group">
-                <div className="alert alert-danger" role="alert">
-                  {this.state.message}
+                  <div class="col-lg-6">
+                  <div className="p-5">
+                                  <div className="text-center">
+                                      <h1 className="h4 text-gray-900 mb-4">Réinitialisation mot de passe</h1>
+                                  </div>
+
+                  <Form
+                    onSubmit={this.handleSubmit}
+                    ref={c => {
+                      this.form = c;
+                    }}
+                  >
+                    <div className="form-group">
+                     
+                      <Input
+                        type="text"
+                        className="form-control form-control-user"
+                        placeholder="Addresse Email"
+                        name="mail"
+                        value={this.state.mail}
+                        onChange={this.onChangeUsername}
+                        validations={[required, email]}
+                      />
+                    </div>
+
+
+
+                    <div className="form-group">
+                      <button
+                        className="btn btn-primary btn-user btn-block"
+                        disabled={this.state.loading}
+                      >
+                        {this.state.loading && (
+                          <span className="spinner-border spinner-border-sm"></span>
+                        )}
+                        <span>Confirmer</span>
+                      </button>
+                    </div>
+
+                    {this.state.message && (
+                      <div className="form-group">
+                        <div className="alert alert-danger" role="alert">
+                          {this.state.message}
+                        </div>
+                      </div>
+                    )}
+                    {this.state.messageSuccess && (
+                      <div className="form-group">
+                        <div className="alert alert-success" role="alert">
+                          {this.state.messageSuccess}
+                        </div>
+                      </div>
+                    )}
+
+                    <CheckButton
+                      style={{ display: "none" }}
+                      ref={c => {
+                        this.checkBtn = c;
+                      }}
+                    />
+                  </Form>
+
+
                 </div>
               </div>
-            )} 
-              {this.state.messageSuccess && (
-              <div className="form-group">
-                <div className="alert alert-success" role="alert">
-                  {this.state.messageSuccess}
-                </div>
-              </div>
-            )} 
-            
-            <CheckButton
-              style={{ display: "none" }}
-              ref={c => {
-                this.checkBtn = c;
-              }}
-            />
-          </Form>
+            </div>
+          </div>
         </div>
+      </div>
+      </div>
       </div>
     );
   }
 }
+
+export default Forgot;

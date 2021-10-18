@@ -24,4 +24,9 @@ public class PosteService implements IPosteService {
     public Poste findById(int id) {
         return posteRepository.findById(id);
     }
+
+    @Override
+    public void delete(Poste entity) {
+        posteRepository.delete(entity);
+    }
 }

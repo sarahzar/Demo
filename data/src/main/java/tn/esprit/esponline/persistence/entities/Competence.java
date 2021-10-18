@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Competence {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     private String titre;
     private String description;
     @JsonIgnore
@@ -25,11 +25,11 @@ public class Competence {
         this.condidat = condidat;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

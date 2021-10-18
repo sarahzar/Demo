@@ -8,7 +8,7 @@ export function registration(state = initialisation, action) {
     case userConstants.REGISTER_SUCCESS:
       return {registerd: true,loading:false,login: action.username};
     case userConstants.REGISTER_FAILURE:
-      return {registerd: true,loading:false,login: null};
+      return {registerd: false,loading:false,login: null};
     case userConstants.LOGOUT:
         return {};
     default:

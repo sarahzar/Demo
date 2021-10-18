@@ -2,11 +2,12 @@ package tn.esprit.esponline.persistence.entities;
 
 
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+//@DiscriminatorColumn(name="type",discriminatorType= DiscriminatorType.STRING)
+//@DiscriminatorValue(value="ExperienceEns")
 public class ExperienceEnseignant extends ExperienceProfessionel {
 
     @ManyToOne
@@ -15,10 +16,7 @@ public class ExperienceEnseignant extends ExperienceProfessionel {
 
 
     public ExperienceEnseignant(){}
-    public ExperienceEnseignant(Date dateDebut, Date dateFin, Poste poste, Etablissement etablissement, Module moduleEnseigne, Condidat condidat) {
-        super(dateDebut, dateFin, poste, etablissement,condidat);
-        this.moduleEnseigne = moduleEnseigne;
-    }
+
 
     public Module getModuleEnseigne() {
         return moduleEnseigne;

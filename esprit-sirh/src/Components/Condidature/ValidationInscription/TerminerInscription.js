@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.actions";
 import CondidatService from "../../../services/Condidature/CondidatService";
 import AuthService from "../../../services/Authentification/AuthService";
+import { condidatActions } from "../../../_actions/Shared/condidat.actions";
 class TerminerInscription extends React.Component {
     constructor(props) {
         super(props)
@@ -26,6 +27,10 @@ class TerminerInscription extends React.Component {
                        message : resp.data.succesMessage,
                        typeMessage : "alert alert-success"
                    })
+                   const {condidatReducer}=this.props
+                   condidatReducer.aConfirmer = true;
+                   this.props.setCondidat(condidatReducer)
+
                 }else{
                     this.setState({
                         message : resp.data.errorMessage,
@@ -196,6 +201,7 @@ function mapStateToProps(state) {
     return { ignorerCpt,ignorerExpEns,ignorerExpPro,ignorerRecherche,condidatReducer,validateParcours,validateDocuments};
   }
   const actionCreators = {
-    terminerInscription: validerEtapeActions.terminerInscription
+    terminerInscription: validerEtapeActions.terminerInscription,
+    setCondidat: condidatActions.setCondidat,
   };
 export default connect(mapStateToProps,actionCreators)(TerminerInscription);

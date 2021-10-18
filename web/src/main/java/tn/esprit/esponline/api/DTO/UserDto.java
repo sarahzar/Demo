@@ -2,7 +2,7 @@ package tn.esprit.esponline.api.DTO;
 
 public class UserDto {
 
-    private int id;
+    private long id;
     private String login;
     private String mail;
     private String role;
@@ -11,7 +11,7 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(int id, String login, String mail, String role) {
+    public UserDto(long id, String login, String mail, String role) {
         this.id = id;
         this.login = login;
         this.mail = mail;
@@ -50,11 +50,11 @@ public class UserDto {
         this.password = password;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 }

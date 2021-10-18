@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Recherche {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     private int chapitreLivre;
     private int articleJornaux;
     private int articleConference;
@@ -36,11 +36,11 @@ public class Recherche {
         this.condidat = condidat;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

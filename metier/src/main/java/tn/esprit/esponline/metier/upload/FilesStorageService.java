@@ -52,13 +52,14 @@ public class FilesStorageService implements IFilesStorageService{
             //Files.deleteIfExists(root);
             if(!Files.isDirectory(root)){
                 Files.createDirectories(root);
-            }else{
-
-                File[] files = new File("C:/wamp/www/uploads/"+path).listFiles();
-                for(File f:files){
-                    f.delete();
-                }
             }
+//            else{
+//
+//                File[] files = new File("C:/wamp/www/uploads/"+path).listFiles();
+//                for(File f:files){
+//                    f.delete();
+//                }
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }

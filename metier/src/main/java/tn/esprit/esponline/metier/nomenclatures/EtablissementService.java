@@ -24,4 +24,9 @@ public class EtablissementService implements IEtablissementService {
     public Etablissement findById(int id) {
         return etablissementRepository.findById(id);
     }
+
+    @Override
+    public void delete(Etablissement entity) {
+        etablissementRepository.delete(entity);
+    }
 }

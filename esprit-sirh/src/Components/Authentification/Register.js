@@ -105,7 +105,6 @@ class Register extends Component {
     this.form.validateAll();
 
     if (this.checkBtn.context._errors.length === 0) {
-     
       this.props.allPostes();
       this.props.allDiplomes();
       this.props.allEtablissements();
@@ -147,20 +146,21 @@ class Register extends Component {
         );
       }
     };
-    if (registerd) {
+    if (registerd == true) {
       return <Redirect to={{
         pathname: '/profile',
         state: {
-          login: username,
-          postes: postes,
-          diplomes: diplomes,
-          etablissements: etablissements,
-          modules: modules,
-          etatCivils: etatCivils,
-          pays: pays,
-          types: types,
-          domaines: domaines,
-          specialites: specialites
+          // login: username,
+          // postes: postes,
+          // diplomes: diplomes,
+          // etablissements: etablissements,
+          // modules: modules,
+          // etatCivils: etatCivils,
+          // pays: pays,
+          // types: types,
+          // domaines: domaines,
+          // specialites: specialites,
+          userlogin: this.state.username
         }
       }} />;
       // document.getElementById("linkToProfile").click();

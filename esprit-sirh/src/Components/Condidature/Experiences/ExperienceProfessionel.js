@@ -15,6 +15,8 @@ import ValidationService from "../../../services/Validation/ValidationService"
 import { ignorerEtapeActions } from '../../../_actions/Shared/ignorer.etape.actions';
 import { condidatActions } from "../../../_actions/Shared/condidat.actions";
 import ExperienceProLecture from "./ExperienceProLecture";
+import CondidatService from "../../../services/Condidature/CondidatService";
+import AuthService from "../../../services/Authentification/AuthService";
 
 export const expProFields = {
   etablissement: 'etablissement',
@@ -49,12 +51,14 @@ class ExperienceProfessionel extends Component {
       posteId: -1,
       dateDebut: "",
       dateFin: "",
-      items: [{ dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }],
+      items: [{ id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }],
       retour: false,
       condidat: null,
       changePath: false,
       ignorer: false,
       touched: {},
+      message: "",
+      typeMessage: "",
     };
   }
   componentDidMount() {
@@ -74,14 +78,20 @@ class ExperienceProfessionel extends Component {
 
     if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
 
-    let elements = [...this.state.items]
-    elements = this.initListeExp(elements)
+      let elements = []
+      elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.experienceProfessionels : [...this.state.items]
+      elements = this.initListeExp(elements)
+    
 
    
     if (localStorage.getItem('persist:root')) {
+
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
       this.props.condidatReducer.experienceProfessionels = [...this.state.items];
       this.props.setCondidat(this.props.condidatReducer)
-      if (elements.length > 0) {
+      }
+
+      if (elements && elements.length > 0) {
         this.props.ignorerExpPro(false);
       } else {
         this.props.ignorerExpPro(true);
@@ -207,8 +217,8 @@ class ExperienceProfessionel extends Component {
 
   initListeExp(liste) {
 
-    const defaultElem = { dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" };
-    const firstElem = this.state.items[0];
+    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }
+    const firstElem = liste ? liste[0] : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
       liste = [];
@@ -221,6 +231,7 @@ class ExperienceProfessionel extends Component {
     const exppro = this.state.items.slice()
     const touchedcp = { ...this.state.touched }
     const replacedTouched = []
+    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }
 
     //spprimer l'élément sélectionner
     exppro.splice(index, 1)
@@ -229,7 +240,7 @@ class ExperienceProfessionel extends Component {
 
     //rajouter l'élément par défaut si la liste est vide
     if (exppro.length == 0) {
-      exppro.unshift({ dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" })
+      exppro.unshift(defaultElem)
     }
     //mise à jour du state
     this.setState({
@@ -250,9 +261,10 @@ class ExperienceProfessionel extends Component {
   }
 
   updateTabElements = (e) => {
+    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }
     e.preventDefault();
     let elements = this.state.items;
-    elements.push({ dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" });
+    elements.push(defaultElem);
     this.setState({
       items: elements
     });
@@ -333,6 +345,46 @@ class ExperienceProfessionel extends Component {
       touched: touchedCopy
     })
   }
+  
+  modifierCondidat= (e) => {
+
+    e.preventDefault();
+    const formData = new FormData();
+   
+      let condidatToSave = this.state.condidat
+      condidatToSave.experienceProfessionels = this.state.items
+
+      this.setState({
+        condidat: condidatToSave,
+      })
+
+      condidatToSave = CondidatService.updateListEmpty(condidatToSave);
+      formData.append('condidat', JSON.stringify(condidatToSave));
+
+      CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
+      .then(
+        resp => {
+          if (resp.data.succesMessage) {
+            this.setState({
+              message: resp.data.succesMessage,
+              typeMessage: "alert alert-success",
+            })
+            CondidatService.getCondidat(AuthService.getLogin()).then(
+              data =>{
+                this.props.setCondidat(data)
+              }
+            )
+          } else {
+            this.setState({
+              message: resp.data.errorMessage,
+              typeMessage: "alert alert-danger",
+            })
+          }
+        }
+
+      );
+    
+  }
 
   render() {
   
@@ -344,6 +396,8 @@ class ExperienceProfessionel extends Component {
     const { pays } = this.props;
     const { items } = this.state;
     const changePath = this.state.changePath;
+    const { message } = this.state;
+    const { typeMessage } = this.state;
 
     console.log("items",items)
 
@@ -386,6 +440,10 @@ class ExperienceProfessionel extends Component {
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
 
+                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                      <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat} >modifier</button>
+                    )}
+
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                       className="fas fa-angle-double-right fa-sm text-white-50"
                       disabled={loading}></i>
@@ -395,10 +453,16 @@ class ExperienceProfessionel extends Component {
                       Suivant </button>
 
                   </div>
-
-
-
                 </div>
+
+                {message && (
+                  <div className="form-group">
+                    <div className={typeMessage} role="alert">
+                      {message}
+                    </div>
+                  </div>
+                )}
+
 
                 { /* Content Row */}
                 <div className="row">

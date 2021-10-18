@@ -12,6 +12,8 @@ import Pagination from "react-js-pagination";
 import { ignorerEtapeActions } from '../../../_actions/Shared/ignorer.etape.actions';
 import { condidatActions } from "../../../_actions/Shared/condidat.actions";
 import RechercheLecture from "./RechercheLecture";
+import CondidatService from "../../../services/Condidature/CondidatService";
+
 
 
 class Recherche extends Component {
@@ -21,13 +23,15 @@ class Recherche extends Component {
         this.handleSubmitCondidat = this.handleSubmitCondidat.bind(this)
         this.state = {
             loading: false,
-            savedItems: [{ thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }],
+            savedItems: [{ id:-1, thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }],
             retour: false,
             condidat: null,
             changePath: false,
             activePage: 1,
             itemsCount: 1,
             ignorer: false,
+            message: "",
+            typeMessage: ""
         };
     }
 
@@ -42,9 +46,9 @@ class Recherche extends Component {
 
             if (condidatReducer.recherches && condidatReducer.recherches.length > 0) {
 
-                const defaultElem = { thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
-                if (!condidatReducer.aConfirmer && JSON.stringify(defaultElem) != JSON.stringify(condidatReducer.recherches[0])) {
-                    condidatReducer.recherches.unshift({ thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 })
+                 const defaultElement = { id:-1, thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
+                if (!condidatReducer.aConfirmer && JSON.stringify(defaultElement) != JSON.stringify(condidatReducer.recherches[0])) {
+                    condidatReducer.recherches.unshift(defaultElement)
                 }
 
                 let count = condidatReducer.recherches.length;
@@ -60,13 +64,18 @@ class Recherche extends Component {
 
         if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
 
-        let elements = [...this.state.savedItems]
-        elements = this.initListeExp(elements)
+            let elements = []
+            elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.recherches : [...this.state.savedItems]
+            elements = this.initListe(elements)
 
         if (localStorage.getItem('persist:root')) {
+
+            if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
             this.props.condidatReducer.recherches = [...this.state.savedItems];
             this.props.setCondidat(this.props.condidatReducer)
-            if (elements.length > 0) {
+            }
+
+            if (elements && elements.length > 0) {
                 this.props.ignorerRecherche(false);
             } else {
                 this.props.ignorerRecherche(true);
@@ -140,6 +149,7 @@ class Recherche extends Component {
 
         this.props.ignorerRecherche(true)
     }
+
     deleteTabElement = (e, index) => {
         //declaration variables copies du state
         const recherches = this.state.savedItems.slice()
@@ -160,8 +170,8 @@ class Recherche extends Component {
     updateTabElements = (e) => {
         e.preventDefault()
         let elements = [...this.state.savedItems]
-
-        elements.unshift({ thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 })
+        const  defaultElement = { id:-1, thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
+        elements.unshift(defaultElement)
         this.setState({
             savedItems: elements,
             itemsCount: elements.length
@@ -169,12 +179,12 @@ class Recherche extends Component {
 
     }
 
-    initListeExp(liste) {
+    initListe(liste) {
 
-        const defaultElem = { thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
-        const firstElem = this.state.savedItems[0];
+        const defaultElement = { id:-1, thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
+        const firstElem = liste ? liste[0] : null;
     
-        if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
+        if (JSON.stringify(defaultElement) === JSON.stringify(firstElem)) {
           liste = this.state.savedItems.slice();
           liste.splice(0,1)
         }
@@ -189,7 +199,7 @@ class Recherche extends Component {
             let condidatToSave = this.state.condidat
             let recherches = this.state.savedItems
             recherches.shift()
-            condidatToSave.recherches = recherches
+                condidatToSave.recherches = recherches
 
             this.setState({
                 loading: true,
@@ -212,11 +222,63 @@ class Recherche extends Component {
         this.setState({ activePage: pageNumber });
     }
 
+    modifierCondidat= (e) => {
+
+        e.preventDefault();
+        const formData = new FormData();
+        const defaultElement = { id:-1, thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
+       
+          let condidatToSave = this.state.condidat
+
+          let recherches = [...this.state.savedItems]
+          recherches.shift()
+          condidatToSave.recherches = recherches
+
+    
+        //   this.setState({
+        //     condidat: condidatToSave,
+        //   })
+
+          condidatToSave = CondidatService.updateListEmpty(condidatToSave);
+          formData.append('condidat', JSON.stringify(condidatToSave));
+    
+          CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
+          .then(
+            resp => {
+              if (resp.data.succesMessage) {
+                this.setState({
+                  message: resp.data.succesMessage,
+                  typeMessage: "alert alert-success",
+                })
+                CondidatService.getCondidat(AuthService.getLogin()).then(
+                  data =>{
+                      let cdt=data
+                      cdt.recherches.unshift(defaultElement)
+                      this.props.setCondidat(cdt)
+                      this.setState({
+                        savedItems: cdt.recherches
+                      })
+                  }
+                )
+              } else {
+                this.setState({
+                  message: resp.data.errorMessage,
+                  typeMessage: "alert alert-danger",
+                })
+              }
+            }
+    
+          );
+        
+      }
+
     render() {
         
         const { loading } = this.state;
         const { changePath } = this.state
         const { savedItems } = this.state;
+        const { message } = this.state;
+        const { typeMessage } = this.state;
 
         console.log("items",savedItems,"num page",this.state.activePage)
       
@@ -258,6 +320,10 @@ class Recherche extends Component {
                                             <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                                         </button>
 
+                                        {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                                            <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat}>modifier</button>
+                                        )}
+
                                         <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                             className="fas fa-angle-double-right fa-sm text-white-50"
                                             disabled={loading}></i>
@@ -269,6 +335,15 @@ class Recherche extends Component {
                                     </div>
 
                                 </div>
+
+                                {message && (
+                                    <div className="form-group">
+                                        <div className={typeMessage} role="alert">
+                                            {message}
+                                        </div>
+                                    </div>
+                                )}
+
 
                                 { /* Content Row */}
                            

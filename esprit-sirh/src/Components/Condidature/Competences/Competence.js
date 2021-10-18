@@ -14,6 +14,8 @@ import ValidationService from "../../../services/Validation/ValidationService"
 import { ignorerEtapeActions } from '../../../_actions/Shared/ignorer.etape.actions';
 import { condidatActions } from "../../../_actions/Shared/condidat.actions";
 import CompetenceLecture from "./CompetenceLecture";
+import CondidatService from "../../../services/Condidature/CondidatService";
+import AuthService from "../../../services/Authentification/AuthService";
 
 const styles = theme => ({
   fab: {
@@ -34,12 +36,14 @@ class Competence extends Component {
 
     this.state = {
       loading: false,
-      items: [{ titre: "", description: "" }],
+      items: [{ id:-1, titre: "", description: "" }],
       retour: false,
       condidat: null,
       changePath: false,
       ignorer: false,
       touched: {},
+      message: "",
+      typeMessage: "",
     };
   }
 
@@ -61,13 +65,18 @@ class Competence extends Component {
 
     if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
 
-    let elements = [...this.state.items]
-    elements = this.initListeExp(elements)
+    let elements = []
+    elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.competences : [...this.state.items]
+    elements = this.initListe(elements)
 
     if (localStorage.getItem('persist:root')) {
-      this.props.condidatReducer.competences = [...this.state.items];;
+
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
+      this.props.condidatReducer.competences = [...this.state.items];
       this.props.setCondidat(this.props.condidatReducer)
-      if (elements.length > 0) {
+      }
+
+      if (elements && elements.length > 0) {
         this.props.ignorerCompetence(false);
       } else {
         this.props.ignorerCompetence(true);
@@ -122,9 +131,10 @@ class Competence extends Component {
   }
 
   updateTabElements = (e) => {
+    const defaultElem = { id:-1, titre: "", description: "" }
     e.preventDefault();
     let elements = this.state.items;
-    elements.push({ titre: "", description: "" });
+    elements.push(defaultElem);
     this.setState({
       items: elements
     });
@@ -136,6 +146,7 @@ class Competence extends Component {
     const competences = this.state.items.slice()
     const touchedcp = { ...this.state.touched }
     const replacedTouched = []
+    const defaultElem = { id:-1, titre: "", description: "" }
 
     //spprimer l'élément sélectionner
     competences.splice(index, 1)
@@ -144,7 +155,7 @@ class Competence extends Component {
    
     //rajouter l'élément par défaut si la liste est vide
     if (competences.length == 0) {
-      competences.unshift({ titre: "", description: "" })
+      competences.unshift(defaultElem)
     }
     //mise à jour du state
     this.setState({
@@ -164,10 +175,10 @@ class Competence extends Component {
     });
   }
 
-  initListeExp(liste) {
+  initListe(liste) {
 
-    const defaultElem = { titre: "", description: "" }
-    const firstElem = this.state.items[0];
+    const defaultElem = { id:-1, titre: "", description: "" }
+    const firstElem = liste ? liste[0] : 0;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
       liste = [];
@@ -230,6 +241,46 @@ class Competence extends Component {
     })
   }
 
+  modifierCondidat= (e) => {
+
+    e.preventDefault();
+    const formData = new FormData();
+   
+      let condidatToSave = this.state.condidat
+      condidatToSave.competences = this.state.items
+
+      this.setState({
+        condidat: condidatToSave,
+      })
+
+      condidatToSave = CondidatService.updateListEmpty(condidatToSave);
+      formData.append('condidat', JSON.stringify(condidatToSave));
+
+      CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
+      .then(
+        resp => {
+          if (resp.data.succesMessage) {
+            this.setState({
+              message: resp.data.succesMessage,
+              typeMessage: "alert alert-success",
+            })
+            CondidatService.getCondidat(AuthService.getLogin()).then(
+              data =>{
+                this.props.setCondidat(data)
+              }
+            )
+          } else {
+            this.setState({
+              message: resp.data.errorMessage,
+              typeMessage: "alert alert-danger",
+            })
+          }
+        }
+
+      );
+    
+  }
+
   render() {
 
     const { classes } = this.props;
@@ -237,9 +288,10 @@ class Competence extends Component {
     const { items } = this.state;
     const { changePath } = this.state;
     const { condidatReducer } = this.props;
-   
-    if (this.state.retour) {
-     
+    const { message } = this.state;
+    const { typeMessage } = this.state;
+
+    if (this.state.retour) {   
       return <Redirect to={{
         pathname: '/expPro',
       }} />;
@@ -271,9 +323,15 @@ class Competence extends Component {
                 <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
                   <h1 className="h3 mb-0 text-gray-800">Compétence (Scientifique, Culturelle, Artistique, ...)</h1>
                   <div className="form-group m-0">
+               
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
+
+                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                      <button  className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat} >modifier</button>
+                    )}
+
 
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                       className="fas fa-angle-double-right fa-sm text-white-50"
@@ -284,10 +342,16 @@ class Competence extends Component {
                       Suivant </button>
 
                   </div>
-
-
-
                 </div>
+
+                {message && (
+                  <div className="form-group">
+                    <div className={typeMessage} role="alert">
+                      {message}
+                    </div>
+                  </div>
+                )}
+
 
                 { /* Content Row */}
                 <div className="row">

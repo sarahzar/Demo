@@ -25,4 +25,9 @@ public class PaysService  implements IPaysService {
     public Pays findById(int id) {
         return paysRepo.findById(id);
     }
+
+    @Override
+    public void delete(Pays entity) {
+        paysRepo.delete(entity);
+    }
 }

@@ -9,11 +9,13 @@ import java.util.Date;
 
 //@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+//@DiscriminatorColumn(name="type",discriminatorType=DiscriminatorType.STRING)
+//@DiscriminatorValue(value="ExperiencePro")
 public class ExperienceProfessionel {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-
-    private int id;
+    @GeneratedValue
+    private long id;
     private Date dateDebut;
     private Date dateFin;
     @ManyToOne
@@ -30,29 +32,12 @@ public class ExperienceProfessionel {
     public ExperienceProfessionel() {
     }
 
-    public ExperienceProfessionel(Date dateDebut, Date dateFin, Poste poste, Etablissement etablissement, Pays pays, String ville, Condidat condidat) {
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
-        this.poste = poste;
-        this.etablissement = etablissement;
-        this.pays = pays;
-        this.ville = ville;
-        this.condidat=condidat;
-    }
 
-    public ExperienceProfessionel(Date dateDebut, Date dateFin, Poste poste, Etablissement etablissement, Condidat condidat) {
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
-        this.poste = poste;
-        this.etablissement = etablissement;
-        this.condidat=condidat;
-    }
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

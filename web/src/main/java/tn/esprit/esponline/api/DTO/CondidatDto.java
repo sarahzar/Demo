@@ -27,12 +27,14 @@ public class CondidatDto {
     private EtatCivil etatCivil;
     private boolean aConfirmer;
     private  Date dateInscrit;
-    List<Parcour> parcourScolaire;
-    List<ExperienceEnseignantDTO> experienceEnseignants;
-    List<ExperienceProfessionelDTO> experienceProfessionels;
-    List<Competence> competences;
-    List<Recherche> recherches;
-    List<Document> documents;
+    private List<Parcour> parcourScolaire;
+    private List<ExperienceEnseignantDTO> experienceEnseignants;
+    private List<ExperienceProfessionelDTO> experienceProfessionels;
+    private List<Competence> competences;
+    private List<Recherche> recherches;
+    private List<Document> documents;
+    private boolean demandeModif;
+    private Date dateModif;
 
     public CondidatDto() {
     }
@@ -203,5 +205,21 @@ public class CondidatDto {
 
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
+    }
+
+    public boolean isDemandeModif() {
+        return demandeModif;
+    }
+
+    public void setDemandeModif(boolean demandeModif) {
+        this.demandeModif = demandeModif;
+    }
+
+    public Date getDateModif() {
+        return dateModif;
+    }
+
+    public void setDateModif(Date dateModif) {
+        this.dateModif = dateModif;
     }
 }

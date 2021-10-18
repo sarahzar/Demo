@@ -11,7 +11,7 @@ public class Parcour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     private int annee;
     private int mention;
     //assosiations
@@ -40,11 +40,12 @@ public class Parcour {
         this.mention=mention;
     }
 
-    public int getId() {
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

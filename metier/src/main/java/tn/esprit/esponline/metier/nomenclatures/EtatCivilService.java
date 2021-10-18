@@ -22,4 +22,9 @@ public class EtatCivilService implements IEtatCivilService {
     public EtatCivil findById(int id) {
         return etatCivilRepository.findById(id);
     }
+
+    @Override
+    public void delete(EtatCivil entity) {
+        etatCivilRepository.delete(entity);
+    }
 }

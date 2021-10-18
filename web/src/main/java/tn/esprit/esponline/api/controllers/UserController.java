@@ -15,6 +15,7 @@ import tn.esprit.esponline.metier.authentification.IRoleService;
 import tn.esprit.esponline.metier.authentification.IUserService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin
@@ -73,6 +74,7 @@ public class UserController {
         ) ;
         try {
             if(connectedUser==null) {
+                condidat.setDateInscrit(new Date());
                 condidatService.saveCondidat(condidat);
                 //userService.save(u);
                 resp.setSuccesMessage(successUserRegistration);

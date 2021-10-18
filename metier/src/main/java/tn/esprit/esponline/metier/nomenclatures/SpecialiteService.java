@@ -24,4 +24,9 @@ public class SpecialiteService implements ISpecialiteService {
     public Specialite findById(int id) {
         return specialiteRepository.findById(id);
     }
+
+    @Override
+    public void delete(Specialite entity) {
+        specialiteRepository.delete(entity);
+    }
 }

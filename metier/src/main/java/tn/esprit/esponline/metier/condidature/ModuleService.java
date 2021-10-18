@@ -23,4 +23,9 @@ public class ModuleService implements IModuleService {
     public Module findById(int id) {
         return moduleRepository.findById(id);
     }
+
+    @Override
+    public void delete(Module entity) {
+        moduleRepository.delete(entity);
+    }
 }

@@ -11,7 +11,7 @@ public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     private String nom;
     private String type;
     @JsonIgnore
@@ -27,11 +27,11 @@ public class Document {
         this.condidat = condidat;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -117,13 +117,25 @@ export default class Reset extends Component {
           );
         }
       };
-      if(this.state.messageSuccess){
-         return  <Redirect to={'/'} />
-      }
+      // if(this.state.messageSuccess){
+      //    return  <Redirect to={'/login'} />
+      // }
     return (
-      <div className="col-md-12">
-        <div className="card card-container">
-         
+      <div class="container">
+        <div className="row justify-content-center">
+
+          <div className="col-xl-10 col-lg-12 col-md-9">
+
+            <div className="card o-hidden border-0 shadow-lg my-5">
+              <div className="card-body">
+
+                <div className="row justify-content-center">
+
+                  <div class="col-lg-6">
+                  <div className="p-5">
+                                  <div className="text-center">
+                                      <h1 className="h4 text-gray-900 mb-4">Nouveau mot de passe</h1>
+                                  </div>
 
           <Form
             onSubmit={this.handleSubmit}
@@ -134,10 +146,11 @@ export default class Reset extends Component {
          
 
             <div className="form-group">
-              <label htmlFor="password">Mot de passe</label>
+             
               <Input
                 type="password"
-                className="form-control"
+                className="form-control form-control-user"
+                placeholder="Mot de passe"
                 name="password"
                 value={this.state.password}
                 onChange={this.onChangePassword}
@@ -146,10 +159,11 @@ export default class Reset extends Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="passwordConfirm">Confirmer le mot de passe</label>
+             
               <Input
                 type="password"
-                className="form-control"
+                className="form-control form-control-user"
+                placeholder="Confirmer le mot de passe"
                 name="passwordConfirm"
                 value={this.state.passwordConfirm}
                 onChange={this.onChangePasswordConfirm}
@@ -159,7 +173,7 @@ export default class Reset extends Component {
 
             <div className="form-group">
               <button
-                className="btn btn-primary btn-block"
+                className="btn btn-primary btn-user btn-block"
                 disabled={this.state.loading}
               >
                 {this.state.loading && (
@@ -181,6 +195,7 @@ export default class Reset extends Component {
               <div className="form-group">
                 <div className="alert alert-success" role="alert">
                   {this.state.messageSuccess}
+                  <a href="/login">&nbsp;connectez-vous!</a>
                 </div>
               </div>
             )}
@@ -192,6 +207,12 @@ export default class Reset extends Component {
             />
           </Form>
         </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
       </div>
     );
   }

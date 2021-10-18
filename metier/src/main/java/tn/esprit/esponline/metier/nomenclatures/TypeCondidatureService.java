@@ -24,4 +24,9 @@ public class TypeCondidatureService implements ITypeCondidatureService {
     public TypeCondidature findById(int id) {
         return typeCondidatureRepository.findById(id);
     }
+
+    @Override
+    public void delete(TypeCondidature entity) {
+        typeCondidatureRepository.delete(entity);
+    }
 }

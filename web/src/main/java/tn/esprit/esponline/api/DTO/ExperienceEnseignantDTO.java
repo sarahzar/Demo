@@ -6,7 +6,7 @@ import tn.esprit.esponline.persistence.entities.Module;
 import java.util.Date;
 
 public class ExperienceEnseignantDTO {
-
+    private long id;
     private String dateDebut;
     private String dateFin;
     private Poste poste;
@@ -54,5 +54,13 @@ public class ExperienceEnseignantDTO {
 
     public void setModuleEnseigne(Module moduleEnseigne) {
         this.moduleEnseigne = moduleEnseigne;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

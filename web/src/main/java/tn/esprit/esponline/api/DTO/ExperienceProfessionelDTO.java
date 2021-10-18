@@ -8,6 +8,8 @@ import tn.esprit.esponline.persistence.entities.Poste;
 
 
 public class ExperienceProfessionelDTO {
+
+    private long id;
     private String dateDebut;
     private String dateFin;
     private Pays pays;
@@ -64,5 +66,13 @@ public class ExperienceProfessionelDTO {
 
     public void setVille(String ville) {
         this.ville = ville;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

@@ -14,6 +14,8 @@ import ValidationService from "../../../services/Validation/ValidationService"
 import { ignorerEtapeActions } from '../../../_actions/Shared/ignorer.etape.actions';
 import { condidatActions } from "../../../_actions/Shared/condidat.actions";
 import ExperienceEnsLecture from "./ExperienceEnsLecture";
+import CondidatService from "../../../services/Condidature/CondidatService";
+import AuthService from "../../../services/Authentification/AuthService";
 
 export const expEnseignantFields = {
 
@@ -41,12 +43,14 @@ class ExperienceEnseignant extends Component {
     ValidationService.validator.autoForceUpdate = this;
     this.state = {
       loading: false,
-      items: [{ dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} }],
+      items: [{ id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} }],
       retour: false,
       condidat: null,
       changePath: false,
       ignorer: false,
       touched: {},
+      message: "",
+      typeMessage: "",
     };
   }
 
@@ -68,14 +72,19 @@ class ExperienceEnseignant extends Component {
 
     if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
 
-    let elements = [...this.state.items]
-    elements = this.initListeExp(elements)
+      let elements = []
+      elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.experienceEnseignants : [...this.state.items]
+      elements = this.initListeExp(elements)
 
 
     if (localStorage.getItem('persist:root')) {
+
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
       this.props.condidatReducer.experienceEnseignants = [...this.state.items];
       this.props.setCondidat(this.props.condidatReducer)
-      if (elements.length > 0) {
+      }
+
+      if (elements && elements.length > 0) {
         this.props.ignorerExpEns(false);
       } else {
         this.props.ignorerExpEns(true);
@@ -190,6 +199,7 @@ class ExperienceEnseignant extends Component {
     const expEnseignants = this.state.items.slice()
     const touchedcp = { ...this.state.touched }
     const replacedTouched = []
+    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} }
 
     //spprimer l'élément sélectionner
     expEnseignants.splice(index, 1)
@@ -199,7 +209,7 @@ class ExperienceEnseignant extends Component {
 
     //rajouter l'élément par défaut si la liste est vide
     if (expEnseignants.length == 0) {
-      expEnseignants.unshift({ dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} })
+      expEnseignants.unshift(defaultElem)
     }
     //mise à jour du state
     this.setState({
@@ -210,10 +220,11 @@ class ExperienceEnseignant extends Component {
   }
 
   updateTabElements = (e) => {
+    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} }
     e.preventDefault();
     let elements = this.state.items;
 
-    elements.push({ dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} });
+    elements.push(defaultElem);
     this.setState({
       items: elements
     });
@@ -235,8 +246,8 @@ class ExperienceEnseignant extends Component {
 
   initListeExp(liste) {
 
-    const defaultElem = { dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} };
-    const firstElem = this.state.items[0];
+    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} }
+    const firstElem = liste ? liste[0] : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
       liste = [];
@@ -315,7 +326,45 @@ class ExperienceEnseignant extends Component {
   }
   }
 
-  
+  modifierCondidat= (e) => {
+
+    e.preventDefault();
+    const formData = new FormData();
+   
+      let condidatToSave = this.state.condidat
+      condidatToSave.experienceEnseignants = this.state.items
+
+      this.setState({
+        condidat: condidatToSave,
+      })
+
+      condidatToSave = CondidatService.updateListEmpty(condidatToSave);
+      formData.append('condidat', JSON.stringify(condidatToSave));
+
+      CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
+      .then(
+        resp => {
+          if (resp.data.succesMessage) {
+            this.setState({
+              message: resp.data.succesMessage,
+              typeMessage: "alert alert-success",
+            })
+            CondidatService.getCondidat(AuthService.getLogin()).then(
+              data =>{
+                this.props.setCondidat(data)
+              }
+            )
+          } else {
+            this.setState({
+              message: resp.data.errorMessage,
+              typeMessage: "alert alert-danger",
+            })
+          }
+        }
+
+      );
+    
+  }
 
   render() {
 
@@ -328,6 +377,8 @@ class ExperienceEnseignant extends Component {
     const { etablissements } = this.props
     const { items } = this.state;
     const { changePath } = this.state;
+    const { message } = this.state;
+    const { typeMessage } = this.state;
 
 
     if (this.state.retour) {
@@ -368,6 +419,10 @@ class ExperienceEnseignant extends Component {
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
 
+                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                      <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat}>modifier</button>
+                    )}
+
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                       className="fas fa-angle-double-right fa-sm text-white-50"
                       disabled={loading}></i>
@@ -377,10 +432,16 @@ class ExperienceEnseignant extends Component {
                       Suivant </button>
 
                   </div>
-
-
-
                 </div>
+
+                {message && (
+                  <div className="form-group">
+                    <div className={typeMessage} role="alert">
+                      {message}
+                    </div>
+                  </div>
+                )}
+
 
                 { /* Content Row */}
                 <div className="row">

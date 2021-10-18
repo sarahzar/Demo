@@ -6,6 +6,7 @@ import { userActions } from '../_actions';
 import { connect } from "react-redux";
 import { condidatActions } from '../_actions/Shared/condidat.actions';
 import { persistor} from '../_helpers'
+import  avatar  from '../img/unknown_avatar2.jpg';
 // import avatar from 'http://localhost/uploads/2021/sarah.zaroui@esprit.tn/avatar.jpg';
 export class Header extends Component {  
   constructor(props){
@@ -178,9 +179,16 @@ export class Header extends Component {
   
   <li className="nav-item dropdown no-arrow">  
     <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  
-      <span className="mr-2 d-none d-lg-inline text-gray-600 small">{this.props.nomPrenom}</span>  
-      <img className="img-profile rounded-circle" src={this.props.imagePath ? this.props.imagePath : this.props.imageProfilePath} />  
-    </a>  
+      <span className="mr-2 d-none d-lg-inline text-gray-600 small">{this.props.nom && this.props.prenom ? this.props.nom + " " + this.props.prenom : ""}</span>  
+     
+                    {(this.props.imagePath || this.props.imageProfilePath) && (
+                      <img className="img-profile rounded-circle" src={this.props.imagePath ? this.props.imagePath : this.props.imageProfilePath} />
+                    )}
+                    {!this.props.imagePath && !this.props.imageProfilePath && (
+                      <img className="img-profile rounded-circle" src={avatar} />
+                    )}
+   
+      </a>  
   
     <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">  
       <a className="dropdown-item" href="#">  

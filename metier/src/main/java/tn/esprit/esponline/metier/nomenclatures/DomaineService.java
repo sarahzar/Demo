@@ -24,4 +24,9 @@ public class DomaineService implements IDomaineService {
     public Domaine findById(int id) {
         return domaineRepository.findById(id);
     }
+
+    @Override
+    public void delete(Domaine entity) {
+        domaineRepository.delete(entity);
+    }
 }

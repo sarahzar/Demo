@@ -5,19 +5,19 @@ class DocumentModif extends React.Component{
 
         return(
 
-            <div className="col-md-6 form-group row">
+            <div className="col-md-8 form-group row">
 
-            {document.getElementById(this.props.id) &&
-              !document.getElementById(this.props.id).value && (
-                <div class="col-6">
+            {((document.getElementById(this.props.id) &&
+              !document.getElementById(this.props.id).value) || this.props.modif) && (
+                <div class="col-8">
                 <a  href={this.props.path} target="blanck">
                   {this.props.name}
                 </a>
                 </div>
               )}
-            {document.getElementById(this.props.id) &&
-              document.getElementById(this.props.id).value && (
-                <div class="col-6">
+            {(document.getElementById(this.props.id) &&
+              document.getElementById(this.props.id).value && !this.props.modif) && (
+                <div class="col-8">
                 <span >
                   {this.props.name}
                 </span>
