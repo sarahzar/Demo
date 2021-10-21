@@ -33,7 +33,7 @@ class Documents extends Component {
     super(props);
     ValidationService.validator.autoForceUpdate = this;
     this.state = {
-      condidat: null,
+      // condidat: null,
       login: AuthService.getLogin(),
       cv: null,
       photo: null,
@@ -78,9 +78,9 @@ class Documents extends Component {
     let year = new Date().getFullYear()
     const { condidatReducer } = this.props
     if (condidatReducer) {
-      this.setState({
-        condidat: condidatReducer,
-      });
+      // this.setState({
+      //   condidat: condidatReducer,
+      // });
       if (condidatReducer.documents && condidatReducer.documents.length > 0) {
         this.setState({
           items: condidatReducer.documents
@@ -224,7 +224,7 @@ class Documents extends Component {
         documents = this.updateListDocuments(condidatReducer, documents);
       }
 
-      let condidatToSave = this.state.condidat
+      let condidatToSave = this.props.condidatReducer
       condidatToSave.documents = documents
 
       condidatToSave = CondidatService.updateListEmpty(condidatToSave);
@@ -325,28 +325,6 @@ class Documents extends Component {
     });
   }
 
-  // getCondidatLists(condidat) {
-  //   const { condidatReducer } = this.props;
-
-  //   if (condidatReducer) {
-
-  //     if (condidatReducer.listeParcours.length > 0) {
-  //       condidat.listeParcours = condidatReducer.listeParcours;
-  //     }
-  //     if (condidatReducer.condidatExperEnseignt.length > 0) {
-  //       condidat.condidatExperEnseignt = condidatReducer.condidatExperEnseignt;
-  //     }
-  //     if (condidatReducer.condidatExperProfessionel.length > 0) {
-  //       condidat.condidatExperProfessionel = condidatReducer.condidatExperProfessionel;
-  //     }
-  //     if (condidatReducer.competences.length > 0) {
-  //       condidat.competences = condidatReducer.competences;
-  //     }
-  //     if (condidatReducer.recherches.length > 0) {
-  //       condidat.recherches = condidatReducer.recherches;
-  //     }
-  //   }
-  // }
   markUsTouched() {
 
     this.state.touched[docFields.photo] = true;

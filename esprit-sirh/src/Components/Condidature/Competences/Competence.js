@@ -38,7 +38,7 @@ class Competence extends Component {
       loading: false,
       items: [{ id:-1, titre: "", description: "" }],
       retour: false,
-      condidat: null,
+      // condidat: null,
       changePath: false,
       ignorer: false,
       touched: {},
@@ -50,9 +50,9 @@ class Competence extends Component {
   componentDidMount() {
     const { condidatReducer } = this.props
     if (condidatReducer) {
-      this.setState({
-        condidat: condidatReducer,
-      });
+      // this.setState({
+      //   condidat: condidatReducer,
+      // });
       if (condidatReducer.competences && condidatReducer.competences.length > 0) {
         this.setState({
           items: condidatReducer.competences
@@ -91,7 +91,7 @@ class Competence extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement['titre' + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].titre = e.target.value;
     this.setState({
       items: elements,
@@ -102,7 +102,7 @@ class Competence extends Component {
   }
 
   onChangeDescription = (e, index) => {
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].description = e.target.value;
     this.setState({
       items: elements,
@@ -117,14 +117,14 @@ class Competence extends Component {
   }
 
   ignorerEtape = (e) => {
-    let condidatToSave = this.state.condidat
-    condidatToSave.competences = this.state.items
+    // let condidatToSave = this.state.condidat
+    // condidatToSave.competences = [...this.state.items]
 
     this.setState({
       ignorer: true,
       changePath: true,
       loading: true,
-      condidat: condidatToSave
+      // condidat: condidatToSave
     });
 
     this.props.ignorerCompetence(true)
@@ -133,7 +133,7 @@ class Competence extends Component {
   updateTabElements = (e) => {
     const defaultElem = { id:-1, titre: "", description: "" }
     e.preventDefault();
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements.push(defaultElem);
     this.setState({
       items: elements
@@ -188,17 +188,18 @@ class Competence extends Component {
 
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
+    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif){
     ValidationService.validator.purgeFields();
     this.addMessages();
     if (ValidationService.validator.allValid()) {
-      let condidatToSave = this.state.condidat
-      condidatToSave.competences = this.state.items
+      // let condidatToSave = this.props.condidatReducer
+      // condidatToSave.competences = [...this.state.items]
+
 
       this.setState({
         loading: true,
         changePath: true,
-        condidat: condidatToSave
+        // condidat: condidatToSave
       })
      
     } else {
@@ -245,13 +246,16 @@ class Competence extends Component {
 
     e.preventDefault();
     const formData = new FormData();
-   
-      let condidatToSave = this.state.condidat
-      condidatToSave.competences = this.state.items
+    ValidationService.validator.purgeFields();
+    this.addMessages();
 
-      this.setState({
-        condidat: condidatToSave,
-      })
+    if (ValidationService.validator.allValid()) {      
+      let condidatToSave = this.props.condidatReducer
+      condidatToSave.competences = [...this.state.items]
+
+      // this.setState({
+      //   condidat: condidatToSave,
+      // })
 
       condidatToSave = CondidatService.updateListEmpty(condidatToSave);
       formData.append('condidat', JSON.stringify(condidatToSave));
@@ -278,6 +282,10 @@ class Competence extends Component {
         }
 
       );
+    }else {
+      this.markUsTouched();
+      ValidationService.validator.showMessages();
+    }
     
   }
 

@@ -45,7 +45,7 @@ class ExperienceEnseignant extends Component {
       loading: false,
       items: [{ id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} }],
       retour: false,
-      condidat: null,
+      // condidat: null,
       changePath: false,
       ignorer: false,
       touched: {},
@@ -57,9 +57,9 @@ class ExperienceEnseignant extends Component {
   componentDidMount() {
     const { condidatReducer } = this.props
     if (condidatReducer) {
-      this.setState({
-        condidat: condidatReducer,
-      });
+      // this.setState({
+      //   condidat: condidatReducer,
+      // });
       if (condidatReducer.experienceEnseignants && condidatReducer.experienceEnseignants.length > 0) {
         this.setState({
           items: condidatReducer.experienceEnseignants
@@ -100,7 +100,7 @@ class ExperienceEnseignant extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expEnseignantFields.etablissement + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let etablissement = this.props.etablissements.filter(elem => elem.id == id).shift()
 
@@ -117,7 +117,7 @@ class ExperienceEnseignant extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expEnseignantFields.poste + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let poste = this.props.postes.filter(elem => elem.id == id).shift()
 
@@ -133,7 +133,7 @@ class ExperienceEnseignant extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expEnseignantFields.module + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let module = this.props.modules.filter(elem => elem.id == id).shift()
 
@@ -149,7 +149,7 @@ class ExperienceEnseignant extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expEnseignantFields.dateDeb + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].dateDebut = e.target.value;
     this.setState({
       items: elements,
@@ -162,7 +162,7 @@ class ExperienceEnseignant extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expEnseignantFields.dateFin + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].dateFin = e.target.value;
     this.setState({
       items: elements,
@@ -180,14 +180,14 @@ class ExperienceEnseignant extends Component {
 
   ignorerEtape = (e) => {
 
-    let condidatToSave = this.state.condidat
-    condidatToSave.experienceEnseignants = this.state.items
+    // let condidatToSave = this.state.condidat
+    // condidatToSave.experienceEnseignants = [...this.state.items];
 
     this.setState({
       ignorer: true,
       loading: true,
       changePath: true,
-      condidat: condidatToSave
+      // condidat: condidatToSave
     });
 
     this.props.ignorerExpEns(true)
@@ -222,7 +222,7 @@ class ExperienceEnseignant extends Component {
   updateTabElements = (e) => {
     const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} }
     e.preventDefault();
-    let elements = this.state.items;
+    let elements = [...this.state.items];
 
     elements.push(defaultElem);
     this.setState({
@@ -230,7 +230,11 @@ class ExperienceEnseignant extends Component {
     });
 
     this.markUsUntouched()
-    this.props.condidatReducer.experienceEnseignants = elements;
+    // if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
+    // this.props.condidatReducer.experienceEnseignants = elements;
+    // }
+
+  
   }
 
   updateTouchedAfterDelete(index, replacedTouched, touchedcp) {
@@ -299,17 +303,17 @@ class ExperienceEnseignant extends Component {
   
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
+    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif){
     ValidationService.validator.purgeFields();
     this.addMessages();
     if (ValidationService.validator.allValid()) {
-      let condidatToSave = this.state.condidat
-      condidatToSave.experienceEnseignants = this.state.items
+      // let condidatToSave = this.props.condidatReducer
+      // condidatToSave.experienceEnseignants = [...this.state.items]
 
       this.setState({
         loading: true,
         changePath: true,
-        condidat: condidatToSave
+        // condidat: condidatToSave
       })
 
     } else {
@@ -330,13 +334,16 @@ class ExperienceEnseignant extends Component {
 
     e.preventDefault();
     const formData = new FormData();
-   
-      let condidatToSave = this.state.condidat
-      condidatToSave.experienceEnseignants = this.state.items
+    ValidationService.validator.purgeFields();
+    this.addMessages();
 
-      this.setState({
-        condidat: condidatToSave,
-      })
+    if (ValidationService.validator.allValid()) {   
+      let condidatToSave = this.props.condidatReducer
+      condidatToSave.experienceEnseignants = [...this.state.items]
+
+      // this.setState({
+      //   condidat: condidatToSave,
+      // })
 
       condidatToSave = CondidatService.updateListEmpty(condidatToSave);
       formData.append('condidat', JSON.stringify(condidatToSave));
@@ -363,7 +370,10 @@ class ExperienceEnseignant extends Component {
         }
 
       );
-    
+      }else {
+        this.markUsTouched();
+        ValidationService.validator.showMessages();
+      }
   }
 
   render() {

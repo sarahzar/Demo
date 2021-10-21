@@ -435,7 +435,7 @@ class Profile extends Component {
 
         this.setState({
           // loading:true,
-          condidat: condidatToSave,
+          // condidat: condidatToSave,
           changePath: true
         })
 
@@ -564,9 +564,9 @@ class Profile extends Component {
 
       let condidatToSave = this.updateCondidatInfos();
 
-      this.setState({
-        condidat: condidatToSave,
-      })
+      // this.setState({
+      //   condidat: condidatToSave,
+      // })
 
       this.getCondidatLists(condidatToSave)
       this.props.setCondidat(condidatToSave)

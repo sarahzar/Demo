@@ -17,7 +17,10 @@ import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.acti
 import ParcourLecture from "./ParcourLecture";
 import AuthService from "../../../services/Authentification/AuthService";
 import CondidatService from "../../../services/Condidature/CondidatService";
-
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import { history } from '../../../_helpers/history';
+import {Prompt} from 'react-router-dom'
 
 export const parcourFields = {
   diplome: 'diplome',
@@ -59,6 +62,8 @@ class Parcour extends Component {
       touched: {},
       message: "",
       typeMessage: "",
+      show:false,
+      modalVisible: false
     };
   }
   componentDidMount() {
@@ -81,12 +86,16 @@ class Parcour extends Component {
 
     if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
 
-    let elements = [...this.state.items]
+    let elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.experienceEnseignants : [...this.state.items]
     elements = this.initListeParcours(elements)
     
     if (localStorage.getItem('persist:root')) {
+
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
       this.props.condidatReducer.parcourScolaire = [...this.state.items]
       this.props.setCondidat(this.props.condidatReducer)
+      }
+
       if(elements.length > 0){
         this.props.validerParcours(true)
       }else{
@@ -106,6 +115,9 @@ class Parcour extends Component {
     if (!ValidationService.validator.allValid()) {
       ValidationService.validator.showMessages()
       return false
+    } else if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && this.state.items.length < 3){
+        this.handleShow()
+        return false; 
     } else {
       return true;
     }
@@ -214,15 +226,19 @@ class Parcour extends Component {
 
   goBack = (e) => {
     e.preventDefault();
-    this.setState({
-      retour: true,
-    });
+    if (this.props.condidatReducer && !this.props.condidatReducer.dateModif && this.state.items.length < 3) {
+      this.handleShow()
+    } else {
+      this.setState({
+        retour: true,
+      });
+    }
   }
 
   updateTabElements = (e) => {
     const defaultElem = {id:-1, annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
     e.preventDefault();
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements.push(defaultElem);
     this.setState({
       items: elements
@@ -265,7 +281,7 @@ class Parcour extends Component {
   initListeParcours(liste) {
 
     const defaultElem = {id:-1, annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
-    const firstElem = this.state.items[0];
+    const firstElem = liste ? liste[0] : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
       liste = [];
@@ -274,33 +290,58 @@ class Parcour extends Component {
   }
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
-    ValidationService.validator.purgeFields();
-    this.addMessages();
-    console.log("validation",ValidationService.validator)
-    if (ValidationService.validator.allValid()) {
-    
-      let condidatToSave = this.state.condidat
-      condidatToSave.parcourScolaire = this.state.items
+ 
+
+       if (this.props.condidatReducer && !this.props.condidatReducer.dateModif && this.state.items.length < 3) {
+        this.handleShow()
+      
+      } else {
+
+        if (this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif) {
+
+        ValidationService.validator.purgeFields();
+        this.addMessages();
+        console.log("validation", ValidationService.validator)
+         if (ValidationService.validator.allValid()) {
+
+           let condidatToSave = this.state.condidat
+           condidatToSave.parcourScolaire = this.state.items
+           this.setState({
+             loading: true,
+             changePath: true,
+             condidat: condidatToSave
+           })
+        
+        }
+         else {
+
+           this.markUsTouched();
+           ValidationService.validator.showMessages();
+         }
+
+     
+
+    } else {
       this.setState({
         loading: true,
         changePath: true,
-        condidat: condidatToSave
-      })
+      });
     }
-    else {
+  }
+}
+ 
 
-      this.markUsTouched();
-      ValidationService.validator.showMessages();
-    }
-  }else{
+ handleShow = () => {
     this.setState({
-      loading: true,
-      changePath: true,
+      show: true
     })
   }
-  }
 
+  handleClose = () => {
+    this.setState({
+      show: false
+    })
+  }
 
   updateTouched(replacedTouched, index1, index2, touchedcp) {
     replacedTouched[parcourFields.annee + index1] = touchedcp[parcourFields.annee + index2];
@@ -351,6 +392,8 @@ class Parcour extends Component {
 
     e.preventDefault();
 
+    if(this.state.items.length >= 3 ){
+
     ValidationService.validator.purgeFields();
     this.addMessages();
     console.log("vld", ValidationService.validator)
@@ -396,8 +439,22 @@ class Parcour extends Component {
       this.markUsTouched();
       ValidationService.validator.showMessages();
     }
+
+  }else{
+    this.handleShow()
+  }
     
   }
+
+  handleBlockedNavigation = () => {   
+    if ((this.props.condidatReducer && !this.props.condidatReducer.dateModif && this.state.items.length < 3) && window.Location.pathname !='/terminer' ){
+       this.handleShow()
+        return false
+    }  
+    return true
+  }
+
+  
 
   render() {
     const { classes } = this.props;
@@ -410,6 +467,8 @@ class Parcour extends Component {
     const changePath = this.state.changePath;
     const { message } = this.state;
     const { typeMessage } = this.state;
+    const { show } = this.state;
+    const {when} = this.props
  
     if (this.state.retour) {
    
@@ -435,8 +494,24 @@ class Parcour extends Component {
         <div id="content-wrapper" className="d-flex flex-column">
           <div id="content">
             <Header />
+           
+            <Prompt
+              when={when}
+              message={this.handleBlockedNavigation} />
+            <Modal show={show} onHide={this.handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Validation Parcours</Modal.Title>
+              </Modal.Header>
 
+              <Modal.Body>
+                <p>Veuillez insérerer troix parcours en minimum!</p>
+              </Modal.Body>
 
+              <Modal.Footer>
+                <Button variant="primary" onClick={this.handleClose}>Close</Button>
+              </Modal.Footer>
+            </Modal>
+ 
 
             <div className="container-fluid pl-5">
               <Form

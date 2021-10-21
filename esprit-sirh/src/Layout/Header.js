@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { condidatActions } from '../_actions/Shared/condidat.actions';
 import { persistor} from '../_helpers'
 import  avatar  from '../img/unknown_avatar2.jpg';
+import logo from '../img/logo.jpg'
 // import avatar from 'http://localhost/uploads/2021/sarah.zaroui@esprit.tn/avatar.jpg';
 export class Header extends Component {  
   constructor(props){
@@ -36,7 +37,8 @@ export class Header extends Component {
   
   
 <form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">  
-  <div className="col-lg-6 d-none d-lg-block bg-logo">  
+  {/* <div className="col-lg-6 d-none d-lg-block">   */}
+  <img src={logo} class="bg-logo" />
   {/* <img src="logo.jpg" /> */}
     {/* <input type="text" className="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2"/>  
     <div className="input-group-append">  
@@ -44,7 +46,7 @@ export class Header extends Component {
         <i className="fas fa-search fa-sm"></i>  
       </button>  
     </div>   */}
-  </div>  
+  {/* </div>   */}
 </form>  
   
   

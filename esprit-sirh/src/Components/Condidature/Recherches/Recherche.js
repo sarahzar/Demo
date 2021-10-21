@@ -25,7 +25,7 @@ class Recherche extends Component {
             loading: false,
             savedItems: [{ id:-1, thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }],
             retour: false,
-            condidat: null,
+            // condidat: null,
             changePath: false,
             activePage: 1,
             itemsCount: 1,
@@ -40,20 +40,24 @@ class Recherche extends Component {
         const { condidatReducer } = this.props
         
         if (condidatReducer) {
-          this.setState({
-            condidat: condidatReducer,
-          });
+        //   this.setState({
+        //     condidat: condidatReducer,
+        //   });
 
             if (condidatReducer.recherches && condidatReducer.recherches.length > 0) {
 
-                 const defaultElement = { id:-1, thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
-                if (!condidatReducer.aConfirmer && JSON.stringify(defaultElement) != JSON.stringify(condidatReducer.recherches[0])) {
-                    condidatReducer.recherches.unshift(defaultElement)
-                }
+                //  const defaultElement = { id:-1, thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
+                // if (!condidatReducer.aConfirmer && JSON.stringify(defaultElement) != JSON.stringify(condidatReducer.recherches[0])) {
+                //     condidatReducer.recherches.unshift(defaultElement)
+                // }
 
-                let count = condidatReducer.recherches.length;
+                
+                let items =[ ...condidatReducer.recherches]
+                items.unshift({ id:-1, thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 })
+                let count = items.length;
+               
                 this.setState({
-                    savedItems: condidatReducer.recherches,
+                    savedItems: items,
                     itemsCount: count
                 });
             }
@@ -86,49 +90,51 @@ class Recherche extends Component {
       }
 
     onChangeThematiqueDesciption = (e, index) => {
-        let elements = this.state.savedItems;
+        let elements = [...this.state.savedItems];
         elements[index].thematique.description = e.target.value;
         this.setState({
             savedItems: elements,
         });
+
+        console.log(this.props.condidatReducer.recherches)
     }
     onChangeChapitreLivre = (e, index) => {
-        let elements = this.state.savedItems;
+        let elements = [...this.state.savedItems];
         elements[index].chapitreLivre = e.target.value;
         this.setState({
             savedItems: elements,
         });
     }
     onChangeArticleJornaux = (e, index) => {
-        let elements = this.state.savedItems;
+        let elements = [...this.state.savedItems];
         elements[index].articleJornaux = e.target.value;
         this.setState({
             savedItems: elements,
         });
     }
     onChangeArticleConference = (e, index) => {
-        let elements = this.state.savedItems;
+        let elements = [...this.state.savedItems];
         elements[index].articleConference = e.target.value;
         this.setState({
             savedItems: elements,
         });
     }
     onChangePfe = (e, index) => {
-        let elements = this.state.savedItems;
+        let elements = [...this.state.savedItems];
         elements[index].pfe = e.target.value;
         this.setState({
             savedItems: elements,
         });
     }
     onChangeMastere = (e, index) => {
-        let elements = this.state.savedItems;
+        let elements = [...this.state.savedItems];
         elements[index].mastere = e.target.value;
         this.setState({
             savedItems: elements,
         });
     }
     onChangeThese = (e, index) => {
-        let elements = this.state.savedItems;
+        let elements = [...this.state.savedItems];
         elements[index].these = e.target.value;
         this.setState({
             savedItems: elements,
@@ -196,15 +202,15 @@ class Recherche extends Component {
        if(!this.props.condidatReducer.aConfirmer){
         this.form.validateAll();
         if (this.checkBtn.context._errors.length === 0) {
-            let condidatToSave = this.state.condidat
-            let recherches = this.state.savedItems
-            recherches.shift()
-                condidatToSave.recherches = recherches
+            // let condidatToSave = this.state.condidat
+            // let recherches = this.state.savedItems
+            // recherches.shift()
+            //     condidatToSave.recherches = recherches
 
             this.setState({
                 loading: true,
                 changePath: true,
-                condidat: condidatToSave
+                // condidat: condidatToSave
             })
 
         }
@@ -228,7 +234,7 @@ class Recherche extends Component {
         const formData = new FormData();
         const defaultElement = { id:-1, thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
        
-          let condidatToSave = this.state.condidat
+          let condidatToSave = this.props.condidatReducer
 
           let recherches = [...this.state.savedItems]
           recherches.shift()
@@ -253,10 +259,12 @@ class Recherche extends Component {
                 CondidatService.getCondidat(AuthService.getLogin()).then(
                   data =>{
                       let cdt=data
-                      cdt.recherches.unshift(defaultElement)
+                      let recherches = [...cdt.recherches]
+                      recherches.unshift(defaultElement)
                       this.props.setCondidat(cdt)
+                      
                       this.setState({
-                        savedItems: cdt.recherches
+                        savedItems: recherches
                       })
                   }
                 )

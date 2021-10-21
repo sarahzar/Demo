@@ -62,11 +62,7 @@ color: rgb(179, 16, 16);
   background-size: cover!important;
 }
 .bg-logo {
-  background: url(img/logo.jpg)!important;
-  background-position: center!important;
-  background-size: 100% 100%!important;
-  height: 50px;
-  width: 100%;
+ width: 30%;
 }
 .text-primary{
   color: #e74a3b!important;

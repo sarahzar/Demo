@@ -53,7 +53,7 @@ class ExperienceProfessionel extends Component {
       dateFin: "",
       items: [{ id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }],
       retour: false,
-      condidat: null,
+      // condidat: null,
       changePath: false,
       ignorer: false,
       touched: {},
@@ -64,9 +64,9 @@ class ExperienceProfessionel extends Component {
   componentDidMount() {
     const { condidatReducer } = this.props
     if (condidatReducer) {
-      this.setState({
-        condidat: condidatReducer,
-      });
+      // this.setState({
+      //   condidat: condidatReducer,
+      // });
       if (condidatReducer.experienceProfessionels && condidatReducer.experienceProfessionels.length > 0) {
         this.setState({
           items: condidatReducer.experienceProfessionels
@@ -76,7 +76,7 @@ class ExperienceProfessionel extends Component {
   }
   componentWillUnmount() {
 
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
+    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif){
 
       let elements = []
       elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.experienceProfessionels : [...this.state.items]
@@ -106,7 +106,7 @@ class ExperienceProfessionel extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expProFields.etablissement + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let etablissement = this.props.etablissements.filter(elem => elem.id == id).shift()
     
@@ -124,7 +124,7 @@ class ExperienceProfessionel extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expProFields.poste + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let poste = this.props.postes.filter(elem => elem.id == id).shift()
 
@@ -141,7 +141,7 @@ class ExperienceProfessionel extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expProFields.pays + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let pays = this.props.pays.filter(elem => elem.id == id).shift()
 
@@ -158,7 +158,7 @@ class ExperienceProfessionel extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expProFields.dateDeb + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].dateDebut = e.target.value;
     this.setState({
       items: elements,
@@ -171,7 +171,7 @@ class ExperienceProfessionel extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expProFields.dateFin + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].dateFin = e.target.value;
     this.setState({
       items: elements,
@@ -184,7 +184,7 @@ class ExperienceProfessionel extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[expProFields.ville + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].ville = e.target.value;
 
     this.setState({
@@ -202,14 +202,14 @@ class ExperienceProfessionel extends Component {
   }
 
   ignorerEtape = (e) => {
-    let condidatToSave = this.state.condidat
-    condidatToSave.experienceProfessionels = this.state.items
+    // let condidatToSave = this.state.condidat
+    // condidatToSave.experienceProfessionels = [...this.state.items]
 
     this.setState({
       ignorer: true,
       loading: true,
       changePath: true,
-      condidat: condidatToSave
+      // condidat: condidatToSave
     });
 
     this.props.ignorerExpPro(true)
@@ -263,7 +263,7 @@ class ExperienceProfessionel extends Component {
   updateTabElements = (e) => {
     const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }
     e.preventDefault();
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements.push(defaultElem);
     this.setState({
       items: elements
@@ -273,18 +273,18 @@ class ExperienceProfessionel extends Component {
 
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
+    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif){
     ValidationService.validator.purgeFields();
     this.addMessages();
     console.log("validator", ValidationService.validator)
     if (ValidationService.validator.allValid()) {
 
-      let condidatToSave = this.state.condidat
-      condidatToSave.experienceProfessionels = this.state.items
+      // let condidatToSave = this.state.condidat
+      // condidatToSave.experienceProfessionels = [...this.state.items]
 
       this.setState({
         loading: true,
-        condidat: condidatToSave,
+        // condidat: condidatToSave,
         changePath: true
       })
 
@@ -350,13 +350,17 @@ class ExperienceProfessionel extends Component {
 
     e.preventDefault();
     const formData = new FormData();
-   
-      let condidatToSave = this.state.condidat
-      condidatToSave.experienceProfessionels = this.state.items
+    ValidationService.validator.purgeFields();
+    this.addMessages();
 
-      this.setState({
-        condidat: condidatToSave,
-      })
+    if (ValidationService.validator.allValid()) {
+   
+      let condidatToSave = this.props.condidatReducer
+      condidatToSave.experienceProfessionels = [...this.state.items]
+
+      // this.setState({
+      //   condidat: condidatToSave,
+      // })
 
       condidatToSave = CondidatService.updateListEmpty(condidatToSave);
       formData.append('condidat', JSON.stringify(condidatToSave));
@@ -383,6 +387,10 @@ class ExperienceProfessionel extends Component {
         }
 
       );
+    } else {
+      this.markUsTouched();
+      ValidationService.validator.showMessages();
+    }
     
   }
 
