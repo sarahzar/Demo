@@ -45,7 +45,6 @@ class ExperienceEnseignant extends Component {
       loading: false,
       items: [{ id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:""}, poste:{id:-1,libelle:""}, moduleEnseigne:{id:-1,libelle:""} }],
       retour: false,
-      // condidat: null,
       changePath: false,
       ignorer: false,
       touched: {},
@@ -55,15 +54,17 @@ class ExperienceEnseignant extends Component {
   }
 
   componentDidMount() {
-    const { condidatReducer } = this.props
-    if (condidatReducer) {
-      // this.setState({
-      //   condidat: condidatReducer,
-      // });
-      if (condidatReducer.experienceEnseignants && condidatReducer.experienceEnseignants.length > 0) {
+    let localCopy = Object.assign({}, this.props);
+    let cdtString = JSON.stringify(localCopy.condidatReducer)
+    const cdt = JSON.parse(cdtString) 
+
+    if (cdt) {
+      if (cdt.experienceEnseignants && cdt.experienceEnseignants.length > 0) {
+
         this.setState({
-          items: condidatReducer.experienceEnseignants
+          items: [ ...cdt.experienceEnseignants]
         });
+
       }
     }
   }
@@ -80,7 +81,7 @@ class ExperienceEnseignant extends Component {
     if (localStorage.getItem('persist:root')) {
 
       if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
-      this.props.condidatReducer.experienceEnseignants = [...this.state.items];
+      this.props.condidatReducer.experienceEnseignants = elements;
       this.props.setCondidat(this.props.condidatReducer)
       }
 
@@ -180,14 +181,10 @@ class ExperienceEnseignant extends Component {
 
   ignorerEtape = (e) => {
 
-    // let condidatToSave = this.state.condidat
-    // condidatToSave.experienceEnseignants = [...this.state.items];
-
     this.setState({
       ignorer: true,
       loading: true,
       changePath: true,
-      // condidat: condidatToSave
     });
 
     this.props.ignorerExpEns(true)
@@ -230,11 +227,6 @@ class ExperienceEnseignant extends Component {
     });
 
     this.markUsUntouched()
-    // if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
-    // this.props.condidatReducer.experienceEnseignants = elements;
-    // }
-
-  
   }
 
   updateTouchedAfterDelete(index, replacedTouched, touchedcp) {
@@ -254,7 +246,7 @@ class ExperienceEnseignant extends Component {
     const firstElem = liste ? liste[0] : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
-      liste = [];
+      liste.splice(0,1);
     }
     return liste;
   }
@@ -307,13 +299,10 @@ class ExperienceEnseignant extends Component {
     ValidationService.validator.purgeFields();
     this.addMessages();
     if (ValidationService.validator.allValid()) {
-      // let condidatToSave = this.props.condidatReducer
-      // condidatToSave.experienceEnseignants = [...this.state.items]
 
       this.setState({
         loading: true,
         changePath: true,
-        // condidat: condidatToSave
       })
 
     } else {
@@ -340,10 +329,6 @@ class ExperienceEnseignant extends Component {
     if (ValidationService.validator.allValid()) {   
       let condidatToSave = this.props.condidatReducer
       condidatToSave.experienceEnseignants = [...this.state.items]
-
-      // this.setState({
-      //   condidat: condidatToSave,
-      // })
 
       condidatToSave = CondidatService.updateListEmpty(condidatToSave);
       formData.append('condidat', JSON.stringify(condidatToSave));
@@ -429,7 +414,7 @@ class ExperienceEnseignant extends Component {
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
 
-                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                    {this.props.condidatReducer  && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
                       <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat}>modifier</button>
                     )}
 

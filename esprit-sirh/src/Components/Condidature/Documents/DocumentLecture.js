@@ -40,7 +40,7 @@ class DocumentLecture extends React.Component {
                                     <label className="col-md-5 control-label">Photo d'identité: (jpg/png) </label >
                                     <div className="col-md-6">
                                       
-                                        <a  onClick={(e) => {this.download(e,item.nom)}}>{item.nom}</a>
+                                        <a href="#" onClick={(e) => {this.download(e,item.nom)}}>{item.nom}</a>
 
                                     </div>
 
@@ -53,7 +53,7 @@ class DocumentLecture extends React.Component {
                                     <label className="col-md-5 control-label">Curriculum vitae: (PDF) </label >
                                     <div className="col-md-6">
 
-                                        <a  onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
+                                        <a  href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 
@@ -66,7 +66,7 @@ class DocumentLecture extends React.Component {
                                     <label className="col-md-5 control-label">lettre de motivation: (pdf) </label >
                                     <div className="col-md-6">
 
-                                        <a  onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
+                                        <a  href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 
@@ -79,7 +79,7 @@ class DocumentLecture extends React.Component {
                                     <label className="col-md-5 control-label">Diplome: (pdf) </label >
                                     <div className="col-md-6">
 
-                                        <a  onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
+                                        <a  href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 
@@ -91,7 +91,7 @@ class DocumentLecture extends React.Component {
                                     <label className="col-md-5 control-label">Annexe: (pdf) </label >
                                     <div className="col-md-6">
 
-                                        <a  onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
+                                        <a  href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 

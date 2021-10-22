@@ -37,25 +37,19 @@ class Recherche extends Component {
 
     componentDidMount() {
 
-        const { condidatReducer } = this.props
-        
-        if (condidatReducer) {
-        //   this.setState({
-        //     condidat: condidatReducer,
-        //   });
+        let localCopy = Object.assign({}, this.props);
+        let cdtString = JSON.stringify(localCopy.condidatReducer)
+        const cdt = JSON.parse(cdtString)
 
-            if (condidatReducer.recherches && condidatReducer.recherches.length > 0) {
+        if (cdt) {
+            if (cdt.recherches && cdt.recherches.length > 0) {
 
-                //  const defaultElement = { id:-1, thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
-                // if (!condidatReducer.aConfirmer && JSON.stringify(defaultElement) != JSON.stringify(condidatReducer.recherches[0])) {
-                //     condidatReducer.recherches.unshift(defaultElement)
-                // }
-
-                
-                let items =[ ...condidatReducer.recherches]
-                items.unshift({ id:-1, thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 })
+                let items = [...cdt.recherches]
+                if(!cdt.aConfirmer){
+                items.unshift({ id: -1, thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 })
+                }
                 let count = items.length;
-               
+
                 this.setState({
                     savedItems: items,
                     itemsCount: count
@@ -74,8 +68,8 @@ class Recherche extends Component {
 
         if (localStorage.getItem('persist:root')) {
 
-            if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
-            this.props.condidatReducer.recherches = [...this.state.savedItems];
+            if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && elements.length > 0){
+            this.props.condidatReducer.recherches = elements;
             this.props.setCondidat(this.props.condidatReducer)
             }
 
@@ -191,7 +185,6 @@ class Recherche extends Component {
         const firstElem = liste ? liste[0] : null;
     
         if (JSON.stringify(defaultElement) === JSON.stringify(firstElem)) {
-          liste = this.state.savedItems.slice();
           liste.splice(0,1)
         }
         return liste;
@@ -202,15 +195,10 @@ class Recherche extends Component {
        if(!this.props.condidatReducer.aConfirmer){
         this.form.validateAll();
         if (this.checkBtn.context._errors.length === 0) {
-            // let condidatToSave = this.state.condidat
-            // let recherches = this.state.savedItems
-            // recherches.shift()
-            //     condidatToSave.recherches = recherches
 
             this.setState({
                 loading: true,
                 changePath: true,
-                // condidat: condidatToSave
             })
 
         }
@@ -240,11 +228,6 @@ class Recherche extends Component {
           recherches.shift()
           condidatToSave.recherches = recherches
 
-    
-        //   this.setState({
-        //     condidat: condidatToSave,
-        //   })
-
           condidatToSave = CondidatService.updateListEmpty(condidatToSave);
           formData.append('condidat', JSON.stringify(condidatToSave));
     
@@ -262,7 +245,7 @@ class Recherche extends Component {
                       let recherches = [...cdt.recherches]
                       recherches.unshift(defaultElement)
                       this.props.setCondidat(cdt)
-                      
+
                       this.setState({
                         savedItems: recherches
                       })
@@ -328,7 +311,7 @@ class Recherche extends Component {
                                             <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                                         </button>
 
-                                        {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                                        {this.props.condidatReducer  && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
                                             <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat}>modifier</button>
                                         )}
 

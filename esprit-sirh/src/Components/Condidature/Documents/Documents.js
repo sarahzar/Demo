@@ -448,7 +448,7 @@ class Documents extends Component {
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
-                    {(!this.props.condidatReducer.dateModif && this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                    {(!this.props.condidatReducer.dateModif  && !condidatReducer.aConfirmer &&  this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
                       <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                         className="fas fa-angle-double-right fa-sm text-white-50"
                         disabled={loading}></i>

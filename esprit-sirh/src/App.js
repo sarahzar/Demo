@@ -49,8 +49,8 @@ class App extends Component {
     // }
   return (
     
-    
-    <div>
+    <body id="page-top" class="sidebar-toggled">
+    {/* <div > */}
 
       {/* <div id="wrapper">
       <Leftside></Leftside>  
@@ -77,7 +77,8 @@ class App extends Component {
           <Footer />  
         {/* </div>
       </div> */}
-    </div>
+    {/* </div> */}
+    </body>
   );
   }
   

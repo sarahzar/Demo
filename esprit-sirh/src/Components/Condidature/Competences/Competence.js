@@ -48,15 +48,17 @@ class Competence extends Component {
   }
 
   componentDidMount() {
-    const { condidatReducer } = this.props
-    if (condidatReducer) {
-      // this.setState({
-      //   condidat: condidatReducer,
-      // });
-      if (condidatReducer.competences && condidatReducer.competences.length > 0) {
+    let localCopy = Object.assign({}, this.props);
+    let cdtString = JSON.stringify(localCopy.condidatReducer)
+    const cdt = JSON.parse(cdtString) 
+
+    if (cdt) {
+      if (cdt.competences && cdt.competences.length > 0) {
+
         this.setState({
-          items: condidatReducer.competences
+          items: [ ...cdt.competences]
         });
+
       }
     }
   }
@@ -72,7 +74,7 @@ class Competence extends Component {
     if (localStorage.getItem('persist:root')) {
 
       if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
-      this.props.condidatReducer.competences = [...this.state.items];
+      this.props.condidatReducer.competences = elements;
       this.props.setCondidat(this.props.condidatReducer)
       }
 
@@ -181,7 +183,7 @@ class Competence extends Component {
     const firstElem = liste ? liste[0] : 0;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
-      liste = [];
+      liste.splice(0,1);
     }
     return liste;
   }
@@ -336,7 +338,7 @@ class Competence extends Component {
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
 
-                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                    {this.props.condidatReducer  && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
                       <button  className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat} >modifier</button>
                     )}
 

@@ -53,7 +53,6 @@ class ExperienceProfessionel extends Component {
       dateFin: "",
       items: [{ id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }],
       retour: false,
-      // condidat: null,
       changePath: false,
       ignorer: false,
       touched: {},
@@ -62,14 +61,15 @@ class ExperienceProfessionel extends Component {
     };
   }
   componentDidMount() {
-    const { condidatReducer } = this.props
-    if (condidatReducer) {
-      // this.setState({
-      //   condidat: condidatReducer,
-      // });
-      if (condidatReducer.experienceProfessionels && condidatReducer.experienceProfessionels.length > 0) {
+    let localCopy = Object.assign({}, this.props);
+    let cdtString = JSON.stringify(localCopy.condidatReducer)
+    const cdt = JSON.parse(cdtString) 
+    
+    if (cdt) {
+      if (cdt.experienceProfessionels && cdt.experienceProfessionels.length > 0) {
+
         this.setState({
-          items: condidatReducer.experienceProfessionels
+          items: [ ...cdt.experienceProfessionels]
         });
       }
     }
@@ -87,7 +87,7 @@ class ExperienceProfessionel extends Component {
     if (localStorage.getItem('persist:root')) {
 
       if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
-      this.props.condidatReducer.experienceProfessionels = [...this.state.items];
+      this.props.condidatReducer.experienceProfessionels = elements;
       this.props.setCondidat(this.props.condidatReducer)
       }
 
@@ -202,14 +202,11 @@ class ExperienceProfessionel extends Component {
   }
 
   ignorerEtape = (e) => {
-    // let condidatToSave = this.state.condidat
-    // condidatToSave.experienceProfessionels = [...this.state.items]
 
     this.setState({
       ignorer: true,
       loading: true,
       changePath: true,
-      // condidat: condidatToSave
     });
 
     this.props.ignorerExpPro(true)
@@ -221,7 +218,7 @@ class ExperienceProfessionel extends Component {
     const firstElem = liste ? liste[0] : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
-      liste = [];
+       liste.splice(0,1);
     }
     return liste;
   }
@@ -279,12 +276,8 @@ class ExperienceProfessionel extends Component {
     console.log("validator", ValidationService.validator)
     if (ValidationService.validator.allValid()) {
 
-      // let condidatToSave = this.state.condidat
-      // condidatToSave.experienceProfessionels = [...this.state.items]
-
       this.setState({
         loading: true,
-        // condidat: condidatToSave,
         changePath: true
       })
 
@@ -357,10 +350,6 @@ class ExperienceProfessionel extends Component {
    
       let condidatToSave = this.props.condidatReducer
       condidatToSave.experienceProfessionels = [...this.state.items]
-
-      // this.setState({
-      //   condidat: condidatToSave,
-      // })
 
       condidatToSave = CondidatService.updateListEmpty(condidatToSave);
       formData.append('condidat', JSON.stringify(condidatToSave));
@@ -448,7 +437,7 @@ class ExperienceProfessionel extends Component {
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
 
-                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                    {this.props.condidatReducer  && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
                       <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat} >modifier</button>
                     )}
 

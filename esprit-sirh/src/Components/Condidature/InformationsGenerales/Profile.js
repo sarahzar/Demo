@@ -86,9 +86,13 @@ class Profile extends Component {
   
   componentWillUnmount() {
     if (localStorage.getItem('persist:root')) {
+
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
       let condidat = this.updateCondidatInfos()
       this.getCondidatLists(condidat)
       this.props.setCondidat(condidat)
+      }
+
     }
 
   }
@@ -427,8 +431,8 @@ class Profile extends Component {
     e.preventDefault();
     ValidationService.validator.purgeFields();
     this.addMessages();
-    console.log("vld", ValidationService.validator)
-    if (!this.state.confirmed) {
+
+    if (!this.state.confirmed && this.condidatReducer && !this.condidatReducer.dateModif) {
       if (ValidationService.validator.allValid()) {
 
         let condidatToSave = this.updateCondidatInfos();
@@ -563,10 +567,6 @@ class Profile extends Component {
     if (ValidationService.validator.allValid()) {
 
       let condidatToSave = this.updateCondidatInfos();
-
-      // this.setState({
-      //   condidat: condidatToSave,
-      // })
 
       this.getCondidatLists(condidatToSave)
       this.props.setCondidat(condidatToSave)

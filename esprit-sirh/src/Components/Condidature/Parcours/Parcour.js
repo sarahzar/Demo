@@ -63,20 +63,19 @@ class Parcour extends Component {
       message: "",
       typeMessage: "",
       show:false,
-      modalVisible: false
+      modalVisible: false,
     };
   }
   componentDidMount() {
+    let localCopy = Object.assign({}, this.props);
+    let cdtString = JSON.stringify(localCopy.condidatReducer)
+    const cdt = JSON.parse(cdtString) 
+    
 
-    const { condidatReducer } = this.props
-
-    if (condidatReducer) {
-      this.setState({
-        condidat: condidatReducer,
-      });
-      if (condidatReducer.parcourScolaire && condidatReducer.parcourScolaire.length > 0) {
+    if (cdt) {
+      if (cdt.parcourScolaire && cdt.parcourScolaire.length > 0) {
         this.setState({
-          items: condidatReducer.parcourScolaire
+          items: [...cdt.parcourScolaire]
         });
       }
     }
@@ -86,20 +85,20 @@ class Parcour extends Component {
 
     if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
 
-    let elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.experienceEnseignants : [...this.state.items]
+    let elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.parcourScolaire : [...this.state.items]
     elements = this.initListeParcours(elements)
     
     if (localStorage.getItem('persist:root')) {
 
       if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
-      this.props.condidatReducer.parcourScolaire = [...this.state.items]
+      this.props.condidatReducer.parcourScolaire = elements
       this.props.setCondidat(this.props.condidatReducer)
       }
 
-      if(elements.length > 0){
+      if(elements && elements.length > 0){
         this.props.validerParcours(true)
       }else{
-        this.props.validerParcour(false)
+        this.props.validerParcours(false)
       }
     }
 
@@ -145,7 +144,7 @@ class Parcour extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement['etablissement' + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let etablissement = this.props.etablissements.filter(elem => elem.id == id).shift()
 
@@ -163,7 +162,7 @@ class Parcour extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement['annee' + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].annee = e.target.value;
 
     this.setState({
@@ -179,7 +178,7 @@ class Parcour extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement['diplome' + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let diplome = this.props.diplomes.filter(elem => elem.id == id).shift()
 
@@ -197,7 +196,7 @@ class Parcour extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement['mention' + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     elements[index].mention = e.target.value;
     
     this.setState({
@@ -212,7 +211,7 @@ class Parcour extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement['pays' + index] = true;
 
-    let elements = this.state.items;
+    let elements = [...this.state.items];
     let id =e.target.value;
     let pays = this.props.pays.filter(elem => elem.id == id).shift()
 
@@ -284,7 +283,7 @@ class Parcour extends Component {
     const firstElem = liste ? liste[0] : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
-      liste = [];
+      liste.splice(0,1);
     }
     return liste;
   }
@@ -304,12 +303,11 @@ class Parcour extends Component {
         console.log("validation", ValidationService.validator)
          if (ValidationService.validator.allValid()) {
 
-           let condidatToSave = this.state.condidat
+           let condidatToSave = this.props.condidatReducer
            condidatToSave.parcourScolaire = this.state.items
            this.setState({
              loading: true,
              changePath: true,
-             condidat: condidatToSave
            })
         
         }
@@ -401,12 +399,9 @@ class Parcour extends Component {
    
     if (ValidationService.validator.allValid()) {
 
-      let condidatToSave = this.state.condidat
+      let condidatToSave = this.props.condidatReducer
       condidatToSave.parcourScolaire = this.state.items
 
-      this.setState({
-        condidat: condidatToSave,
-      })
        
       condidatToSave = CondidatService.updateListEmpty(condidatToSave);
       formData.append('condidat', JSON.stringify(condidatToSave));
@@ -529,7 +524,7 @@ class Parcour extends Component {
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
 
-                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                    {this.props.condidatReducer  && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
                       <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat}>modifier</button>
                     )}
 
