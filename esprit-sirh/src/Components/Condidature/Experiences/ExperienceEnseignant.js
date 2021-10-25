@@ -102,8 +102,9 @@ class ExperienceEnseignant extends Component {
     touchedElement[expEnseignantFields.etablissement + index] = true;
 
     let elements = [...this.state.items];
-    let id =e.target.value;
-    let etablissement = this.props.etablissements.filter(elem => elem.id == id).shift()
+    // let id =e.target.value;
+    // let etablissement = this.props.etablissements.filter(elem => elem.id == id).shift()
+    let etablissement = {id:-1,libelle: e.target.value}
 
     elements[index].etablissement = etablissement;
     this.setState({
@@ -522,18 +523,18 @@ class ExperienceEnseignant extends Component {
                             <td className="col-3">
                             {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
                               <div className="form-group">
-                              <select
-                                className={!this.state.ignorer && this.state.touched && this.state.touched[expEnseignantFields.etablissement + index] && item.etablissement.id == -1 ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
+                              <input
+                                type="text"
+                                className={!this.state.ignorer && this.state.touched && this.state.touched[expEnseignantFields.etablissement + index] && item.etablissement.libelle == "" ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
                                 id="sel1"
                                 onChange={(e) => { this.onChangeEtablissement(e, index) }}
-                                value={item.etablissement.id}
+                                value={item.etablissement && item.etablissement.libelle}
                                 data-tip
-                                data-for={"etablissementTip" + index}>
-                                <option value="-1" key="defaultetablissement"></option>
-                                {etablissements.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
-                              </select>
+                                data-for={"etablissementTip" + index}/>
+                              
+                              
                               {/* msg erreur */}
-                              {!this.state.ignorer && this.state.touched && this.state.touched[expEnseignantFields.etablissement + index] && item.etablissement.id == -1 && (
+                              {!this.state.ignorer && this.state.touched && this.state.touched[expEnseignantFields.etablissement + index] && item.etablissement.libelle == "" && (
                                 <ReactTooltip id={"etablissementTip" + index} place="top" effect="solid">
                                   {ValidationService.validator.message(expEnseignantFields.etablissement + index, item.etablissement.id, 'requiredSelect:etablissement')}
                                 </ReactTooltip>

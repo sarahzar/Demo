@@ -21,6 +21,7 @@ import tn.esprit.esponline.metier.upload.IFilesStorageService;
 import tn.esprit.esponline.persistence.entities.Module;
 import tn.esprit.esponline.metier.nomenclatures.*;
 import tn.esprit.esponline.persistence.entities.*;
+import tn.esprit.esponline.persistence.repositories.nomenclatures.EtablissementRepository;
 
 
 import java.text.ParseException;
@@ -48,7 +49,10 @@ public class CondidatController  {
     private ICompetenceService competenceService;
     @Autowired
     private IRechercheService rechercheService;
-
+    @Autowired
+    private IEtablissementService etablissementService;
+    @Autowired
+    private EtablissementRepository etablissementRepository;
 
     @PostMapping("/saveCondidatInfos/{username}")
     public ResponseEntity<ResponseDto> saveCondidat(@PathVariable String username,@RequestParam("file") MultipartFile[] files,@RequestParam("condidat") String cdt) throws JsonProcessingException {
@@ -59,7 +63,12 @@ public class CondidatController  {
         CondidatDto condidat = new ObjectMapper().readValue(cdt, CondidatDto.class);
 
 
+
         try {
+            updateExperienceProEtablissement(condidat);
+
+            updateExperienceEnsEtablissement(condidat);
+
             Condidat condidatBd = condidatService.getCondidatByUsername(username);
 
             if (condidatBd != null) {
@@ -115,10 +124,14 @@ public class CondidatController  {
                         mapper.mapAll(condidat.getExperienceProfessionels(), ExperienceProfessionel.class) : null;
 
                 if(listeExpEns!=null) {
-                    listeExpEns.forEach(expPro -> expPro.setCondidat(condidatBd));
+                    listeExpEns.forEach(expEns -> {
+                        expEns.setCondidat(condidatBd);
+                    });
                 }
                 if(listeExpPro != null) {
-                    listeExpPro.forEach(expEns -> expEns.setCondidat(condidatBd));
+                    listeExpPro.forEach(expPro -> {
+                        expPro.setCondidat(condidatBd);
+                    });
                 }
 
                 condidatBd.setExperienceProfessionels(listeExpPro);
@@ -134,6 +147,30 @@ public class CondidatController  {
         }
         response.setSuccesMessage("Vos informations sont enregistrées avec succès!");
         return ResponseEntity.ok().body(response);
+    }
+
+    private void updateExperienceEnsEtablissement(CondidatDto condidat) {
+        for(ExperienceEnseignantDTO epe: condidat.getExperienceEnseignants()) {
+            Etablissement e = etablissementService.getByLibelle(epe.getEtablissement().getLibelle());
+            if(e == null) {
+                this.saveEtablissement(epe.getEtablissement().getLibelle());
+                epe.setEtablissement(etablissementService.getByLibelle(epe.getEtablissement().getLibelle()));
+            }else {
+                epe.setEtablissement(e);
+            }
+        }
+    }
+
+    private void updateExperienceProEtablissement(CondidatDto condidat) {
+        for(ExperienceProfessionelDTO ep: condidat.getExperienceProfessionels()) {
+            Etablissement e = etablissementService.getByLibelle(ep.getEtablissement().getLibelle());
+            if(e == null) {
+                this.saveEtablissement(ep.getEtablissement().getLibelle());
+                ep.setEtablissement(etablissementService.getByLibelle(ep.getEtablissement().getLibelle()));
+            }else{
+                ep.setEtablissement(e);
+            }
+        }
     }
 
     private ResponseEntity<ResponseDto> uploadFiles(String username, MultipartFile[] files, ResponseDto response) {
@@ -164,7 +201,7 @@ public class CondidatController  {
         condidatBd.setCin(condidat.getCin());
         condidatBd.setEtat(condidat.getEtat());
         try {
-            condidatBd.setDateNaissance(dateFormat.parse(condidat.getDateNaissance()));
+            condidatBd.setDateNaissance(condidat.getDateNaissance() != null && condidat.getDateNaissance() !="" ? dateFormat.parse(condidat.getDateNaissance()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -275,6 +312,8 @@ public class CondidatController  {
         }
        return ResponseEntity.ok().body(response);
    }
-
+public void saveEtablissement(String libelle){
+    etablissementService.addEtablissement(new Etablissement(libelle));
+}
 
 }

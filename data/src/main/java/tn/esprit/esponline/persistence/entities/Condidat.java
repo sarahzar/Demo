@@ -14,7 +14,7 @@ public class Condidat extends Utilisateur {
     private Date dateNaissance;
     private String sexe;
     private int etat;
-    private int cin;
+    private String cin;
     private int telephone;
     private Date dateInscrit;
     private Date dateModif;
@@ -114,11 +114,11 @@ public class Condidat extends Utilisateur {
         this.etat = etat;
     }
 
-    public int getCin() {
+    public String getCin() {
         return cin;
     }
 
-    public void setCin(int cin) {
+    public void setCin(String cin) {
         this.cin = cin;
     }
 

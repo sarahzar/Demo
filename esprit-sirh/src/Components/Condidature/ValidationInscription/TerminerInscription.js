@@ -170,9 +170,9 @@ class TerminerInscription extends React.Component {
         <div className="mb-5"></div>
 
         <div className="form-group m-0">
-        <button className="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mr-1 " >
+        {/* <button className="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mr-1 " >
            <i className="fas fa-download"></i>Générer un document PDF
-                                        </button>
+                                        </button> */}
                                         <button className="d-none d-sm-inline-block btn btn-sm btn-primary " disabled={!validateDocuments || !validateParcours} onClick={this.terminerInscrit}>
            <i className="fas fa-check"></i>Confirmer ma condidature
                                         </button>

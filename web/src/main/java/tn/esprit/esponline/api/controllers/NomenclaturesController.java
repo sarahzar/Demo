@@ -30,6 +30,8 @@ public class NomenclaturesController {
     @Autowired
     private IEtablissementService etablissementService;
     @Autowired
+    private IEtablissementScolaireService etablissementScolaireService;
+    @Autowired
     private ISpecialiteService specialiteService;
     @Autowired
     private IEtatCivilService etatCivilService;
@@ -84,10 +86,10 @@ public class NomenclaturesController {
     }
 
     @GetMapping("/allEtablissement")
-    public ResponseEntity<List<Etablissement>> getallEtablissement(){
-        List<Etablissement> allEtablissement=null;
+    public ResponseEntity<List<EtablissementScolaire>> getallEtablissement(){
+        List<EtablissementScolaire> allEtablissement=null;
         try {
-            allEtablissement=etablissementService.getAll();
+            allEtablissement=etablissementScolaireService.getAll();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

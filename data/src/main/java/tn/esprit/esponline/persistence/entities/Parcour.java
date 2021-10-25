@@ -18,7 +18,7 @@ public class Parcour {
     @ManyToOne
     private Diplome diplome;
     @ManyToOne
-    private Etablissement etablissement;
+    private EtablissementScolaire etablissement;
     @ManyToOne
     private Specialite specialite;
     @ManyToOne
@@ -29,17 +29,6 @@ public class Parcour {
 
     public Parcour() {
     }
-
-    public Parcour(Diplome diplome, Etablissement etablissement, Specialite specialite, Condidat condidat, int annee, Pays pays, int mention) {
-        this.diplome = diplome;
-        this.etablissement = etablissement;
-        this.specialite = specialite;
-        this.condidat=condidat;
-        this.annee=annee;
-        this.pays=pays;
-        this.mention=mention;
-    }
-
 
     public long getId() {
         return id;
@@ -73,11 +62,11 @@ public class Parcour {
         this.diplome = diplome;
     }
 
-    public Etablissement getEtablissement() {
+    public EtablissementScolaire getEtablissement() {
         return etablissement;
     }
 
-    public void setEtablissement(Etablissement etablissement) {
+    public void setEtablissement(EtablissementScolaire etablissement) {
         this.etablissement = etablissement;
     }
 

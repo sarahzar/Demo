@@ -1,27 +1,33 @@
 package tn.esprit.esponline.persistence.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+//@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("ETABLISSEMENT")
 public class Etablissement {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private  int id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQUENCE_NAME")
+    @SequenceGenerator(name = "SEQUENCE_NAME", sequenceName = "SEQUENCE_NAME", allocationSize = 1, initialValue = 1000)
+    private  long id;
     private String libelle;
-    private int telephone;
-    private String mail;
+//    private int telephone;
+//    private String mail;
+
 
     public Etablissement() {
     }
 
-    public int getId() {
+    public Etablissement(String libelle) {
+        this.libelle = libelle;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -33,19 +39,19 @@ public class Etablissement {
         this.libelle = libelle;
     }
 
-    public int getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(int telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
+//    public int getTelephone() {
+//        return telephone;
+//    }
+//
+//    public void setTelephone(int telephone) {
+//        this.telephone = telephone;
+//    }
+//
+//    public String getMail() {
+//        return mail;
+//    }
+//
+//    public void setMail(String mail) {
+//        this.mail = mail;
+//    }
 }

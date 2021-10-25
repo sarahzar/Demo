@@ -17,7 +17,7 @@ public class CondidatDto {
     private String dateNaissance;
     private String sexe;
     private int etat;
-    private int cin;
+    private String cin;
     private int telephone;
     private int anneeObtention;
     private TypeCondidature typeCondidature;
@@ -79,11 +79,11 @@ public class CondidatDto {
         this.etat = etat;
     }
 
-    public int getCin() {
+    public String getCin() {
         return cin;
     }
 
-    public void setCin(int cin) {
+    public void setCin(String cin) {
         this.cin = cin;
     }
 
