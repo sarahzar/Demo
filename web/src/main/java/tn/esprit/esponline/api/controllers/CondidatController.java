@@ -62,6 +62,7 @@ public class CondidatController  {
         Mapper mapper = new Mapper();
         CondidatDto condidat = new ObjectMapper().readValue(cdt, CondidatDto.class);
 
+        //upload files er maj liste documents du condidat
 
 
         try {
@@ -72,6 +73,12 @@ public class CondidatController  {
             Condidat condidatBd = condidatService.getCondidatByUsername(username);
 
             if (condidatBd != null) {
+
+                if(files !=null && files.length != 0) {
+                    ResponseEntity<ResponseDto> responseUpload = uploadFiles(username, files, response,condidatBd.getDocuments());
+                    if (responseUpload != null) return responseUpload;
+                }
+
 
                 //récupérer la liste des expériences pro et enseignant à partir de la base
                 List<ExperienceProfessionel> expros= condidatBd.getExperienceProfessionels()!=null ? condidatBd.getExperienceProfessionels().stream().
@@ -87,7 +94,15 @@ public class CondidatController  {
 
 
                 //mettre à jours les infos du condidat
-                condidatBd.setDernierDiplome(condidat.getDernierDiplome());
+                if(condidat.getDernierDiplome()!=null && condidat.getDernierDiplome().getAnnee() != 0
+                        && condidat.getDernierDiplome().getDiplome().getId() !=-1
+                        && condidat.getDernierDiplome().getEtablissement().getId()!= -1
+                        && condidat.getDernierDiplome().getSpecialite().getId()!=-1
+                ){
+                    condidatBd.setDernierDiplome(condidat.getDernierDiplome());
+                }else {
+                    condidatBd.setDernierDiplome(null);
+                }
                 setInfosGenrales(condidat,condidatBd);
 
                 //mettre à jour l'attribut condidat dans les différentes listes
@@ -106,13 +121,6 @@ public class CondidatController  {
                 condidatBd.setCompetences(condidat.getCompetences());
                 condidatBd.setRecherches(condidat.getRecherches());
 
-
-
-                //upload files er maj liste documents du condidat
-                if(files !=null && files.length != 0) {
-                    ResponseEntity<ResponseDto> responseUpload = uploadFiles(username, files, response);
-                    if (responseUpload != null) return responseUpload;
-                }
                 condidat.getDocuments().forEach(d -> d.setCondidat(condidatBd));
                 condidatBd.setDocuments(condidat.getDocuments());
 
@@ -140,6 +148,7 @@ public class CondidatController  {
 
 
                 condidatService.saveCondidat(condidatBd);
+                this.storageService.deleteNotExistingFiles(condidatBd.getDocuments(),condidatBd.getUsername());
             }
         }catch (Exception e){
             response.setErrorMessage("Erreur d'enregistrement!");
@@ -150,37 +159,41 @@ public class CondidatController  {
     }
 
     private void updateExperienceEnsEtablissement(CondidatDto condidat) {
-        for(ExperienceEnseignantDTO epe: condidat.getExperienceEnseignants()) {
-            Etablissement e = etablissementService.getByLibelle(epe.getEtablissement().getLibelle());
-            if(e == null) {
-                this.saveEtablissement(epe.getEtablissement().getLibelle());
-                epe.setEtablissement(etablissementService.getByLibelle(epe.getEtablissement().getLibelle()));
-            }else {
-                epe.setEtablissement(e);
+        if(condidat.getExperienceEnseignants() !=null && !condidat.getExperienceEnseignants().isEmpty()) {
+            for (ExperienceEnseignantDTO epe : condidat.getExperienceEnseignants()) {
+                Etablissement e = etablissementService.getByLibelle(epe.getEtablissement().getLibelle());
+                if (e == null) {
+                    this.saveEtablissement(epe.getEtablissement().getLibelle());
+                    epe.setEtablissement(etablissementService.getByLibelle(epe.getEtablissement().getLibelle()));
+                } else {
+                    epe.setEtablissement(e);
+                }
             }
         }
     }
 
     private void updateExperienceProEtablissement(CondidatDto condidat) {
-        for(ExperienceProfessionelDTO ep: condidat.getExperienceProfessionels()) {
-            Etablissement e = etablissementService.getByLibelle(ep.getEtablissement().getLibelle());
-            if(e == null) {
-                this.saveEtablissement(ep.getEtablissement().getLibelle());
-                ep.setEtablissement(etablissementService.getByLibelle(ep.getEtablissement().getLibelle()));
-            }else{
-                ep.setEtablissement(e);
+        if(condidat.getExperienceProfessionels()!=null && !condidat.getExperienceProfessionels().isEmpty()) {
+            for (ExperienceProfessionelDTO ep : condidat.getExperienceProfessionels()) {
+                Etablissement e = etablissementService.getByLibelle(ep.getEtablissement().getLibelle());
+                if (e == null) {
+                    this.saveEtablissement(ep.getEtablissement().getLibelle());
+                    ep.setEtablissement(etablissementService.getByLibelle(ep.getEtablissement().getLibelle()));
+                } else {
+                    ep.setEtablissement(e);
+                }
             }
         }
     }
 
-    private ResponseEntity<ResponseDto> uploadFiles(String username, MultipartFile[] files, ResponseDto response) {
+    private ResponseEntity<ResponseDto> uploadFiles(String username, MultipartFile[] files, ResponseDto response,List<Document> documentsBd) {
         if(files.length > 0){
             //storageService.deleteAll();
             storageService.init(username);
             for(MultipartFile file: files){
                 String message = "";
                 try {
-                    storageService.save(file,username);
+                    storageService.save(file,username,documentsBd);
                 } catch (Exception e) {
                     message = "Erreur d'importation du fichier " + file.getOriginalFilename() +": "+ e.getMessage()+" !";
                     response.setErrorMessage(message);
@@ -208,10 +221,10 @@ public class CondidatController  {
         condidatBd.setSexe(condidat.getSexe());
         condidatBd.setTelephone(condidat.getTelephone());
 
-        condidatBd.setEtatCivil(condidat.getEtatCivil());
-        condidatBd.setTypeCondidature(condidat.getTypeCondidature());
-        condidatBd.setPosteActuel(condidat.getPosteActuel());
-        condidatBd.setDomaine(condidat.getDomaine());
+        condidatBd.setEtatCivil(condidat.getEtatCivil() !=null && condidat.getEtatCivil().getId() != -1 ? condidat.getEtatCivil() : null);
+        condidatBd.setTypeCondidature(condidat.getTypeCondidature() !=null && condidat.getTypeCondidature().getId() != -1 ? condidat.getTypeCondidature() : null);
+        condidatBd.setPosteActuel(condidat.getPosteActuel()!=null && condidat.getPosteActuel().getId() != -1 ? condidat.getPosteActuel() : null );
+        condidatBd.setDomaine(condidat.getDomaine()!=null && condidat.getDomaine().getId() != -1 ? condidat.getDomaine() : null);
         condidatBd.setaConfirmer(condidat.isaConfirmer());
         condidatBd.setDateModif(new Date());
         condidatBd.setDemandeModif(condidat.isDemandeModif());

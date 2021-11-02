@@ -12,7 +12,7 @@ class RechercheLecture extends React.Component {
 
     componentDidMount() {
         
-            if (this.props.condidatReducer.recherches.length == 0) {
+            if (this.props.condidatReducer.recherches == null || this.props.condidatReducer.recherches.length == 0) {
                 this.setState({
                     empty: true
                 })

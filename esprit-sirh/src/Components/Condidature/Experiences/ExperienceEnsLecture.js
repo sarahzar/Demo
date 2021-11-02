@@ -13,7 +13,7 @@ class ExperienceEnsLecture extends React.Component {
     componentDidMount() {
       
     
-        if (this.props.condidatReducer.experienceEnseignants.length == 0 ) {
+        if (this.props.condidatReducer.experienceEnseignants == null || this.props.condidatReducer.experienceEnseignants.length == 0 ) {
             this.setState({
                 empty: true
             })

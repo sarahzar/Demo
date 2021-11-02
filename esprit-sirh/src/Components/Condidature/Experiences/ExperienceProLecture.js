@@ -11,7 +11,7 @@ class ExperienceProLecture extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.condidatReducer.experienceProfessionels.length == 0 ) {
+        if (this.props.condidatReducer.experienceProfessionels == null || this.props.condidatReducer.experienceProfessionels.length == 0 ) {
             this.setState({
                 empty: true
             })

@@ -86,7 +86,7 @@ class ExperienceProfessionel extends Component {
    
     if (localStorage.getItem('persist:root')) {
 
-      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && !this.props.condidatReducer.aConfirmer){
       this.props.condidatReducer.experienceProfessionels = elements;
       this.props.setCondidat(this.props.condidatReducer)
       }
@@ -127,9 +127,9 @@ class ExperienceProfessionel extends Component {
 
     let elements = [...this.state.items];
     let id =e.target.value;
-    let poste = this.props.postes.filter(elem => elem.id == id).shift()
+    let poste = id != -1 ? this.props.postes.filter(elem => elem.id == id).shift() : null
 
-    elements[index].poste = poste
+    elements[index].poste = poste ? poste : {id:-1,libelle:""}
 
     this.setState({
       items: elements,
@@ -144,9 +144,9 @@ class ExperienceProfessionel extends Component {
 
     let elements = [...this.state.items];
     let id =e.target.value;
-    let pays = this.props.pays.filter(elem => elem.id == id).shift()
+    let pays = id ? this.props.pays.filter(elem => elem.id == id).shift() : null
 
-    elements[index].pays = pays;
+    elements[index].pays = pays ? pays : {id:-1,libelle:""};
 
     this.setState({
       items: elements,
@@ -271,11 +271,11 @@ class ExperienceProfessionel extends Component {
 
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif){
+  
     ValidationService.validator.purgeFields();
     this.addMessages();
     console.log("validator", ValidationService.validator)
-    if (ValidationService.validator.allValid()) {
+    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer)) {
 
       this.setState({
         loading: true,
@@ -286,12 +286,6 @@ class ExperienceProfessionel extends Component {
       this.markUsTouched();
       ValidationService.validator.showMessages();
     }
-  }else{
-    this.setState({
-      loading: true,
-      changePath: true
-    })
-  }
   }
 
   updateTouched(replacedTouched, index1, index2, touchedcp) {

@@ -47,15 +47,8 @@ class Parcour extends Component {
     ValidationService.validator.autoForceUpdate = this;
     this.state = {
       loading: false,
-      domaineId: -1,
-      specialiteId: -1,
-      etablissementId: -1,
-      diplomeId: -1,
-      mention: -1,
-      paysId: -1,
       anneeObtention: "",
-      items: [{ id:-1, annee:"",mention:-1,diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}],
-      // index:0,     
+      items: [{ id:-1, annee:"",mention:-1,diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}],  
       retour: false,
       condidat: null,
       changePath: false,
@@ -66,6 +59,7 @@ class Parcour extends Component {
       modalVisible: false,
     };
   }
+  
   componentDidMount() {
     let localCopy = Object.assign({}, this.props);
     let cdtString = JSON.stringify(localCopy.condidatReducer)
@@ -90,7 +84,7 @@ class Parcour extends Component {
     
     if (localStorage.getItem('persist:root')) {
 
-      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && !this.props.condidatReducer.aConfirmer){
       this.props.condidatReducer.parcourScolaire = elements
       this.props.setCondidat(this.props.condidatReducer)
       }
@@ -107,11 +101,12 @@ class Parcour extends Component {
   }
 
   validerEtapeParcour = () => {
+
     ValidationService.validator.purgeFields();
-    this.addMessages();
-    this.markUsTouched()
+    this.addMessages(); 
 
     if (!ValidationService.validator.allValid()) {
+      this.markUsTouched()
       ValidationService.validator.showMessages()
       return false
     } else if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && this.state.items.length < 3){
@@ -129,9 +124,9 @@ class Parcour extends Component {
 
     let elements = this.state.items;
     let id =e.target.value;
-    let specialite = this.props.specialites.filter(elem => elem.id == id).shift()
+    let specialite = id !=-1 ? this.props.specialites.filter(elem => elem.id == id).shift() : null
 
-    elements[index].specialite = specialite;
+    elements[index].specialite = specialite ? specialite : {id:-1,libelle:""};
     this.setState({
       items: elements,
       touched: touchedElement
@@ -146,9 +141,9 @@ class Parcour extends Component {
 
     let elements = [...this.state.items];
     let id =e.target.value;
-    let etablissement = this.props.etablissements.filter(elem => elem.id == id).shift()
+    let etablissement = id != -1 ? this.props.etablissements.filter(elem => elem.id == id).shift() : null
 
-    elements[index].etablissement = etablissement;
+    elements[index].etablissement = etablissement ? etablissement : {id:- 1, libelle: ""};
     
     this.setState({
       items: elements,
@@ -180,9 +175,9 @@ class Parcour extends Component {
 
     let elements = [...this.state.items];
     let id =e.target.value;
-    let diplome = this.props.diplomes.filter(elem => elem.id == id).shift()
+    let diplome = id != -1 ? this.props.diplomes.filter(elem => elem.id == id).shift() : null
 
-    elements[index].diplome = diplome;
+    elements[index].diplome = diplome ? diplome : {id: -1 , libelle : ""};
 
     this.setState({
       items: elements,
@@ -213,9 +208,9 @@ class Parcour extends Component {
 
     let elements = [...this.state.items];
     let id =e.target.value;
-    let pays = this.props.pays.filter(elem => elem.id == id).shift()
+    let pays = id != -1 ? this.props.pays.filter(elem => elem.id == id).shift() : null
 
-    elements[index].pays= pays;
+    elements[index].pays= pays ? pays : {id:-1,libelle: ""};
     this.setState({
       items: elements,
       touched: touchedElement
@@ -235,7 +230,7 @@ class Parcour extends Component {
   }
 
   updateTabElements = (e) => {
-    const defaultElem = {id:-1, annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
+    const defaultElem = {id:-1, annee:"",mention:-1,diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
     e.preventDefault();
     let elements = [...this.state.items];
     elements.push(defaultElem);
@@ -250,7 +245,7 @@ class Parcour extends Component {
     const parcours = this.state.items.slice()
     const touchedcp = { ...this.state.touched }
     const replacedTouched = []
-    const defaultElem = {id:-1, annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
+    const defaultElem = {id:-1, annee:"",mention:-1,diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
 
     //spprimer l'élément sélectionner
     parcours.splice(index, 1)
@@ -279,7 +274,7 @@ class Parcour extends Component {
 
   initListeParcours(liste) {
 
-    const defaultElem = {id:-1, annee:"",mention:"",diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
+    const defaultElem = {id:-1, annee:"",mention:-1,diplome:{id:-1,libelle:""},etablissement:{id:-1,libelle:"",telephone:-1,mail:""},specialite:{id:-1,libelle:""},pays:{id:-1,libelle:""}}
     const firstElem = liste ? liste[0] : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
@@ -287,44 +282,29 @@ class Parcour extends Component {
     }
     return liste;
   }
+
   handleSubmitCondidat = (e) => {
     e.preventDefault();
- 
 
        if (this.props.condidatReducer && !this.props.condidatReducer.dateModif && this.state.items.length < 3) {
         this.handleShow()
       
-      } else {
-
-        if (this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif) {
-
+      } else {     
+        
         ValidationService.validator.purgeFields();
         this.addMessages();
         console.log("validation", ValidationService.validator)
-         if (ValidationService.validator.allValid()) {
-
-           let condidatToSave = this.props.condidatReducer
-           condidatToSave.parcourScolaire = this.state.items
-           this.setState({
-             loading: true,
-             changePath: true,
-           })
-        
+         if (ValidationService.validator.allValid() ||  (this.props.condidatReducer &&this.props.condidatReducer.aConfirmer)) {
+             this.setState({
+               loading: true,
+               changePath: true,
+             })
         }
          else {
 
            this.markUsTouched();
            ValidationService.validator.showMessages();
          }
-
-     
-
-    } else {
-      this.setState({
-        loading: true,
-        changePath: true,
-      });
-    }
   }
 }
  
@@ -441,11 +421,20 @@ class Parcour extends Component {
     
   }
 
-  handleBlockedNavigation = () => {   
-    if ((this.props.condidatReducer && !this.props.condidatReducer.dateModif && this.state.items.length < 3) && window.Location.pathname !='/terminer' ){
-       this.handleShow()
-        return false
-    }  
+  handleBlockedNavigation = () => {
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+
+    console.log(window.location.pathname)
+
+    if (!ValidationService.validator.allValid() && window.location.pathname != '/terminer' && window.location.pathname != '/') {
+      this.markUsTouched();
+      ValidationService.validator.showMessages();
+      return false
+    } else if ((this.props.condidatReducer && !this.props.condidatReducer.dateModif && this.state.items.length < 3) && window.location.pathname != '/terminer' && window.location.pathname != '/') {
+      this.handleShow()
+      return false
+    }
     return true
   }
 

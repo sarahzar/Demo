@@ -80,7 +80,7 @@ class ExperienceEnseignant extends Component {
 
     if (localStorage.getItem('persist:root')) {
 
-      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && !this.props.condidatReducer.aConfirmer){
       this.props.condidatReducer.experienceEnseignants = elements;
       this.props.setCondidat(this.props.condidatReducer)
       }
@@ -121,9 +121,9 @@ class ExperienceEnseignant extends Component {
 
     let elements = [...this.state.items];
     let id =e.target.value;
-    let poste = this.props.postes.filter(elem => elem.id == id).shift()
+    let poste = id !=-1 ? this.props.postes.filter(elem => elem.id == id).shift() : null
 
-    elements[index].poste = poste;
+    elements[index].poste = poste ? poste : {id:-1,libelle:""};
     this.setState({
       items: elements,
       touched: touchedElement
@@ -137,9 +137,9 @@ class ExperienceEnseignant extends Component {
 
     let elements = [...this.state.items];
     let id =e.target.value;
-    let module = this.props.modules.filter(elem => elem.id == id).shift()
+    let module = id != -1 ? this.props.modules.filter(elem => elem.id == id).shift() : null
 
-    elements[index].moduleEnseigne = module;
+    elements[index].moduleEnseigne = module ? module : {id:-1,libelle: ""};
     this.setState({
       items: elements,
       touched: touchedElement
@@ -296,10 +296,10 @@ class ExperienceEnseignant extends Component {
   
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif){
+  
     ValidationService.validator.purgeFields();
     this.addMessages();
-    if (ValidationService.validator.allValid()) {
+    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer)) {
 
       this.setState({
         loading: true,
@@ -312,12 +312,7 @@ class ExperienceEnseignant extends Component {
       ValidationService.validator.showMessages();
 
     }
-  }else{
-    this.setState({
-      loading: true,
-      changePath: true,
-    })
-  }
+  
   }
 
   modifierCondidat= (e) => {

@@ -11,7 +11,7 @@ class CompetenceLecture extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.condidatReducer.competences.length == 0 ) {
+        if (this.props.condidatReducer.competences == null || this.props.condidatReducer.competences.length == 0 ) {
             this.setState({
                 empty: true
             })

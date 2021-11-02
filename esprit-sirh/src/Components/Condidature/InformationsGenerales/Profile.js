@@ -15,7 +15,9 @@ import AuthService from "../../../services/Authentification/AuthService";
 import { ignorerEtapeActions } from "../../../_actions/Shared/ignorer.etape.actions";
 import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.actions";
 import { imageProfileAtions } from "../../../_actions/Shared/image.profile.ations";
-
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import {Prompt} from 'react-router-dom'
 
 const FILES_LOCATION = "http://localhost/uploads/"
 
@@ -37,6 +39,9 @@ export const profilFields = {
   anneObt: 'anneObt',
   sexe: 'sexe',
 
+}
+const leavePage ={
+  leaved : false
 }
 class Profile extends Component {
   constructor(props) {
@@ -76,6 +81,9 @@ class Profile extends Component {
       confirmed:false,
       imageProfilePath:"",
       nomPrenom:"",
+      modifing : false,
+      modified : false,
+      show : false,
     };
   }
 
@@ -238,7 +246,8 @@ class Profile extends Component {
 
     this.setState({
       nom: e.target.value,
-      touched: touchedElements
+      touched: touchedElements,
+      modifing:true
     });
 
   }
@@ -249,7 +258,8 @@ class Profile extends Component {
 
     this.setState({
       prenom: e.target.value,
-      touched: touchedElements
+      touched: touchedElements,
+      modifing:true
     });
   }
   onChangeSexeHomme = (e) => {
@@ -258,7 +268,8 @@ class Profile extends Component {
 
     this.setState({
       sexe: "homme",
-      touched: touchedElements
+      touched: touchedElements,
+      modifing:true
     });
   }
   
@@ -268,7 +279,8 @@ class Profile extends Component {
 
     this.setState({
       sexe: "femme",
-      touched: touchedElements
+      touched: touchedElements,
+      modifing:true
     });
   }
 
@@ -279,7 +291,8 @@ class Profile extends Component {
 
     this.setState({
       etat: e.target.value,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -290,7 +303,8 @@ class Profile extends Component {
 
     this.setState({
       telephone: e.target.value,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -301,7 +315,8 @@ class Profile extends Component {
 
     this.setState({
       cin: e.target.value,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -312,7 +327,8 @@ class Profile extends Component {
 
     this.setState({
       dateNaissance: e.target.value,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -326,7 +342,8 @@ class Profile extends Component {
       
     this.setState({
       etatCivil: etatCvl,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -341,7 +358,8 @@ class Profile extends Component {
 
     this.setState({
       diplome: diplome,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -355,7 +373,8 @@ class Profile extends Component {
 
     this.setState({
       specialite: specialite,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -369,7 +388,8 @@ class Profile extends Component {
 
     this.setState({
       etablissement: etblissement,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -383,7 +403,8 @@ class Profile extends Component {
 
     this.setState({
       posteActuel: poste,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -397,7 +418,8 @@ class Profile extends Component {
 
     this.setState({
       domaine: domaine,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -411,7 +433,8 @@ class Profile extends Component {
 
     this.setState({
       typeCondidature: typeCondidature,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -422,7 +445,8 @@ class Profile extends Component {
 
     this.setState({
       anneeObtention: e.target.value,
-      touched: touchedElement
+      touched: touchedElement,
+      modifing:true
     });
   }
 
@@ -432,32 +456,34 @@ class Profile extends Component {
     ValidationService.validator.purgeFields();
     this.addMessages();
 
-    if (!this.state.confirmed && this.condidatReducer && !this.condidatReducer.dateModif) {
-      if (ValidationService.validator.allValid()) {
+   
+      if (ValidationService.validator.allValid() || this.state.confirmed ) {
 
-        let condidatToSave = this.updateCondidatInfos();
+        if (!this.state.confirmed && this.props.condidatReducer && !this.props.condidatReducer.dateModif ) {
 
-        this.setState({
-          // loading:true,
-          // condidat: condidatToSave,
-          changePath: true
-        })
+          let condidatToSave = this.updateCondidatInfos();
 
-        this.getCondidatLists(condidatToSave)
-        this.props.setCondidat(condidatToSave)
+          this.setState({
+            changePath: true
+          })
+
+          this.getCondidatLists(condidatToSave)
+          this.props.setCondidat(condidatToSave)
+          
+        } else {
+          this.setState({
+            changePath: true
+          })
+        }
 
       } else {
         this.markUsTouched();
         ValidationService.validator.showMessages();
       }
-    }else{
-      this.setState({
-        changePath: true
-      })
-    }
+   
   }
 
-  updateCondidatInfos(){
+  updateCondidatInfos() {
 
     const {condidatReducer} = this.props;
 
@@ -581,6 +607,7 @@ class Profile extends Component {
             this.setState({
               message: resp.data.succesMessage,
               typeMessage: "alert alert-success",
+              modified:true
             })
           } else {
             this.setState({
@@ -599,7 +626,45 @@ class Profile extends Component {
     }
     
   }
+  handleBlockedNavigation = () => {
 
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    console.log("validation", ValidationService.validator)
+
+    if (!ValidationService.validator.allValid() && window.location.pathname != '/terminer' && window.location.pathname != '/') {
+      this.markUsTouched();
+      ValidationService.validator.showMessages();
+      return false
+    }
+    // else if(!leavePage.leaved && this.props.condidatReducer && this.props.condidatReducer.dateModif && this.state.modifing && !this.state.modified){
+    //   this.handleShow()
+    //   return false
+    // }
+    // else if(leavePage.leaved){
+    //   this.handleClose()
+    //    return true;
+    // }
+    return true
+  }
+
+  handleShow = () => {
+    this.setState({
+      show: true,
+    })
+  }
+
+  handleClose = () => {
+    leavePage.leaved = true
+    this.setState({
+      show: false,
+    })
+  }
+  handleLeavePage = () => {
+    leavePage.leaved = true
+    this.handleBlockedNavigation()
+  }
+  
   render() {
 
     console.log("etat civil",this.state.etatCivil)
@@ -617,7 +682,8 @@ class Profile extends Component {
     const { etatCivils } = this.props;
     const { invalide } = this.state;
     const {condidatReducer} = this.props
-   
+    const {when} = this.props
+    const { show } = this.state;
     if (changePath) {
       return <Redirect to={{
         pathname: '/parcour',
@@ -642,6 +708,24 @@ class Profile extends Component {
              userlogin={this.state.username}
              />
 
+            <Prompt
+              when={when}
+              message={this.handleBlockedNavigation} />
+
+             <Modal show={show} onHide={this.handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Validation Profile</Modal.Title>
+              </Modal.Header>
+
+              <Modal.Body>
+                <p>Etes vous sûr de quittez sans avoir enregistrer?</p>
+              </Modal.Body>
+
+              <Modal.Footer>
+                <Button variant="primary" onClick={this.handleLeavePage}>Oui</Button>
+                <Button variant="primary" onClick={this.handleClose}>Non</Button>
+              </Modal.Footer>
+            </Modal>
 
             <div className="container-fluid pl-5">
               <Form

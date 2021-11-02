@@ -5,6 +5,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
+import tn.esprit.esponline.persistence.entities.Document;
+import org.apache.commons.io.FilenameUtils;
 
 
 import java.io.File;
@@ -14,9 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Stream;
 @Service
 public class FilesStorageService implements IFilesStorageService{
@@ -48,31 +48,66 @@ public class FilesStorageService implements IFilesStorageService{
 
         this.root= Paths.get("C:/wamp/www/uploads/"+path);
         try {
-
-            //Files.deleteIfExists(root);
             if(!Files.isDirectory(root)){
                 Files.createDirectories(root);
             }
-//            else{
-//
-//                File[] files = new File("C:/wamp/www/uploads/"+path).listFiles();
-//                for(File f:files){
-//                    f.delete();
-//                }
-//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void save(MultipartFile file,String username) throws FileExistException {
+    public void deleteNotExistingFiles(List<Document> documents, String username) throws IOException {
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        List<File> allFiles = new ArrayList<>();
+        List<String> docNames = new ArrayList<>();
+
+        File folder = new File("C:/wamp/www/uploads/" + year + "/" + username );
+        for (File fileEntry : folder.listFiles()) {
+            allFiles.add(fileEntry);
+        }
+
+        try {
+            if(documents!=null && !documents.isEmpty()) {
+                documents.forEach(d -> docNames.add(d.getNom()));
+
+                for(File file: allFiles) {
+                    if(!docNames.contains(file.getName())){
+                        file.delete();
+                    }
+                }
+            }else{
+                for(File file: allFiles) {
+                        file.delete();
+                }
+            }
+        }catch (Exception ex) {
+                throw new IOException("erreur de sppression du fichier");
+        }
+    }
+
+    @Override
+    public void save(MultipartFile file, String username, List<Document> documentsBD) throws FileExistException {
         String fileExistMsg=null;
         int year = Calendar.getInstance().get(Calendar.YEAR);
+
         try {
             File rechercheFile = new File("C:/wamp/www/uploads/"+year+"/"+username+"/"+file.getOriginalFilename());
+
+            boolean existDoc = false;
+            if(documentsBD!=null && !documentsBD.isEmpty()) {
+                for (Document d : documentsBD) {
+                    if (rechercheFile.getName().equals(d.getNom()) && FilenameUtils.getExtension(rechercheFile.getName()).equals(FilenameUtils.getExtension(d.getNom()))) {
+                        existDoc = true;
+                        break;
+                    }
+                }
+            }
+
             if(!rechercheFile.exists()) {
                 Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+            }else if(rechercheFile.exists() && documentsBD!=null && !documentsBD.isEmpty() && !existDoc) {
+                fileExistMsg="";
             }else{
                 fileExistMsg="le fichier existe déjà";
                 throw new FileExistException(fileExistMsg);

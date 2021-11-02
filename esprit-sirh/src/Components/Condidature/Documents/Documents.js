@@ -17,6 +17,7 @@ import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.acti
 import DocumentLecture from "./DocumentLecture";
 import { Switch } from "@material-ui/core";
 import DocumentModif from "./DocumentModif";
+import {Prompt} from 'react-router-dom'
 
 const FILES_LOCATION = "http://localhost/uploads/"
 
@@ -387,12 +388,28 @@ class Documents extends Component {
     }
   }
 
+  handleBlockedNavigation = () => {
+
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    console.log("validation", ValidationService.validator)
+
+    if (this.props.condidatReducer && !this.props.condidatReducer.dateModif && !ValidationService.validator.allValid()  && window.location.pathname != '/terminer' && window.location.pathname != '/') {
+      this.markUsTouched();
+      ValidationService.validator.showMessages();
+      return false
+    }
+    return true
+  }
+
+
   render() {
     const { message } = this.state;
     const { loading } = this.state;
     const { typeMessage } = this.state;
     const { condidatReducer } = this.props;
     const { show } = this.state;
+    const {when} = this.props
 
     const test = document.getElementById("selectedFile")
     console.log("show btn", test && test.value)
@@ -416,6 +433,9 @@ class Documents extends Component {
           <div id="content">
             <Header />
 
+            <Prompt
+              when={when}
+              message={this.handleBlockedNavigation} />
 
             <div className="container-fluid pl-5">
 

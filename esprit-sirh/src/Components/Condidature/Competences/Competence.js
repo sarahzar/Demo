@@ -73,7 +73,7 @@ class Competence extends Component {
 
     if (localStorage.getItem('persist:root')) {
 
-      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
+      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && !this.props.condidatReducer.aConfirmer){
       this.props.condidatReducer.competences = elements;
       this.props.setCondidat(this.props.condidatReducer)
       }
@@ -190,18 +190,14 @@ class Competence extends Component {
 
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif){
+ 
     ValidationService.validator.purgeFields();
     this.addMessages();
-    if (ValidationService.validator.allValid()) {
-      // let condidatToSave = this.props.condidatReducer
-      // condidatToSave.competences = [...this.state.items]
-
+    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer)) {
 
       this.setState({
         loading: true,
         changePath: true,
-        // condidat: condidatToSave
       })
      
     } else {
@@ -210,12 +206,6 @@ class Competence extends Component {
       ValidationService.validator.showMessages();
 
     }
-  }else{
-    this.setState({
-      loading: true,
-      changePath: true,
-    })
-  }
   }
 
   updateTouched(replacedTouched, index1, index2, touchedcp) {
