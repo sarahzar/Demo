@@ -183,12 +183,15 @@ class InfoPersonelles extends React.Component {
                 <label className="small font-weight-bold control-label">Adresse  </label>
                 <input
                   type="text"
-                  className="form-control form-control-sm"
-                  name="nom"
-                // value={this.props.infoPersonelle.nom}
-                // onChange={this.onChangeNom}
-                // validations={[required]}
+                  className={this.props.touched && this.props.touched['adresse'] && (!this.props.infoPersonelle.adresse) ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                  name="adresse"
+                value={this.props.infoPersonelle.adresse}
+                onChange={this.props.modifAdresse}
+                onBlur={() => this.props.validator.showMessageFor('adresse')}
                 />
+                  {/* msg erreur */}
+                  {this.props.touched && this.props.touched['adresse']  && this.props.validator.message('Adresse', this.props.infoPersonelle.adresse, 'required', { className: 'text-danger' })}
+
               </div>
             </div>
 

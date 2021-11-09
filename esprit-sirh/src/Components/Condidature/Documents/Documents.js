@@ -129,7 +129,7 @@ class Documents extends Component {
     this.setState({
       photo: e.target.files[0],
       touched: touchedElements,
-      photoName: e.target.files[0].name
+      photoName: e.target.files[0] ?  e.target.files[0].name : null
     });
   }
 
@@ -140,7 +140,7 @@ class Documents extends Component {
     this.setState({
       cv: e.target.files[0],
       touched: touchedElements,
-      cvName: e.target.files[0].name
+      cvName: e.target.files[0] ? e.target.files[0].name : null
     });
   }
 
@@ -151,7 +151,7 @@ class Documents extends Component {
     this.setState({
       lettreMotivation: e.target.files[0],
       touched: touchedElements,
-      lmName: e.target.files[0].name
+      lmName: e.target.files[0] ? e.target.files[0].name : null
     });
   }
 
@@ -162,14 +162,14 @@ class Documents extends Component {
     this.setState({
       diplome: e.target.files[0],
       touched: touchedElements,
-      diplomeName: e.target.files[0].name
+      diplomeName: e.target.files[0] ? e.target.files[0].name : null
     });
   }
 
   onChangeAnnexe = (e) => {
     this.setState({
       annexe: e.target.files[0],
-      annexeName: e.target.files[0].name
+      annexeName: e.target.files[0] ? e.target.files[0].name : null
     });
   }
   goBack = (e) => {

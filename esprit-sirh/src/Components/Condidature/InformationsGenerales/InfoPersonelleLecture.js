@@ -85,7 +85,7 @@ class InfoPersonelleLecture extends React.Component {
 
               <div class="form-group form-inline">
                 <label className="small font-weight-bold text-left justify-content-start">Adresse: </label>
-                <div class="col-4">  </div>
+                <div class="col-4">  {this.props.infoPersonelle.adresse} </div>
               </div>
 
 

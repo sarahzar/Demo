@@ -213,6 +213,7 @@ public class CondidatController  {
         condidatBd.setPrenom(condidat.getPrenom());
         condidatBd.setCin(condidat.getCin());
         condidatBd.setEtat(condidat.getEtat());
+        condidatBd.setAdresse(condidat.getAdresse());
         try {
             condidatBd.setDateNaissance(condidat.getDateNaissance() != null && condidat.getDateNaissance() !="" ? dateFormat.parse(condidat.getDateNaissance()) : null);
         } catch (ParseException e) {

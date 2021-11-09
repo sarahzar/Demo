@@ -16,57 +16,17 @@ import { specialiteActions } from "../../_actions/Shared/Nomenclatures/specialit
 import { typeCondidatureActions } from "../../_actions/Shared/Nomenclatures/typeCondidature.actions";
 import { paysActions } from "../../_actions/Shared/Nomenclatures/pays.actions";
 import { modulesActions } from "../../_actions/Shared/Nomenclatures/modules.actions";
+import ValidationService from "../../services/Validation/ValidationService";
 
 const ROLE_ENSEIGNANT =  'ENSEIGNANT';
 
 
-const required = value => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
-
-const email = value => {
-  if (!isEmail(value)) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This is not a valid email.
-      </div>
-    );
-  }
-};
-/*onst vusername = value => {
-  if (value.length < 3 || value.length > 20) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The username must be between 3 and 20 characters.
-      </div>
-    );
-  }
-};
-*/
-const vpassword = value => {
-  if (value.length < 6 || value.length > 40) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The password must be between 6 and 40 characters.
-      </div>
-    );
-  }
-};
 
 class Register extends Component {
   constructor(props) {
     super(props);
-    this.handleRegister = this.handleRegister.bind(this);
-   // this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onChangeEmail = this.onChangeEmail.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
-    this.onChangePasswordConfirm = this.onChangePasswordConfirm.bind(this);
+
+    ValidationService.validator.autoForceUpdate = this;
 
     this.state = {
       username: "",
@@ -74,27 +34,40 @@ class Register extends Component {
       successful: false,
       message: "",
       passwordConfirm: "",
+      touched: {},
     };
   }
 
-  onChangePasswordConfirm(e) {
+  onChangePasswordConfirm = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements['confirm'] = true;
+
     this.setState({
-        passwordConfirm: e.target.value
+        passwordConfirm: e.target.value,
+        touched: touchedElements
     });
   }
-  onChangeEmail(e) {
+  onChangeEmail = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements['mail'] = true;
+
     this.setState({
-      username: e.target.value
+      username: e.target.value,
+      touched: touchedElements
     });
   }
 
-  onChangePassword(e) {
+  onChangePassword = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements['pwd'] = true;
+
     this.setState({
-      password: e.target.value
+      password: e.target.value,
+      touched: touchedElements
     });
   }
 
-  handleRegister(e) {
+  handleRegister = (e) => {
     e.preventDefault();
 
     this.setState({
@@ -102,9 +75,9 @@ class Register extends Component {
       successful: false
     });
 
-    this.form.validateAll();
-
-    if (this.checkBtn.context._errors.length === 0) {
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    if (ValidationService.validator.allValid()) {
       this.props.allPostes();
       this.props.allDiplomes();
       this.props.allEtablissements();
@@ -116,54 +89,44 @@ class Register extends Component {
       this.props.allModules()
       this.props.register(this.state.username,this.state.password,this.state.username, ROLE_ENSEIGNANT  )  
     }else {
+      this.markUsTouched()
+      ValidationService.validator.showMessages()
       this.setState({
         loading: false,
       });
     }
   }
 
+  addMessages() {
+
+    ValidationService.validator.message('confirm', this.state.passwordConfirm,  ['required',{ match: this.state.password }], { className: 'text-danger' })
+    ValidationService.validator.message('mail', this.state.username,  'required|email', { className: 'text-danger' })
+    ValidationService.validator.message('pwd', this.state.password, 'required|validPassword', { className: 'text-danger' });
+  
+  }
+  markUsTouched() {
+
+    this.state.touched['confirm'] = true;
+    this.state.touched['mail'] = true;
+    this.state.touched['pwd'] = true;
+   
+
+  }
+
   render() {
     const { registerd } = this.props;
     const { alert } = this.props;
     const { loading } = this.props;
-    const { username } = this.props;
-    const { postes } = this.props;
-    const { diplomes } = this.props;
-    const { etablissements } = this.props;
-    const { modules } = this.props;
-    const { etatCivils } = this.props;
-    const { pays } = this.props;
-    const { types } = this.props;
-    const { domaines } = this.props;
-    const { specialites } = this.props;
 
-    const match = value => {
-      if (value!=this.state.password) {
-        return (
-          <div className="alert alert-danger" role="alert">
-            Mot de passe incorrect!
-          </div>
-        );
-      }
-    };
+  
     if (registerd == true) {
       return <Redirect to={{
         pathname: '/profile',
         state: {
-          // login: username,
-          // postes: postes,
-          // diplomes: diplomes,
-          // etablissements: etablissements,
-          // modules: modules,
-          // etatCivils: etatCivils,
-          // pays: pays,
-          // types: types,
-          // domaines: domaines,
-          // specialites: specialites,
           userlogin: this.state.username
         }
       }} />;
-      // document.getElementById("linkToProfile").click();
+
     }
     return (
       <div class="container">
@@ -174,8 +137,8 @@ class Register extends Component {
     <div className="card-body p-0">
     
         <div className="row">
-            <div className="col-lg-6 d-none d-lg-block bg-login-image"></div>
-            <div className="col-lg-6">
+            <div className="col-lg-5 d-none d-lg-block bg-login-image"></div>
+            <div className="col-lg-7">
                 <div className="p-5">
                     <div className="text-center">
                         <h1 className="h4 text-gray-900 mb-4">Créer votre compte!</h1>
@@ -191,41 +154,50 @@ class Register extends Component {
 
                 <div className="form-group">
                  
-                  <Input
-                    type="text"
-                    className="form-control form-control-user"
+                  <input
+                    type="email"
+                    className={this.state.touched && this.state.touched['mail'] && (!this.state.username || !isEmail(this.state.username))  ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
                     placeholder="Addresse Email"
                     name="email"
                     value={this.state.username}
                     onChange={this.onChangeEmail}
-                    validations={[required, email]}
+                    onBlur={() => ValidationService.validator.showMessageFor('mail')}
                   />
+                   {/* msg erreur */}
+                   {this.state.touched && this.state.touched['mail']  && ValidationService.validator.message('mail', this.state.username, 'required|email', { className: 'text-danger' })}
+
                 </div>
 
                       <div className="form-group row">
                         <div className="col-sm-6 mb-3 mb-sm-0">
 
-                          <Input
+                          <input
                             type="password"
                             placeholder="Mot de passe"
-                            className="form-control form-control-user"
+                            className={this.state.touched && this.state.touched['pwd'] && (!this.state.password || (this.state.password.length < 6 || this.state.password.length > 40) ) ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
                             name="password"
                             value={this.state.password}
                             onChange={this.onChangePassword}
-                            validations={[required, vpassword]}
+                            onBlur={() => ValidationService.validator.showMessageFor('pwd')}
                           />
+                             {/* msg erreur */}
+                   {this.state.touched && this.state.touched['pwd']  && ValidationService.validator.message('pwd', this.state.password, 'required|validPassword', { className: 'text-danger' })}
+
                         </div>
                         <div className="col-sm-6 mb-3 mb-sm-0">
 
-                          <Input
+                          <input
                             type="password"
                             placeholder="Répéter mot de passe"
-                            className="form-control form-control-user"
+                            className={this.state.touched && this.state.touched['confirm'] && (!this.state.passwordConfirm || (this.state.passwordConfirm && (this.state.password != this.state.passwordConfirm))) ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
                             name="passwordConfirm"
                             value={this.state.passwordConfirm}
                             onChange={this.onChangePasswordConfirm}
-                            validations={[required, match]}
+                            onBlur={() => ValidationService.validator.showMessageFor('confirm')}
                           />
+                           {/* msg erreur */}
+                  {this.state.touched && this.state.touched['confirm']  && ValidationService.validator.message('confirm', this.state.passwordConfirm,  ['required',{ match: this.state.password }], { className: 'text-danger' })}
+
                         </div>
                       </div>
               

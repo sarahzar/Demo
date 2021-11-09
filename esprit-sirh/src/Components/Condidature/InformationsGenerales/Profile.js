@@ -38,6 +38,7 @@ export const profilFields = {
   typeCondidat: 'typeCondidat',
   anneObt: 'anneObt',
   sexe: 'sexe',
+  adresse: 'adresse'
 
 }
 const leavePage ={
@@ -84,6 +85,7 @@ class Profile extends Component {
       modifing : false,
       modified : false,
       show : false,
+      adresse: "",
     };
   }
 
@@ -217,6 +219,7 @@ class Profile extends Component {
       competences: condidatReducer.competences,
       recherches: condidatReducer.recherches,
       documents: condidatReducer.documents,
+      adresse: condidatReducer.adresse
     });
   }
 
@@ -449,6 +452,17 @@ class Profile extends Component {
       modifing:true
     });
   }
+  onChangeAdresse = (e) => {
+
+    let touchedElements = { ...this.state.touched }
+    touchedElements[profilFields.adresse] = true;
+
+    this.setState({
+      adresse: e.target.value,
+      touched: touchedElements,
+      modifing:true
+    });
+  }
 
   handleSubmitCondidat = (e) => {
     
@@ -508,6 +522,7 @@ class Profile extends Component {
       dernierDiplome: dernierDiplome,
       domaine: this.state.domaine,
       etatCivil: this.state.etatCivil,
+      adresse: this.state.adresse,
       dateModif:condidatReducer ? condidatReducer.dateModif : null,
       parcourScolaire: condidatReducer ? condidatReducer.parcourScolaire :  [],
       experienceEnseignants: condidatReducer ? condidatReducer.experienceEnseignants :  [],
@@ -562,6 +577,7 @@ class Profile extends Component {
     this.state.touched[profilFields.diplome] = true;
     this.state.touched[profilFields.anneObt] = true;
     this.state.touched[profilFields.sexe] = true;
+    this.state.touched[profilFields.adresse] = true;
 
   }
   addMessages() {
@@ -579,6 +595,7 @@ class Profile extends Component {
     ValidationService.validator.message(profilFields.etablissement, this.state.etablissementId, 'requiredSelect');
     ValidationService.validator.message(profilFields.anneObt, this.state.anneeObtention, 'required|numeric|afterCurrentYear');
     ValidationService.validator.message(profilFields.sexe, this.state.sexe, 'required');
+    ValidationService.validator.message(profilFields.adresse, this.state.adresse, 'required');
   }
 
   modifierCondidat= (e) => {
@@ -776,6 +793,7 @@ class Profile extends Component {
                       modifSexeHomme={this.onChangeSexeHomme}
                       modifEtatCivil={this.onChangeEtatCivil}
                       modifTel={this.onChangeTelephone}
+                      modifAdresse={this.onChangeAdresse}
                       etats={etatCivils}
                       validator={ValidationService.validator}
                       touched={this.state.touched}

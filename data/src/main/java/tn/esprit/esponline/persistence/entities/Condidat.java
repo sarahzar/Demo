@@ -21,10 +21,7 @@ public class Condidat extends Utilisateur {
     private boolean aConfirmer;
     private boolean demandeModif;
     //private String poste;
-    @Embedded
-    @Transient
-    @Column(nullable = true)
-    private Adresse adresse;
+    private String adresse;
     //assosiations
     @ManyToOne
     private TypeCondidature typeCondidature;
@@ -170,11 +167,11 @@ public class Condidat extends Utilisateur {
         this.poste = poste;
     }*/
 
-    public Adresse getAdresse() {
+    public String getAdresse() {
         return adresse;
     }
 
-    public void setAdresse(Adresse adresse) {
+    public void setAdresse(String adresse) {
         this.adresse = adresse;
     }
 

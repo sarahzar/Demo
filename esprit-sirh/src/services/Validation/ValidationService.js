@@ -12,6 +12,7 @@ class ValidationService {
       size: 'Le champ :attribute doit être 8 chiffres.',
       min: 'la valeur du champ :attribute ne peut pas être négative',
       before: 'Le champ :attribute doit être avant le :date.',
+      email: 'adresse mail invalide'
     });
     this.validator = new SimpleReactValidator({
       // autoForceUpdate: this,
@@ -55,6 +56,18 @@ class ValidationService {
           rule: (val) => {
             let currentYear = new Date().getFullYear()
             return !(val > currentYear);
+          },
+        },
+        match: {  // name the rule
+          message: "Mot de passe incorrect!",
+          rule: (val, params) => {
+            return val == params[0]
+          },
+        },
+        validPassword: {  // name the rule
+          message: "nombre de caractères ente 6 et 40!",
+          rule: (val) => {
+            return val.length >= 6 && val.length <= 40
           },
         },
       }

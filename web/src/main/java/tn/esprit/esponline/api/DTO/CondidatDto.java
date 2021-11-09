@@ -35,6 +35,7 @@ public class CondidatDto {
     private List<Document> documents;
     private boolean demandeModif;
     private Date dateModif;
+    private String adresse;
 
     public CondidatDto() {
     }
@@ -221,5 +222,13 @@ public class CondidatDto {
 
     public void setDateModif(Date dateModif) {
         this.dateModif = dateModif;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
     }
 }
