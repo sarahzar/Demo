@@ -56,6 +56,10 @@ class CondidatService{
     return axios.post(API_URL + "confirmer" + "/" + username)
   }
 
+  demandeModif(username) {
+    return axios.post(API_URL + "demandeModif" + "/" + username)
+  }
+
   updateListEmpty(condidatToSave){
 
     if(condidatToSave.competences && condidatToSave.competences.length == 1 && JSON.stringify(defaultElemCpt) === JSON.stringify(condidatToSave.competences[0])){

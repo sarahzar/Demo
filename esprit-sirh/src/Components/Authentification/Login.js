@@ -16,44 +16,46 @@ import { specialiteActions } from "../../_actions/Shared/Nomenclatures/specialit
 import { typeCondidatureActions } from "../../_actions/Shared/Nomenclatures/typeCondidature.actions";
 import { paysActions } from "../../_actions/Shared/Nomenclatures/pays.actions";
 import { modulesActions } from "../../_actions/Shared/Nomenclatures/modules.actions";
+import ValidationService from "../../services/Validation/ValidationService";
+import { isEmail } from "validator";
 // import { login } from '../_actions/auth';
-const required = (value) => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
+
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.handleLogin = this.handleLogin.bind(this);
-    this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
+
+    ValidationService.validator.autoForceUpdate = this;
 
     this.state = {
       username: "",
       password: "",
       loading: false,
+      touched: {}
     };
   }
 
-  onChangeUsername(e) {
+  onChangeUsername = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements['mail'] = true;
+
     this.setState({
       username: e.target.value,
+      touched: touchedElements
     });
   }
 
-  onChangePassword(e) {
+  onChangePassword = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements['pwd'] = true;
+
     this.setState({
       password: e.target.value,
+      touched: touchedElements
     });
   }
 
-  handleLogin(e) {
+  handleLogin = (e) => {
     e.preventDefault();
 
     this.setState({
@@ -61,11 +63,9 @@ class Login extends Component {
       redirect:false
     });
 
-    this.form.validateAll();
-
-    const { dispatch, history } = this.props;
-
-    if (this.checkBtn.context._errors.length === 0) {
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    if (ValidationService.validator.allValid()) {
       this.props.allPostes();
       this.props.allDiplomes();
       this.props.allEtablissements();
@@ -77,11 +77,24 @@ class Login extends Component {
       this.props.allModules()
       this.props.login(this.state.username, this.state.password);   
   } else {
+    this.markUsTouched()
+    ValidationService.validator.showMessages()
+    
     this.setState({
       loading: false,
     });
   }
   }
+
+  addMessages() {   
+    ValidationService.validator.message('mail', this.state.username,  'required|email', { className: 'text-danger' })
+    ValidationService.validator.message('pwd', this.state.password, 'required', { className: 'text-danger' }); 
+  }
+  markUsTouched() {
+    this.state.touched['mail'] = true;
+    this.state.touched['pwd'] = true;
+  }
+
 
   render() {
     const { loggedIn } = this.props;
@@ -128,8 +141,8 @@ class Login extends Component {
                   <div className="card-body p-0">
                   
                       <div className="row">
-                          <div className="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                          <div className="col-lg-6">
+                          <div className="col-lg-5 d-none d-lg-block bg-login-image"></div>
+                          <div className="col-lg-7">
                               <div className="p-5">
                                   <div className="text-center">
                                       <h1 className="h4 text-gray-900 mb-4">Authentication!</h1>
@@ -143,29 +156,43 @@ class Login extends Component {
           >
             <div className="form-group">
               
-              <Input
+              <input
                 type="text"
-                className="form-control form-control-user"
+                className={this.state.touched && this.state.touched['mail'] && (!this.state.username || !isEmail(this.state.username))  ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
                 placeholder="Addresse Email"
                 name="username"
                 value={this.state.username}
                 onChange={this.onChangeUsername}
-                validations={[required]}
-              />
+                onBlur={() => ValidationService.validator.showMessageFor('mail')}
+                  />
+                   {/* msg erreur */}
+                   {this.state.touched && this.state.touched['mail']  && ValidationService.validator.message('mail', this.state.username, 'required|email', { className: 'text-danger' })}
+
             </div>
 
             <div className="form-group">
         
-              <Input
+              <input
                 type="password"
-                className="form-control form-control-user"
+                className={this.state.touched && this.state.touched['pwd'] && !this.state.password ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
                 placeholder="Mot de passe"
                 name="password"
                 value={this.state.password}
                 onChange={this.onChangePassword}
-                validations={[required]}
+                onBlur={() => ValidationService.validator.showMessageFor('pwd')}
               />
+              {/* msg erreur */}
+              {this.state.touched && this.state.touched['pwd']  && ValidationService.validator.message('pwd', this.state.password, 'required', { className: 'text-danger' })}
+
             </div>
+
+            {alert.message && (
+              <div className="form-group mb-2">
+                <div className="alert alert-danger" role="alert">
+                  {alert.message}
+                </div>
+              </div>
+            )}
 
             <div className="form-group">
             <button
@@ -179,13 +206,7 @@ class Login extends Component {
               </button>
             </div>
 
-            {alert.message && (
-              <div className="form-group">
-                <div className="alert alert-danger" role="alert">
-                  {alert.message}
-                </div>
-              </div>
-            )}
+           
             <CheckButton
               style={{ display: "none" }}
               ref={(c) => {

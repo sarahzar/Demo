@@ -15,7 +15,9 @@ class TerminerInscription extends React.Component {
         this.state ={
             msg:false,
             message:"",
-            typeMessage:""
+            typeMessage:"",
+            confirme:false,
+            demandeModification:false
         }
     }
 
@@ -25,10 +27,34 @@ class TerminerInscription extends React.Component {
                 if(resp.data.succesMessage){
                    this.setState({
                        message : resp.data.succesMessage,
-                       typeMessage : "alert alert-success"
+                       typeMessage : "alert alert-success",
+                       confirme: true
                    })
                    const {condidatReducer}=this.props
                    condidatReducer.aConfirmer = true;
+                   this.props.setCondidat(condidatReducer)
+
+                }else{
+                    this.setState({
+                        message : resp.data.errorMessage,
+                        typeMessage : "alert alert-danger"
+                    })
+                }
+            }
+              );
+    }
+
+    demandeModif = () =>{
+        CondidatService.demandeModif(AuthService.getLogin()).then(
+            resp => {
+                if(resp.data.succesMessage){
+                   this.setState({
+                       message : resp.data.succesMessage,
+                       typeMessage : "alert alert-success",
+                       demandeModification: true
+                   })
+                   const {condidatReducer}=this.props
+                   condidatReducer.demandeModif = true;
                    this.props.setCondidat(condidatReducer)
 
                 }else{
@@ -167,17 +193,24 @@ class TerminerInscription extends React.Component {
             <span className="text">Etape 7: Téléchargement des documents</span>
         </Link> */}
 
-        <div className="mb-5"></div>
+                                        <div className="mb-5"></div>
 
-        <div className="form-group m-0">
-        {/* <button className="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mr-1 " >
+                                        <div className="form-group m-0">
+                                            {/* <button className="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mr-1 " >
            <i className="fas fa-download"></i>Générer un document PDF
                                         </button> */}
-                                        <button className="d-none d-sm-inline-block btn btn-sm btn-primary " disabled={!validateDocuments || !validateParcours} onClick={this.terminerInscrit}>
-           <i className="fas fa-check"></i>Confirmer ma condidature
-                                        </button>
+                                           {this.props.condidatReducer && (!this.props.condidatReducer.aConfirmer && !this.state.confirme) && (
+                                            <button className="d-none d-sm-inline-block btn btn-sm btn-primary " disabled={!validateDocuments || !validateParcours} onClick={this.terminerInscrit}>
+                                                <i className="fas fa-check"></i>Confirmer ma condidature
+                                            </button>
+                                           )}
+                                            {this.props.condidatReducer && (this.props.condidatReducer.aConfirmer || this.state.confirme)  && (
+                                                <button className="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mr-1 " disabled={this.props.condidatReducer.demandeModif || this.state.demandeModification} onClick={this.demandeModif}>
+                                                    <i className="fas fa-check"></i>demande de modification
+                                                </button>
+                                            )}
                                         </div>
-    </div>
+                                    </div>
 </div>
 
 </div>

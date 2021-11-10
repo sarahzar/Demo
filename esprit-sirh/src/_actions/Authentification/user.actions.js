@@ -19,7 +19,7 @@ function login(username, password) {
         AuthService.login(username, password)
             .then(
                 user => {
-                    let token = user.accessToken.token;
+                    let token = user ? user.accessToken.token : null;
                     if (token) {
                         dispatch(success(user));
                     }

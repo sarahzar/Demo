@@ -122,9 +122,9 @@ export class Leftside extends Component {
                                 <Link className="collapse-item" to="/competence">Compétences</Link>   
                                 <Link className="collapse-item" to="/recherche">activités de recherches</Link> 
                                 <Link className="collapse-item" to="/documents">documents</Link> 
-                               {condidatReducer && !condidatReducer.aConfirmer && (
+                               {/* {condidatReducer && !condidatReducer.aConfirmer && ( */}
                                 <Link className="collapse-item" onClick={this.go}>terminer l'inscription</Link>
-                               )} 
+                               {/* )}  */}
                             </div>  
                         </div>  
                     </li>  
@@ -140,10 +140,12 @@ export class Leftside extends Component {
                             <i className="fas fa-fw fa-table"></i> 
                             <span>Tables</span></a>  
                     </li>   */}
-                    <hr className="sidebar-divider d-none d-md-block" />  
+
+
+                    {/* <hr className="sidebar-divider d-none d-md-block" />  
                     <div className="text-center d-none d-md-inline">  
                         <button className="rounded-circle border-0" id="sidebarToggle" ></button>  
-                    </div>  
+                    </div>   */}
   
                 </ul>  
             

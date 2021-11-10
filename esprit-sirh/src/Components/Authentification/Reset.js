@@ -4,44 +4,47 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { Switch, Route, Link, Redirect } from "react-router-dom";
 import axios from "axios";
+import ValidationService from "../../services/Validation/ValidationService";
 
 
 export default class Reset extends Component {
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.onChangePasswordConfirm = this.onChangePasswordConfirm.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
-    this.validPassword=this.validPassword.bind(this)
+
+    ValidationService.validator.autoForceUpdate = this;
+
     this.state = {
       passwordConfirm: "",
       password: "",
       loading: false,
       message: "",
       messageSuccess: "",
+      touched: {}
     };
   }
 
 
 
-  onChangePasswordConfirm(e) {
+  onChangePasswordConfirm = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements['confirm'] = true;
+
     this.setState({
-        passwordConfirm: e.target.value
+        passwordConfirm: e.target.value,
+        touched: touchedElements
     });
   }
 
-  validPassword(e) {
-    if (e.target.value!=this.state.password) {
-         return true;
-    }
-  }
+  onChangePassword = (e) => {
+    let touchedElements = { ...this.state.touched }
+    touchedElements['pwd'] = true;
 
-  onChangePassword(e) {
     this.setState({
-      password: e.target.value
+      password: e.target.value,
+      touched: touchedElements
     });
   }
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     this.setState({
@@ -50,14 +53,16 @@ export default class Reset extends Component {
       loading: true
     });
 
-    this.form.validateAll();
+    
 
     const resetInfos={
       token: this.props.match.params.token,
       newPassword: this.state.passwordConfirm
     };
 
-        if (this.checkBtn.context._errors.length === 0) {
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    if (ValidationService.validator.allValid()) {
             axios.post("http://localhost:8085/SIRH_Esprit/reset_password", resetInfos).then(
                 resp => {
                     if (resp.data.succesMessage) {
@@ -92,34 +97,27 @@ export default class Reset extends Component {
                 }
             );
         } else {
+
+          this.markUsTouched()
+          ValidationService.validator.showMessages()
+          
             this.setState({
                 loading: false
             });
         }
     }
 
+    addMessages() {   
+      ValidationService.validator.message('confirm', this.state.passwordConfirm,  ['required',{ match: this.state.password }], { className: 'text-danger' })
+      ValidationService.validator.message('pwd', this.state.password, 'required|validPassword', { className: 'text-danger' });
+    }
+    markUsTouched() {
+      this.state.touched['confirm'] = true;
+      this.state.touched['pwd'] = true;
+    }
+
   render() {
-    const required = value => {
-        if (!value) {
-          return (
-            <div className="alert alert-danger" role="alert">
-              This field is required!
-            </div>
-          );
-        }
-      };
-    const match = value => {
-        if (value!=this.state.password) {
-          return (
-            <div className="alert alert-danger" role="alert">
-              Mot de passe incorrect!
-            </div>
-          );
-        }
-      };
-      // if(this.state.messageSuccess){
-      //    return  <Redirect to={'/login'} />
-      // }
+   
     return (
       <div class="container">
         <div className="row justify-content-center">
@@ -147,28 +145,34 @@ export default class Reset extends Component {
 
             <div className="form-group">
              
-              <Input
+              <input
                 type="password"
-                className="form-control form-control-user"
+                className={this.state.touched && this.state.touched['pwd'] && (!this.state.password || (this.state.password.length < 6 || this.state.password.length > 40) ) ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
                 placeholder="Mot de passe"
                 name="password"
                 value={this.state.password}
                 onChange={this.onChangePassword}
-                validations={[required]}
-              />
+                onBlur={() => ValidationService.validator.showMessageFor('pwd')}
+                />
+                   {/* msg erreur */}
+         {this.state.touched && this.state.touched['pwd']  && ValidationService.validator.message('pwd', this.state.password, 'required|validPassword', { className: 'text-danger' })}
+
             </div>
 
             <div className="form-group">
              
-              <Input
+              <input
                 type="password"
-                className="form-control form-control-user"
+                className={this.state.touched && this.state.touched['confirm'] && (!this.state.passwordConfirm || (this.state.passwordConfirm && (this.state.password != this.state.passwordConfirm))) ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
                 placeholder="Confirmer le mot de passe"
                 name="passwordConfirm"
                 value={this.state.passwordConfirm}
                 onChange={this.onChangePasswordConfirm}
-                validations={[required,match]}
-              />
+                onBlur={() => ValidationService.validator.showMessageFor('confirm')}
+                />
+                 {/* msg erreur */}
+        {this.state.touched && this.state.touched['confirm']  && ValidationService.validator.message('confirm', this.state.passwordConfirm,  ['required',{ match: this.state.password }], { className: 'text-danger' })}
+
             </div>
 
             <div className="form-group">

@@ -20,9 +20,11 @@ return   axios.get(
     }
     
     )
-    .then(resp => {   
-        localStorage.setItem("login", resp.data.user.login)
-        return resp.data;  
+    .then(resp => {
+        if (resp.data.user) {
+            localStorage.setItem("login", resp.data.user.login)
+        }
+        return resp.data;
     });
 
 }

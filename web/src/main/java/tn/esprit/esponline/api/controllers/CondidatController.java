@@ -326,6 +326,20 @@ public class CondidatController  {
         }
        return ResponseEntity.ok().body(response);
    }
+    @PostMapping(value="/demandeModif/{username}")
+    public ResponseEntity<ResponseDto> demanderModif(@PathVariable  String username){
+        ResponseDto response=new ResponseDto();
+        try {
+            Condidat condidatBd = condidatService.getCondidatByUsername(username);
+            condidatBd.setDemandeModif(true);
+            condidatService.saveCondidat(condidatBd);
+            response.setSuccesMessage("Votre demande de modification est envoyée avec succès!");
+        }catch(Exception ex){
+            response.setErrorMessage("Erreur d'envoie de demande de modification'");
+            return ResponseEntity.ok().body(response);
+        }
+        return ResponseEntity.ok().body(response);
+    }
 public void saveEtablissement(String libelle){
     etablissementService.addEtablissement(new Etablissement(libelle));
 }

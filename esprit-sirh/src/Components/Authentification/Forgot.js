@@ -4,6 +4,8 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import axios from "axios";
 import { isEmail } from "validator";
+import { Redirect,Link } from 'react-router-dom';
+import ValidationService from "../../services/Validation/ValidationService";
 
 
 const required = value => {
@@ -27,25 +29,31 @@ const email = value => {
  class Forgot extends Component {
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.onChangeUsername = this.onChangeUsername.bind(this);
+
+    ValidationService.validator.autoForceUpdate = this;
 
     this.state = {
       mail: "",
       loading: false,
       message: "",
       messageSuccess: "",
+      touched: {}
     };
   }
 
-  onChangeUsername(e) {
+  onChangeUsername = (e) => {
+
+    let touchedElements = { ...this.state.touched }
+    touchedElements['mail'] = true;
+
     this.setState({
-      mail: e.target.value
+      mail: e.target.value,
+      touched: touchedElements
     });
   }
 
 
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     const mailInfos = {
@@ -58,9 +66,9 @@ const email = value => {
       messageSuccess: "",
     });
 
-    this.form.validateAll();
-
-    if (this.checkBtn.context._errors.length === 0) {
+    ValidationService.validator.purgeFields();
+    this.addMessages();
+    if (ValidationService.validator.allValid()) {
 
       axios.post("http://localhost:8085/SIRH_Esprit/forgot_password", mailInfos).then(
         resp => {
@@ -96,10 +104,20 @@ const email = value => {
       );
 
     } else {
+      this.markUsTouched()
+      ValidationService.validator.showMessages()
+
       this.setState({
         loading: false
       });
     }
+  }
+
+  addMessages() {   
+    ValidationService.validator.message('mail', this.state.mail,  'required|email', { className: 'text-danger' })
+  }
+  markUsTouched() {
+    this.state.touched['mail'] = true;
   }
 
   render() {
@@ -130,13 +148,16 @@ const email = value => {
                      
                       <Input
                         type="text"
-                        className="form-control form-control-user"
+                        className={this.state.touched && this.state.touched['mail'] && (!this.state.mail || !isEmail(this.state.mail))  ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
                         placeholder="Addresse Email"
                         name="mail"
                         value={this.state.mail}
                         onChange={this.onChangeUsername}
-                        validations={[required, email]}
-                      />
+                        onBlur={() => ValidationService.validator.showMessageFor('mail')}
+                        />
+                         {/* msg erreur */}
+                         {this.state.touched && this.state.touched['mail']  && ValidationService.validator.message('mail', this.state.mail, 'required|email', { className: 'text-danger' })}
+      
                     </div>
 
 
@@ -176,6 +197,11 @@ const email = value => {
                     />
                   </Form>
 
+                  <hr/>
+                    <div className="text-center small">
+                      <Link to="/"
+                      >Retour à la page d'accueil</Link>
+                    </div>
 
                 </div>
               </div>

@@ -72,7 +72,7 @@ public class AuthentificationController {
                 new UserDto(connectedUser.getId(),connectedUser.getMail(),connectedUser.getUsername(),connectedUser.getRoles().get(0).getName())
                 : null;
        // String hashed=encoder.encode(connectedUser.getPassword());
-        boolean testpassword=encoder.matches(password,connectedUser.getPassword());
+        boolean testpassword=connectedUser != null ?  encoder.matches(password,connectedUser.getPassword()) : false;
 
         if(userDto!=null && testpassword) {
             response = restTemplate.exchange(access_token_url, HttpMethod.POST, request, String.class);

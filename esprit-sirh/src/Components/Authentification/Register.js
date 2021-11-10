@@ -200,26 +200,24 @@ class Register extends Component {
 
                         </div>
                       </div>
+
+                        {alert.message && (
+                          <div className="form-group mb-2">
+                            <div
+                              className="alert alert-danger"
+                              role="alert"
+                            >
+                              {alert.message}
+                            </div>
+                          </div>
+                        )}
               
                   <button className="btn btn-primary btn-user btn-block" disabled={loading}>
                   {loading && (
                   <span className="spinner-border spinner-border-sm"></span>
                    )}
                     enregistrer</button>
-                 
-           
-           
-
-            {alert.message && (
-              <div className="form-group">
-                <div
-                  className="alert alert-danger"
-                  role="alert"
-                >
-                  {alert.message}
-                </div>
-              </div>
-            )}
+                       
             <CheckButton
               style={{ display: "none" }}
               ref={c => {
