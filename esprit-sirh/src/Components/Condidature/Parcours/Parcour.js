@@ -457,7 +457,7 @@ class Parcour extends Component {
     if (this.state.retour) {
    
       return <Redirect to={{
-        pathname: '/profile',
+        pathname: '/infosGenerales',
       }} />;
     }
     if (changePath) {

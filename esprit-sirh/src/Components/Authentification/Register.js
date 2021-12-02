@@ -121,7 +121,7 @@ class Register extends Component {
   
     if (registerd == true) {
       return <Redirect to={{
-        pathname: '/profile',
+        pathname: '/infosGenerales',
         state: {
           userlogin: this.state.username
         }

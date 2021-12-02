@@ -76,7 +76,7 @@ class ExperienceProfessionel extends Component {
   }
   componentWillUnmount() {
 
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && !this.props.condidatReducer.dateModif){
+    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer ){
 
       let elements = []
       elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.experienceProfessionels : [...this.state.items]
@@ -216,10 +216,10 @@ class ExperienceProfessionel extends Component {
   initListeExp(liste) {
 
     const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }
-    const firstElem = liste ? liste[0] : null;
+    const firstElem = Array.isArray(liste) ? liste[0] : !Array.isArray(liste) ? liste : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
-       liste.splice(0,1);
+        Array.isArray(liste) ? liste.splice(0,1) : liste =[];
     }
     return liste;
   }
@@ -274,8 +274,9 @@ class ExperienceProfessionel extends Component {
   
     ValidationService.validator.purgeFields();
     this.addMessages();
+    let elements = this.initListeExp( ...this.state.items)
     console.log("validator", ValidationService.validator)
-    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer)) {
+    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer) || (elements && elements.length == 0) ) {
 
       this.setState({
         loading: true,
@@ -340,8 +341,9 @@ class ExperienceProfessionel extends Component {
     const formData = new FormData();
     ValidationService.validator.purgeFields();
     this.addMessages();
-
-    if (ValidationService.validator.allValid()) {
+    let elements = this.initListeExp(...this.state.items)
+    
+    if (ValidationService.validator.allValid() || (elements && elements.length == 0 )) {
    
       let condidatToSave = this.props.condidatReducer
       condidatToSave.experienceProfessionels = [...this.state.items]

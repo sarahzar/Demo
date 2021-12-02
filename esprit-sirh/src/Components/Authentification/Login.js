@@ -114,7 +114,7 @@ class Login extends Component {
     console.log("postes from login",postes)
     if (loggedIn) {
       return <Redirect to={{
-        pathname: '/profile',
+        pathname: '/infosGenerales',
         state: {
           login: username,
           postes: postes,

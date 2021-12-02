@@ -180,10 +180,10 @@ class Competence extends Component {
   initListe(liste) {
 
     const defaultElem = { id:-1, titre: "", description: "" }
-    const firstElem = liste ? liste[0] : 0;
+    const firstElem = Array.isArray(liste) ? liste[0] : !Array.isArray(liste) ? liste : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
-      liste.splice(0,1);
+        Array.isArray(liste) ? liste.splice(0,1) : liste =[];
     }
     return liste;
   }
@@ -193,7 +193,9 @@ class Competence extends Component {
  
     ValidationService.validator.purgeFields();
     this.addMessages();
-    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer)) {
+    let elements = this.initListe(...this.state.items)
+
+    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer) || (elements && elements.length == 0 )) {
 
       this.setState({
         loading: true,
@@ -240,8 +242,9 @@ class Competence extends Component {
     const formData = new FormData();
     ValidationService.validator.purgeFields();
     this.addMessages();
+    let elements = this.initListe(...this.state.items)
 
-    if (ValidationService.validator.allValid()) {      
+    if (ValidationService.validator.allValid() || (elements && elements.length == 0 )) {      
       let condidatToSave = this.props.condidatReducer
       condidatToSave.competences = [...this.state.items]
 

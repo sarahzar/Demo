@@ -18,6 +18,7 @@ import Competence from './Components/Condidature/Competences/Competence';
 import Recherche from './Components/Condidature/Recherches/Recherche';
 import Documents from './Components/Condidature/Documents/Documents';
 import TerminerInscription from './Components/Condidature/ValidationInscription/TerminerInscription';
+import UserInfos from './Components/Authentification/UserInfos';
 class App extends Component {
   constructor(props){
     super(props);
@@ -26,41 +27,13 @@ class App extends Component {
   render() {
     const pathname = window.location.pathname 
     console.log("path",pathname);
-    
-    // if (pathname == "/" || (pathname == "/login")) {
-    //   return  <div>
 
-    //   <div id="wrapper">
-     
-    //     <div id="content-wrapper" className="d-flex flex-column">
-    //       <div id="content">
-    //         <Header />
-                 
-    //         <Switch>
-    //           <Route exact path={["/", "/home"]} component={Register} />          
-    //           <Route path="/login" component={Login} />          
-    //         </Switch>
-
-    //       </div>
-    //       <Footer />  
-    //     </div>
-    //   </div>
-    // </div>;
-    // }
   return (
     
-    <body id="page-top" class="sidebar-toggled">
-    {/* <div > */}
-
-      {/* <div id="wrapper">
-      <Leftside></Leftside>  
-        <div id="content-wrapper" className="d-flex flex-column">
-          <div id="content"> */}
-            {/* <Header /> */}
-                 
+    <body id="page-top" class="sidebar-toggled">               
             <Switch>
               <Route exact path={["/", "/home"]} component={Register} />
-              <Route exact path="/profile" component={Profile} />
+              <Route exact path="/infosGenerales" component={Profile} />
               <Route exact path="/forgot" component={Forgot} />
               <Route exact path="/reset/:token" component={Reset} />
               <Route path="/login" component={Login} />
@@ -71,13 +44,9 @@ class App extends Component {
               <Route path="/recherche" component={Recherche} />
               <Route path="/documents" component={Documents} />
               <Route path="/terminer" component={TerminerInscription} />
+              <Route path="/profile" component={UserInfos} />
             </Switch>
-
-          {/* </div> */}
           <Footer />  
-        {/* </div>
-      </div> */}
-    {/* </div> */}
     </body>
   );
   }

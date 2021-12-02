@@ -78,5 +78,14 @@ class CondidatService{
     return condidatToSave;
   }
 
+  updateUserInfos(username,formdata) {
+
+    return axios.post(API_URL + "updateUserInfos" + "/" + username,
+   
+      formdata
+    
+    )
+  }
+
 }
 export default new CondidatService();

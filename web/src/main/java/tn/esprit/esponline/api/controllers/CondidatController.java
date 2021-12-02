@@ -15,6 +15,7 @@ import tn.esprit.esponline.api.DTO.*;
 import tn.esprit.esponline.api.utilities.CondidatUtilities;
 import tn.esprit.esponline.api.utilities.Mapper;
 import tn.esprit.esponline.api.utilities.enums.EDocumentType;
+import tn.esprit.esponline.metier.authentification.IUserService;
 import tn.esprit.esponline.metier.condidature.*;
 import tn.esprit.esponline.metier.upload.FileExistException;
 import tn.esprit.esponline.metier.upload.IFilesStorageService;
@@ -53,6 +54,8 @@ public class CondidatController  {
     private IEtablissementService etablissementService;
     @Autowired
     private EtablissementRepository etablissementRepository;
+    @Autowired
+    private IUserService userService;
 
     @PostMapping("/saveCondidatInfos/{username}")
     public ResponseEntity<ResponseDto> saveCondidat(@PathVariable String username,@RequestParam("file") MultipartFile[] files,@RequestParam("condidat") String cdt) throws JsonProcessingException {
@@ -340,8 +343,42 @@ public class CondidatController  {
         }
         return ResponseEntity.ok().body(response);
     }
-public void saveEtablissement(String libelle){
+   public void saveEtablissement(String libelle){
     etablissementService.addEtablissement(new Etablissement(libelle));
 }
+
+    @PostMapping("/updateUserInfos/{username}")
+    public ResponseEntity<ResponseDto> updateUserInfos(@PathVariable String username,@RequestParam("file") MultipartFile[] files, @RequestParam("user") String user) throws JsonProcessingException {
+        UserDto userDto = new ObjectMapper().readValue(user, UserDto.class);
+        ResponseDto response = new ResponseDto();
+        try {
+            Condidat condidatBd = condidatService.getCondidatByUsername(username);
+            Utilisateur u=condidatBd;
+
+            if (condidatBd != null) {
+                condidatBd.setUsername(userDto.getLogin());
+                u.setPassword(userDto.getPassword());
+
+                if (files != null && files.length != 0) {
+                    ResponseEntity<ResponseDto> responseUpload = uploadFiles(userDto.getLogin(), files, response, condidatBd.getDocuments());
+                    if (responseUpload != null) return responseUpload;
+                }
+            }
+            condidatBd.getDocuments().forEach(d ->{
+                if(d.getType().equals("PHOTO")){
+                    d.setNom(files[0].getOriginalFilename());
+                }
+            });
+            userService.save(u);
+            condidatService.saveCondidat(condidatBd);
+            this.storageService.deleteNotExistingFiles(condidatBd.getDocuments(), condidatBd.getUsername());
+
+        } catch (Exception e) {
+            response.setErrorMessage("Erreur d'enregistrement!");
+            return ResponseEntity.ok().body(response);
+        }
+        response.setSuccesMessage("Vos informations sont enregistrées avec succès!");
+        return ResponseEntity.ok().body(response);
+    }
 
 }

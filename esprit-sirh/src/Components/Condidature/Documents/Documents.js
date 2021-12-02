@@ -18,6 +18,7 @@ import DocumentLecture from "./DocumentLecture";
 import { Switch } from "@material-ui/core";
 import DocumentModif from "./DocumentModif";
 import {Prompt} from 'react-router-dom'
+import { imageProfileAtions } from "../../../_actions/Shared/image.profile.ations";
 
 const FILES_LOCATION = "http://localhost/uploads/"
 
@@ -256,7 +257,8 @@ class Documents extends Component {
               this.updateFilesPaths(documents, year)
               
               CondidatService.getCondidat(this.state.login).then(
-                resp =>{             
+                resp =>{  
+                  this.updatePhoto(resp)          
                   this.props.setCondidat(resp)
                 }
               )
@@ -387,7 +389,17 @@ class Documents extends Component {
       annexe.click()
     }
   }
-
+  updatePhoto(data) {
+    let year = new Date().getFullYear();
+    let pathLogin = AuthService.getLogin();
+    let path = "";
+    data.documents.forEach(d => {
+        if (d.type == 'PHOTO') {
+            path = FILES_LOCATION + "/" + year + "/" + pathLogin + "/" + d.nom;
+        }
+    });
+    this.props.setImage(path);
+}
   handleBlockedNavigation = () => {
 
     ValidationService.validator.purgeFields();
@@ -687,6 +699,7 @@ function mapStateToProps(state) {
 }
 const actionCreators = {
   setCondidat: condidatActions.setCondidat,
-  validerDocuments: validerEtapeActions.validerDocuments
+  validerDocuments: validerEtapeActions.validerDocuments,
+  setImage: imageProfileAtions.setImage
 };
 export default connect(mapStateToProps, actionCreators)(Documents);

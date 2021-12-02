@@ -182,10 +182,10 @@ class Recherche extends Component {
     initListe(liste) {
 
         const defaultElement = { id:-1, thematique: {id:-1,description:""}, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
-        const firstElem = liste ? liste[0] : null;
-    
+        const firstElem = Array.isArray(liste) ? liste[0] : !Array.isArray(liste) ? liste : null;
+
         if (JSON.stringify(defaultElement) === JSON.stringify(firstElem)) {
-          liste.splice(0,1)
+            Array.isArray(liste) ? liste.splice(0,1) : liste =[];
         }
         return liste;
       }

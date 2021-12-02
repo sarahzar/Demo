@@ -94,11 +94,8 @@ export class Leftside extends Component {
                         </a>  
                         <div id="collapseUtilities" className="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">  
                             <div className="bg-white py-2 collapse-inner rounded">  
-                                <h6 className="collapse-header">Custom Utilities:</h6>  
-                                <a className="collapse-item" href="utilities-color.html">Colors</a>  
-                                <a className="collapse-item" href="utilities-border.html">Borders</a>  
-                                <a className="collapse-item" href="utilities-animation.html">Animations</a>  
-                                <a className="collapse-item" href="utilities-other.html">Other</a>  
+                                <h6 className="collapse-header">Gestion Profile:</h6>  
+                                <Link className="collapse-item" to="/profile">Modification Profile</Link>  
                             </div>  
                         </div>  
                     </li>  
@@ -115,7 +112,7 @@ export class Leftside extends Component {
                         <div id="collapsePages" className="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">  
                         <div className="bg-white py-2 collapse-inner rounded">  
                                 {/* <h6 className="collapse-header">Custom Components:</h6>   */}
-                                <Link className="collapse-item" to="/profile">Informations générales</Link>  
+                                <Link className="collapse-item" to="/infosGenerales">Informations générales</Link>  
                                 <Link className="collapse-item" to="/parcour">Parcours académique</Link>  
                                 <Link className="collapse-item" to="/expEnseignant">Expériences enseignant</Link>  
                                 <Link className="collapse-item" to="/expPro">Expériences professionnels</Link>
