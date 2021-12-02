@@ -17,7 +17,7 @@ import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.acti
 import { imageProfileAtions } from "../../../_actions/Shared/image.profile.ations";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
-import {Prompt} from 'react-router-dom'
+import { Prompt } from 'react-router-dom'
 
 const FILES_LOCATION = "http://localhost/uploads/"
 
@@ -41,8 +41,8 @@ export const profilFields = {
   adresse: 'adresse'
 
 }
-const leavePage ={
-  leaved : false
+const leavePage = {
+  leaved: false
 }
 class Profile extends Component {
   constructor(props) {
@@ -65,26 +65,26 @@ class Profile extends Component {
       loading: false,
       message: "",
       typeMessage: "",
-      typeCondidature: {id:-1,libelle:""},
-      posteActuel:{id:-1,libelle:""},
-      domaine: {id:-1,libelle:""},
-      etatCivil: {id:-1,libelle:""},
-      diplome:{id:-1,libelle:""},
-      etablissement:{id:-1,libelle:"",telephone:-1,mail:""},
-      specialite:{id:-1,libelle:""},
+      typeCondidature: { id: -1, libelle: "" },
+      posteActuel: { id: -1, libelle: "" },
+      domaine: { id: -1, libelle: "" },
+      etatCivil: { id: -1, libelle: "" },
+      diplome: { id: -1, libelle: "" },
+      etablissement: { id: -1, libelle: "", telephone: -1, mail: "" },
+      specialite: { id: -1, libelle: "" },
       anneeObtention: "",
       condidat: {},
       username: '',
       touched: {},
-      invalide:false,
-      fromPl:false,
-      validePl:false,
-      confirmed:false,
-      imageProfilePath:"",
-      nomPrenom:"",
-      modifing : false,
-      modified : false,
-      show : false,
+      invalide: false,
+      fromPl: false,
+      validePl: false,
+      confirmed: false,
+      imageProfilePath: "",
+      nomPrenom: "",
+      modifing: false,
+      modified: false,
+      show: false,
       adresse: "",
     };
   }
@@ -93,14 +93,14 @@ class Profile extends Component {
     const { condidatReducer } = this.props
     this.updateUserInfos(condidatReducer);
   }
-  
+
   componentWillUnmount() {
     if (localStorage.getItem('persist:root')) {
 
-      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif){
-      let condidat = this.updateCondidatInfos()
-      this.getCondidatLists(condidat)
-      this.props.setCondidat(condidat)
+      if (this.props.condidatReducer && !this.props.condidatReducer.dateModif) {
+        let condidat = this.updateCondidatInfos()
+        this.getCondidatLists(condidat)
+        this.props.setCondidat(condidat)
       }
 
     }
@@ -110,19 +110,19 @@ class Profile extends Component {
   updateUserInfos(condidatReducer) {
 
     let year = new Date().getFullYear()
-    let pathLogin= AuthService.getLogin()?  AuthService.getLogin() : this.props.location.state.userlogin
-    
-  
+    let pathLogin = AuthService.getLogin() ? AuthService.getLogin() : this.props.location.state.userlogin
+
+
     CondidatService.getCondidat(pathLogin).then(
 
       resp => {
         let cdt = null;
-        let condidat =null
+        let condidat = null
         cdt = resp;
         console.log("from profile", resp)
         if (cdt) {
 
-          console.log("condiadat from profile",cdt)
+          console.log("condiadat from profile", cdt)
           this.setState({
             confirmed: cdt.aConfirmer,
             username: pathLogin,
@@ -131,24 +131,24 @@ class Profile extends Component {
           // this.setState({
           //   username: pathLogin
           // });
-      
 
-          if(cdt.documents && cdt.documents.length > 0){
+
+          if (cdt.documents && cdt.documents.length > 0) {
             cdt.documents.forEach(d => {
-               if(d.type == 'PHOTO'){
-                   let path=FILES_LOCATION+"/"+year+"/"+pathLogin+"/"+d.nom;
-                   this.props.setImage(path)
-                   this.setState({
-                     imageProfilePath: path
-                   })
-               }
+              if (d.type == 'PHOTO') {
+                let path = FILES_LOCATION + "/" + year + "/" + pathLogin + "/" + d.nom;
+                this.props.setImage(path)
+                this.setState({
+                  imageProfilePath: path
+                })
+              }
             })
           }
 
           this.setState({
-            nomPrenom: cdt.nom +" "+cdt.prenom
+            nomPrenom: cdt.nom + " " + cdt.prenom
           })
-             
+
           if (condidatReducer) {
             condidat = condidatReducer
             this.updateState(condidatReducer)
@@ -162,10 +162,10 @@ class Profile extends Component {
           }
 
 
-          
+
           this.setIgnorerVariables(condidat)
           this.setValiderEtapeVariables(condidat)
-         
+
         }
       }
     );
@@ -184,10 +184,10 @@ class Profile extends Component {
     if (condidat.competences && condidat.recherches.length > 0) {
       this.props.ignorerRecherche(false);
     }
-    
+
   }
 
-  setValiderEtapeVariables(condidat){
+  setValiderEtapeVariables(condidat) {
     if (condidat.parcourScolaire.length > 0) {
       this.props.validerParcours(true)
     }
@@ -202,17 +202,17 @@ class Profile extends Component {
       prenom: condidatReducer.prenom,
       dateNaissance: condidatReducer.dateNaissance,
       sexe: condidatReducer.sexe,
-      cin: condidatReducer.cin !=0 ? condidatReducer.cin : this.state.cin,
-      telephone: condidatReducer.telephone != 0 ? condidatReducer.telephone  : this.state.telephone,
+      cin: condidatReducer.cin != 0 ? condidatReducer.cin : this.state.cin,
+      telephone: condidatReducer.telephone != 0 ? condidatReducer.telephone : this.state.telephone,
       typeCondidature: condidatReducer.typeCondidature ? condidatReducer.typeCondidature : this.state.typeCondidature,
       posteActuel: condidatReducer.posteActuel ? condidatReducer.posteActuel : this.state.posteActuel,
       dernierDiplome: condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome : null,
-      diplome:  condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.diplome : this.state.diplome ,
+      diplome: condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.diplome : this.state.diplome,
       etablissement: condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.etablissement : this.state.diplome,
-      specialite:  condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.specialite : this.state.specialite,
+      specialite: condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.specialite : this.state.specialite,
       domaine: condidatReducer.domaine ? condidatReducer.domaine : this.state.domaine,
       etatCivil: condidatReducer.etatCivil ? condidatReducer.etatCivil : this.state.etatCivil,
-      anneeObtention:  condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.annee : this.state.anneeObtention ,
+      anneeObtention: condidatReducer.dernierDiplome ? condidatReducer.dernierDiplome.annee : this.state.anneeObtention,
       parcourScolaire: condidatReducer.parcourScolaire,
       experienceEnseignants: condidatReducer.experienceEnseignants,
       experienceProfessionels: condidatReducer.experienceProfessionels,
@@ -223,9 +223,9 @@ class Profile extends Component {
     });
   }
 
- 
+
   validerEtapeProfile = () => {
-   if (!this.state.confirmed) {
+    if (!this.state.confirmed) {
       ValidationService.validator.purgeFields();
       this.addMessages();
       this.markUsTouched()
@@ -250,7 +250,7 @@ class Profile extends Component {
     this.setState({
       nom: e.target.value,
       touched: touchedElements,
-      modifing:true
+      modifing: true
     });
 
   }
@@ -262,7 +262,7 @@ class Profile extends Component {
     this.setState({
       prenom: e.target.value,
       touched: touchedElements,
-      modifing:true
+      modifing: true
     });
   }
   onChangeSexeHomme = (e) => {
@@ -272,10 +272,10 @@ class Profile extends Component {
     this.setState({
       sexe: "homme",
       touched: touchedElements,
-      modifing:true
+      modifing: true
     });
   }
-  
+
   onChangeSexeFemme = (e) => {
     let touchedElements = { ...this.state.touched }
     touchedElements[profilFields.sexe] = true;
@@ -283,7 +283,7 @@ class Profile extends Component {
     this.setState({
       sexe: "femme",
       touched: touchedElements,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -295,7 +295,7 @@ class Profile extends Component {
     this.setState({
       etat: e.target.value,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -307,7 +307,7 @@ class Profile extends Component {
     this.setState({
       telephone: e.target.value,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -319,7 +319,7 @@ class Profile extends Component {
     this.setState({
       cin: e.target.value,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -331,7 +331,7 @@ class Profile extends Component {
     this.setState({
       dateNaissance: e.target.value,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -339,14 +339,14 @@ class Profile extends Component {
 
     let touchedElement = { ...this.state.touched }
     touchedElement[profilFields.etatCivil] = true;
-    let id =e.target.value;
+    let id = e.target.value;
 
     let etatCvl = this.props.etatCivils.filter(elem => elem.id == id).shift()
-      
+
     this.setState({
       etatCivil: etatCvl,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -355,14 +355,14 @@ class Profile extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[profilFields.diplome] = true;
 
-    let id =e.target.value;
+    let id = e.target.value;
     let diplome = this.props.diplomes.filter(elem => elem.id == id).shift()
-      
+
 
     this.setState({
       diplome: diplome,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -371,13 +371,13 @@ class Profile extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[profilFields.specialite] = true;
 
-    let id =e.target.value;
+    let id = e.target.value;
     let specialite = this.props.specialites.filter(elem => elem.id == id).shift()
 
     this.setState({
       specialite: specialite,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -386,13 +386,13 @@ class Profile extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[profilFields.etablissement] = true;
 
-    let id =e.target.value;
+    let id = e.target.value;
     let etblissement = this.props.etablissements.filter(elem => elem.id == id).shift()
 
     this.setState({
       etablissement: etblissement,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -401,13 +401,13 @@ class Profile extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[profilFields.poste] = true;
 
-    let id =e.target.value;
+    let id = e.target.value;
     let poste = this.props.postes.filter(elem => elem.id == id).shift()
 
     this.setState({
       posteActuel: poste,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -416,13 +416,13 @@ class Profile extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[profilFields.domaine] = true;
 
-    let id =e.target.value;
+    let id = e.target.value;
     let domaine = this.props.domaines.filter(elem => elem.id == id).shift()
 
     this.setState({
       domaine: domaine,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -431,13 +431,13 @@ class Profile extends Component {
     let touchedElement = { ...this.state.touched }
     touchedElement[profilFields.typeCondidat] = true;
 
-    let id =e.target.value;
+    let id = e.target.value;
     let typeCondidature = this.props.types.filter(elem => elem.id == id).shift()
 
     this.setState({
       typeCondidature: typeCondidature,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
 
@@ -449,7 +449,7 @@ class Profile extends Component {
     this.setState({
       anneeObtention: e.target.value,
       touched: touchedElement,
-      modifing:true
+      modifing: true
     });
   }
   onChangeAdresse = (e) => {
@@ -460,56 +460,57 @@ class Profile extends Component {
     this.setState({
       adresse: e.target.value,
       touched: touchedElements,
-      modifing:true
+      modifing: true
     });
   }
 
   handleSubmitCondidat = (e) => {
-    
+
     e.preventDefault();
     ValidationService.validator.purgeFields();
     this.addMessages();
 
-   
-      if (ValidationService.validator.allValid() || this.state.confirmed ) {
 
-        if (!this.state.confirmed && this.props.condidatReducer && !this.props.condidatReducer.dateModif ) {
+    if (ValidationService.validator.allValid() || this.state.confirmed) {
 
-          let condidatToSave = this.updateCondidatInfos();
+      if (!this.state.confirmed && this.props.condidatReducer && !this.props.condidatReducer.dateModif) {
 
-          this.setState({
-            changePath: true
-          })
+        let condidatToSave = this.updateCondidatInfos();
 
-          this.getCondidatLists(condidatToSave)
-          this.props.setCondidat(condidatToSave)
-          
-        } else {
-          this.setState({
-            changePath: true
-          })
-        }
+        this.setState({
+          changePath: true
+        })
+
+        this.getCondidatLists(condidatToSave)
+        this.props.setCondidat(condidatToSave)
 
       } else {
-        this.markUsTouched();
-        ValidationService.validator.showMessages();
+        this.setState({
+          changePath: true
+        })
       }
-   
+
+    } else {
+      this.markUsTouched();
+      ValidationService.validator.showMessages();
+    }
+
   }
 
   updateCondidatInfos() {
 
-    const {condidatReducer} = this.props;
+    const { condidatReducer } = this.props;
 
     const dernierDiplome = {
       id: condidatReducer.dernierDiplome && condidatReducer.dernierDiplome.id != -1 ? condidatReducer.dernierDiplome.id : -1,
-      annee : this.state.anneeObtention,
+      annee: this.state.anneeObtention,
       diplome: this.state.diplome,
       etablissement: this.state.etablissement,
       specialite: this.state.specialite,
 
     }
-   const condidat = { nom: this.state.nom,
+    const condidat = {
+      nom: this.state.nom,
       aConfirmer: this.state.confirmed,
       prenom: this.state.prenom,
       dateNaissance: this.state.dateNaissance,
@@ -523,15 +524,15 @@ class Profile extends Component {
       domaine: this.state.domaine,
       etatCivil: this.state.etatCivil,
       adresse: this.state.adresse,
-      dateModif:condidatReducer ? condidatReducer.dateModif : null,
-      parcourScolaire: condidatReducer ? condidatReducer.parcourScolaire :  [],
-      experienceEnseignants: condidatReducer ? condidatReducer.experienceEnseignants :  [],
-      experienceProfessionels: condidatReducer ? condidatReducer.experienceProfessionels :  [],
-      competences: condidatReducer ? condidatReducer.competences :  [],
-      recherches: condidatReducer ? condidatReducer.recherches :  [],
-      documents: condidatReducer ? condidatReducer.documents :  [],
+      dateModif: condidatReducer ? condidatReducer.dateModif : null,
+      parcourScolaire: condidatReducer ? condidatReducer.parcourScolaire : [],
+      experienceEnseignants: condidatReducer ? condidatReducer.experienceEnseignants : [],
+      experienceProfessionels: condidatReducer ? condidatReducer.experienceProfessionels : [],
+      competences: condidatReducer ? condidatReducer.competences : [],
+      recherches: condidatReducer ? condidatReducer.recherches : [],
+      documents: condidatReducer ? condidatReducer.documents : [],
     }
-      return  condidat;
+    return condidat;
   }
 
 
@@ -557,7 +558,7 @@ class Profile extends Component {
       }
       if (condidatReducer.documents && condidatReducer.documents.length > 0) {
         condidat.documents = condidatReducer.documents;
-      }  
+      }
     }
   }
 
@@ -598,7 +599,7 @@ class Profile extends Component {
     ValidationService.validator.message(profilFields.adresse, this.state.adresse, 'required');
   }
 
-  modifierCondidat= (e) => {
+  modifierCondidat = (e) => {
 
     e.preventDefault();
 
@@ -606,7 +607,7 @@ class Profile extends Component {
     this.addMessages();
     console.log("vld", ValidationService.validator)
     const formData = new FormData();
-   
+
     if (ValidationService.validator.allValid()) {
 
       let condidatToSave = this.updateCondidatInfos();
@@ -618,30 +619,30 @@ class Profile extends Component {
       formData.append('condidat', JSON.stringify(condidatToSave));
 
       CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
-      .then(
-        resp => {
-          if (resp.data.succesMessage) {
-            this.setState({
-              message: resp.data.succesMessage,
-              typeMessage: "alert alert-success",
-              modified:true
-            })
-          } else {
-            this.setState({
-              message: resp.data.errorMessage,
-              typeMessage: "alert alert-danger",
-            })
+        .then(
+          resp => {
+            if (resp.data.succesMessage) {
+              this.setState({
+                message: resp.data.succesMessage,
+                typeMessage: "alert alert-success",
+                modified: true
+              })
+            } else {
+              this.setState({
+                message: resp.data.errorMessage,
+                typeMessage: "alert alert-danger",
+              })
+            }
           }
-        }
 
-      );
+        );
 
 
     } else {
       this.markUsTouched();
       ValidationService.validator.showMessages();
     }
-    
+
   }
   handleBlockedNavigation = () => {
 
@@ -681,10 +682,10 @@ class Profile extends Component {
     leavePage.leaved = true
     this.handleBlockedNavigation()
   }
-  
+
   render() {
 
-    console.log("etat civil",this.state.etatCivil)
+    console.log("etat civil", this.state.etatCivil)
     const { message } = this.state;
     const { loading } = this.state;
     const { typeMessage } = this.state;
@@ -698,8 +699,8 @@ class Profile extends Component {
     const { specialites } = this.props;
     const { etatCivils } = this.props;
     const { invalide } = this.state;
-    const {condidatReducer} = this.props
-    const {when} = this.props
+    const { condidatReducer } = this.props
+    const { when } = this.props
     const { show } = this.state;
     if (changePath) {
       return <Redirect to={{
@@ -713,23 +714,23 @@ class Profile extends Component {
 
 
       <div id="wrapper">
-        <Leftside 
-         validerEtapeProfile={this.validerEtapeProfile}    
+        <Leftside
+          validerEtapeProfile={this.validerEtapeProfile}
         ></Leftside>
         <div id="content-wrapper" className="d-flex flex-column">
           <div id="content">
-            <Header 
-             imageProfilePath={this.state.imageProfilePath}
-             nom={this.state.nom}
-             prenom={this.state.prenom}
-             userlogin={this.state.username}
-             />
+            <Header
+              imageProfilePath={this.state.imageProfilePath}
+              nom={this.state.nom}
+              prenom={this.state.prenom}
+              userlogin={this.state.username}
+            />
 
             <Prompt
               when={when}
               message={this.handleBlockedNavigation} />
 
-             <Modal show={show} onHide={this.handleClose}>
+            <Modal show={show} onHide={this.handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Validation Profile</Modal.Title>
               </Modal.Header>
@@ -756,7 +757,7 @@ class Profile extends Component {
                   <h1 className="h3 mb-0 text-gray-800">Informations générales</h1>
                   <div>
                     {condidatReducer && !condidatReducer.aConfirmer && condidatReducer.dateModif && (
-                      <button  className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" onClick={this.modifierCondidat}>modifier</button>
+                      <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" onClick={this.modifierCondidat}>modifier</button>
                     )}
 
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
@@ -797,8 +798,8 @@ class Profile extends Component {
                       etats={etatCivils}
                       validator={ValidationService.validator}
                       touched={this.state.touched}
-                      confirmed = {this.state.confirmed}
-                      condidatReducer = {condidatReducer}
+                      confirmed={this.state.confirmed}
+                      condidatReducer={condidatReducer}
                     />
 
                     <NiveauAcademique
@@ -812,7 +813,7 @@ class Profile extends Component {
                       specialites={specialites}
                       validator={ValidationService.validator}
                       touched={this.state.touched}
-                      condidatReducer = {condidatReducer}
+                      condidatReducer={condidatReducer}
                     />
 
                     <DomaineCompetence
@@ -825,7 +826,7 @@ class Profile extends Component {
                       types={types}
                       validator={ValidationService.validator}
                       touched={this.state.touched}
-                      condidatReducer = {condidatReducer}
+                      condidatReducer={condidatReducer}
                     />
 
 

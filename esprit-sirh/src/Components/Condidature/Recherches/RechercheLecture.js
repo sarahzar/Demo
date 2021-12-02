@@ -11,35 +11,35 @@ class RechercheLecture extends React.Component {
     }
 
     componentDidMount() {
-        
-            if (this.props.condidatReducer.recherches == null || this.props.condidatReducer.recherches.length == 0) {
-                this.setState({
-                    empty: true
-                })
-            }
+
+        if (this.props.condidatReducer.recherches == null || this.props.condidatReducer.recherches.length == 0) {
+            this.setState({
+                empty: true
+            })
         }
+    }
 
     render() {
-     
+
         return (
 
-       
-                <div className="col-lg-12 mb-4 ">
-                {(!this.state.empty &&      
+
+            <div className="col-lg-12 mb-4 ">
+                {(!this.state.empty &&
                     <table className="table table-striped"  >
                         <thead>
 
                             <tr className="d-flex">
-                                <th  className="col-3">Thématique du recherche </th>
-                                <th  className="col-2">Chapitre du livre </th>
-                                <th  className="col-2">Article du journal </th>
-                                <th  className="col-2">Article du conférence </th>
-                                <th  className="col-2">Msstères de recherche </th>
-                                <th  className="col-1">Théses </th>
+                                <th className="col-3">Thématique du recherche </th>
+                                <th className="col-2">Chapitre du livre </th>
+                                <th className="col-2">Article du journal </th>
+                                <th className="col-2">Article du conférence </th>
+                                <th className="col-2">Msstères de recherche </th>
+                                <th className="col-1">Théses </th>
                             </tr>
                         </thead>
-                      
-                            <tbody>
+
+                        <tbody>
                             {this.props.items.map((item, index) =>
                                 <tr key={index} className="d-flex" >
                                     <td className="col-3">
@@ -61,19 +61,19 @@ class RechercheLecture extends React.Component {
                                         {item.these}
                                     </td>
                                 </tr>
-                              )}
-                            </tbody>
-                       
+                            )}
+                        </tbody>
+
                     </table>
                 )}
-                   {(this.state.empty &&  
-                        <div className="card border-left-danger shadow">
-                            <div className="card-body">
-                                Aucune activité de recherche ajoutée
-                            </div>
+                {(this.state.empty &&
+                    <div className="card border-left-danger shadow">
+                        <div className="card-body">
+                            Aucune activité de recherche ajoutée
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
+            </div>
 
         )
     }
@@ -81,8 +81,8 @@ class RechercheLecture extends React.Component {
 
 }
 function mapStateToProps(state) {
-  
+
     const { condidatReducer } = state.condidat;
-    return {  condidatReducer };
-  }
+    return { condidatReducer };
+}
 export default connect(mapStateToProps)(RechercheLecture);

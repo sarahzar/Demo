@@ -1,4 +1,4 @@
-class RoutingService{
+class RoutingService {
     // currentRoute;
     // getCurrentRoute(){
     //   currentRoute= window.location.pathname ;

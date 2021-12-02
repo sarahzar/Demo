@@ -11,7 +11,7 @@ class ExperienceProLecture extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.condidatReducer.experienceProfessionels == null || this.props.condidatReducer.experienceProfessionels.length == 0 ) {
+        if (this.props.condidatReducer.experienceProfessionels == null || this.props.condidatReducer.experienceProfessionels.length == 0) {
             this.setState({
                 empty: true
             })
@@ -24,21 +24,21 @@ class ExperienceProLecture extends React.Component {
 
 
 
-                <div className="col-lg-12 mb-4 ">
-                {(!this.state.empty &&      
-                  <table className="table table-striped"  >
-                  <thead>
-  
-                  <tr >
-                          <th >Date de début </th>
-                          <th >Date de fin </th>
-                          <th >Etablissement </th>
-                          <th >Poste </th>
-                          <th >Pays </th>
-                          <th >Ville </th>
-                        </tr>
-                  </thead>
-              
+            <div className="col-lg-12 mb-4 ">
+                {(!this.state.empty &&
+                    <table className="table table-striped"  >
+                        <thead>
+
+                            <tr >
+                                <th >Date de début </th>
+                                <th >Date de fin </th>
+                                <th >Etablissement </th>
+                                <th >Poste </th>
+                                <th >Pays </th>
+                                <th >Ville </th>
+                            </tr>
+                        </thead>
+
                         <tbody>
                             {this.props.items.map((item, index) =>
                                 <tr key={index}>
@@ -63,18 +63,18 @@ class ExperienceProLecture extends React.Component {
                                 </tr>
                             )}
                         </tbody>
-                
-              </table>
+
+                    </table>
                 )}
-                   {(this.state.empty &&  
-                        <div className="card border-left-danger shadow">
-                            <div className="card-body">
-                                Aucune experience professionelle ajoutée
-                            </div>
+                {(this.state.empty &&
+                    <div className="card border-left-danger shadow">
+                        <div className="card-body">
+                            Aucune experience professionelle ajoutée
                         </div>
-                    )}
-                </div>
-    
+                    </div>
+                )}
+            </div>
+
 
         )
     }
@@ -82,8 +82,8 @@ class ExperienceProLecture extends React.Component {
 
 }
 function mapStateToProps(state) {
-  
+
     const { condidatReducer } = state.condidat;
-    return {  condidatReducer };
-  }
-export default connect(mapStateToProps)( ExperienceProLecture);
+    return { condidatReducer };
+}
+export default connect(mapStateToProps)(ExperienceProLecture);

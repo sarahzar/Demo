@@ -4,7 +4,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import axios from "axios";
 import { isEmail } from "validator";
-import { Redirect,Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import ValidationService from "../../services/Validation/ValidationService";
 
 
@@ -26,7 +26,7 @@ const email = value => {
     );
   }
 };
- class Forgot extends Component {
+class Forgot extends Component {
   constructor(props) {
     super(props);
 
@@ -113,8 +113,8 @@ const email = value => {
     }
   }
 
-  addMessages() {   
-    ValidationService.validator.message('mail', this.state.mail,  'required|email', { className: 'text-danger' })
+  addMessages() {
+    ValidationService.validator.message('mail', this.state.mail, 'required|email', { className: 'text-danger' })
   }
   markUsTouched() {
     this.state.touched['mail'] = true;
@@ -133,83 +133,83 @@ const email = value => {
                 <div className="row justify-content-center">
 
                   <div class="col-lg-6">
-                  <div className="p-5">
-                                  <div className="text-center">
-                                      <h1 className="h4 text-gray-900 mb-4">Réinitialisation mot de passe</h1>
-                                  </div>
+                    <div className="p-5">
+                      <div className="text-center">
+                        <h1 className="h4 text-gray-900 mb-4">Réinitialisation mot de passe</h1>
+                      </div>
 
-                  <Form
-                    onSubmit={this.handleSubmit}
-                    ref={c => {
-                      this.form = c;
-                    }}
-                  >
-                    <div className="form-group">
-                     
-                      <Input
-                        type="text"
-                        className={this.state.touched && this.state.touched['mail'] && (!this.state.mail || !isEmail(this.state.mail))  ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
-                        placeholder="Addresse Email"
-                        name="mail"
-                        value={this.state.mail}
-                        onChange={this.onChangeUsername}
-                        onBlur={() => ValidationService.validator.showMessageFor('mail')}
-                        />
-                         {/* msg erreur */}
-                         {this.state.touched && this.state.touched['mail']  && ValidationService.validator.message('mail', this.state.mail, 'required|email', { className: 'text-danger' })}
-      
-                    </div>
-
-
-
-                    <div className="form-group">
-                      <button
-                        className="btn btn-primary btn-user btn-block"
-                        disabled={this.state.loading}
+                      <Form
+                        onSubmit={this.handleSubmit}
+                        ref={c => {
+                          this.form = c;
+                        }}
                       >
-                        {this.state.loading && (
-                          <span className="spinner-border spinner-border-sm"></span>
+                        <div className="form-group">
+
+                          <Input
+                            type="text"
+                            className={this.state.touched && this.state.touched['mail'] && (!this.state.mail || !isEmail(this.state.mail)) ? "form-control form-control-user is-invalid" : "form-control form-control-user"}
+                            placeholder="Addresse Email"
+                            name="mail"
+                            value={this.state.mail}
+                            onChange={this.onChangeUsername}
+                            onBlur={() => ValidationService.validator.showMessageFor('mail')}
+                          />
+                          {/* msg erreur */}
+                          {this.state.touched && this.state.touched['mail'] && ValidationService.validator.message('mail', this.state.mail, 'required|email', { className: 'text-danger' })}
+
+                        </div>
+
+
+
+                        <div className="form-group">
+                          <button
+                            className="btn btn-primary btn-user btn-block"
+                            disabled={this.state.loading}
+                          >
+                            {this.state.loading && (
+                              <span className="spinner-border spinner-border-sm"></span>
+                            )}
+                            <span>Confirmer</span>
+                          </button>
+                        </div>
+
+                        {this.state.message && (
+                          <div className="form-group">
+                            <div className="alert alert-danger" role="alert">
+                              {this.state.message}
+                            </div>
+                          </div>
                         )}
-                        <span>Confirmer</span>
-                      </button>
-                    </div>
+                        {this.state.messageSuccess && (
+                          <div className="form-group">
+                            <div className="alert alert-success" role="alert">
+                              {this.state.messageSuccess}
+                            </div>
+                          </div>
+                        )}
 
-                    {this.state.message && (
-                      <div className="form-group">
-                        <div className="alert alert-danger" role="alert">
-                          {this.state.message}
-                        </div>
+                        <CheckButton
+                          style={{ display: "none" }}
+                          ref={c => {
+                            this.checkBtn = c;
+                          }}
+                        />
+                      </Form>
+
+                      <hr />
+                      <div className="text-center small">
+                        <Link to="/"
+                        >Retour à la page d'accueil</Link>
                       </div>
-                    )}
-                    {this.state.messageSuccess && (
-                      <div className="form-group">
-                        <div className="alert alert-success" role="alert">
-                          {this.state.messageSuccess}
-                        </div>
-                      </div>
-                    )}
 
-                    <CheckButton
-                      style={{ display: "none" }}
-                      ref={c => {
-                        this.checkBtn = c;
-                      }}
-                    />
-                  </Form>
-
-                  <hr/>
-                    <div className="text-center small">
-                      <Link to="/"
-                      >Retour à la page d'accueil</Link>
                     </div>
-
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      </div>
       </div>
     );
   }

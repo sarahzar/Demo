@@ -51,7 +51,7 @@ class ExperienceProfessionel extends Component {
       posteId: -1,
       dateDebut: "",
       dateFin: "",
-      items: [{ id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }],
+      items: [{ id: -1, dateDebut: "", dateFin: "", etablissement: { id: -1, libelle: "", telephone: -1, mail: "" }, poste: { id: -1, libelle: "" }, pays: { id: -1, libelle: "" }, ville: "" }],
       retour: false,
       changePath: false,
       ignorer: false,
@@ -63,40 +63,40 @@ class ExperienceProfessionel extends Component {
   componentDidMount() {
     let localCopy = Object.assign({}, this.props);
     let cdtString = JSON.stringify(localCopy.condidatReducer)
-    const cdt = JSON.parse(cdtString) 
-    
+    const cdt = JSON.parse(cdtString)
+
     if (cdt) {
       if (cdt.experienceProfessionels && cdt.experienceProfessionels.length > 0) {
 
         this.setState({
-          items: [ ...cdt.experienceProfessionels]
+          items: [...cdt.experienceProfessionels]
         });
       }
     }
   }
   componentWillUnmount() {
 
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer ){
+    if (this.props.condidatReducer && !this.props.condidatReducer.aConfirmer) {
 
       let elements = []
       elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.experienceProfessionels : [...this.state.items]
       elements = this.initListeExp(elements)
-    
 
-   
-    if (localStorage.getItem('persist:root')) {
 
-      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && !this.props.condidatReducer.aConfirmer){
-      this.props.condidatReducer.experienceProfessionels = elements;
-      this.props.setCondidat(this.props.condidatReducer)
+
+      if (localStorage.getItem('persist:root')) {
+
+        if (this.props.condidatReducer && !this.props.condidatReducer.dateModif && !this.props.condidatReducer.aConfirmer) {
+          this.props.condidatReducer.experienceProfessionels = elements;
+          this.props.setCondidat(this.props.condidatReducer)
+        }
+
+        if (elements && elements.length > 0) {
+          this.props.ignorerExpPro(false);
+        } else {
+          this.props.ignorerExpPro(true);
+        }
       }
-
-      if (elements && elements.length > 0) {
-        this.props.ignorerExpPro(false);
-      } else {
-        this.props.ignorerExpPro(true);
-      }
-    }
 
     }
 
@@ -109,8 +109,8 @@ class ExperienceProfessionel extends Component {
     let elements = [...this.state.items];
     // let id =e.target.value;
     // let etablissement = this.props.etablissements.filter(elem => elem.id == id).shift()
-    let etablissement = {id:-1,libelle: e.target.value}
-    
+    let etablissement = { id: -1, libelle: e.target.value }
+
     elements[index].etablissement = etablissement;
 
     this.setState({
@@ -126,10 +126,10 @@ class ExperienceProfessionel extends Component {
     touchedElement[expProFields.poste + index] = true;
 
     let elements = [...this.state.items];
-    let id =e.target.value;
+    let id = e.target.value;
     let poste = id != -1 ? this.props.postes.filter(elem => elem.id == id).shift() : null
 
-    elements[index].poste = poste ? poste : {id:-1,libelle:""}
+    elements[index].poste = poste ? poste : { id: -1, libelle: "" }
 
     this.setState({
       items: elements,
@@ -143,10 +143,10 @@ class ExperienceProfessionel extends Component {
     touchedElement[expProFields.pays + index] = true;
 
     let elements = [...this.state.items];
-    let id =e.target.value;
+    let id = e.target.value;
     let pays = id ? this.props.pays.filter(elem => elem.id == id).shift() : null
 
-    elements[index].pays = pays ? pays : {id:-1,libelle:""};
+    elements[index].pays = pays ? pays : { id: -1, libelle: "" };
 
     this.setState({
       items: elements,
@@ -215,11 +215,11 @@ class ExperienceProfessionel extends Component {
 
   initListeExp(liste) {
 
-    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }
+    const defaultElem = { id: -1, dateDebut: "", dateFin: "", etablissement: { id: -1, libelle: "", telephone: -1, mail: "" }, poste: { id: -1, libelle: "" }, pays: { id: -1, libelle: "" }, ville: "" }
     const firstElem = Array.isArray(liste) ? liste[0] : !Array.isArray(liste) ? liste : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
-        Array.isArray(liste) ? liste.splice(0,1) : liste =[];
+      Array.isArray(liste) ? liste.splice(0, 1) : liste = [];
     }
     return liste;
   }
@@ -229,7 +229,7 @@ class ExperienceProfessionel extends Component {
     const exppro = this.state.items.slice()
     const touchedcp = { ...this.state.touched }
     const replacedTouched = []
-    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }
+    const defaultElem = { id: -1, dateDebut: "", dateFin: "", etablissement: { id: -1, libelle: "", telephone: -1, mail: "" }, poste: { id: -1, libelle: "" }, pays: { id: -1, libelle: "" }, ville: "" }
 
     //spprimer l'élément sélectionner
     exppro.splice(index, 1)
@@ -259,7 +259,7 @@ class ExperienceProfessionel extends Component {
   }
 
   updateTabElements = (e) => {
-    const defaultElem = { id:-1, dateDebut: "", dateFin: "", etablissement: {id:-1,libelle:"",telephone:-1,mail:""}, poste: {id:-1,libelle:""}, pays: {id:-1,libelle:""}, ville: "" }
+    const defaultElem = { id: -1, dateDebut: "", dateFin: "", etablissement: { id: -1, libelle: "", telephone: -1, mail: "" }, poste: { id: -1, libelle: "" }, pays: { id: -1, libelle: "" }, ville: "" }
     e.preventDefault();
     let elements = [...this.state.items];
     elements.push(defaultElem);
@@ -271,12 +271,12 @@ class ExperienceProfessionel extends Component {
 
   handleSubmitCondidat = (e) => {
     e.preventDefault();
-  
+
     ValidationService.validator.purgeFields();
     this.addMessages();
-    let elements = this.initListeExp( ...this.state.items)
+    let elements = this.initListeExp(...this.state.items)
     console.log("validator", ValidationService.validator)
-    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer) || (elements && elements.length == 0) ) {
+    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer) || (elements && elements.length == 0)) {
 
       this.setState({
         loading: true,
@@ -334,17 +334,17 @@ class ExperienceProfessionel extends Component {
       touched: touchedCopy
     })
   }
-  
-  modifierCondidat= (e) => {
+
+  modifierCondidat = (e) => {
 
     e.preventDefault();
     const formData = new FormData();
     ValidationService.validator.purgeFields();
     this.addMessages();
     let elements = this.initListeExp(...this.state.items)
-    
-    if (ValidationService.validator.allValid() || (elements && elements.length == 0 )) {
-   
+
+    if (ValidationService.validator.allValid() || (elements && elements.length == 0)) {
+
       let condidatToSave = this.props.condidatReducer
       condidatToSave.experienceProfessionels = [...this.state.items]
 
@@ -352,36 +352,36 @@ class ExperienceProfessionel extends Component {
       formData.append('condidat', JSON.stringify(condidatToSave));
 
       CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
-      .then(
-        resp => {
-          if (resp.data.succesMessage) {
-            this.setState({
-              message: resp.data.succesMessage,
-              typeMessage: "alert alert-success",
-            })
-            CondidatService.getCondidat(AuthService.getLogin()).then(
-              data =>{
-                this.props.setCondidat(data)
-              }
-            )
-          } else {
-            this.setState({
-              message: resp.data.errorMessage,
-              typeMessage: "alert alert-danger",
-            })
+        .then(
+          resp => {
+            if (resp.data.succesMessage) {
+              this.setState({
+                message: resp.data.succesMessage,
+                typeMessage: "alert alert-success",
+              })
+              CondidatService.getCondidat(AuthService.getLogin()).then(
+                data => {
+                  this.props.setCondidat(data)
+                }
+              )
+            } else {
+              this.setState({
+                message: resp.data.errorMessage,
+                typeMessage: "alert alert-danger",
+              })
+            }
           }
-        }
 
-      );
+        );
     } else {
       this.markUsTouched();
       ValidationService.validator.showMessages();
     }
-    
+
   }
 
   render() {
-  
+
 
     const { classes } = this.props;
     const { loading } = this.state;
@@ -393,10 +393,10 @@ class ExperienceProfessionel extends Component {
     const { message } = this.state;
     const { typeMessage } = this.state;
 
-    console.log("items",items)
+    console.log("items", items)
 
     if (this.state.retour) {
-     
+
       return <Redirect to={{
         pathname: '/expEnseignant',
       }} />;
@@ -434,7 +434,7 @@ class ExperienceProfessionel extends Component {
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
 
-                    {this.props.condidatReducer  && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
+                    {this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
                       <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat} >modifier</button>
                     )}
 
@@ -460,204 +460,204 @@ class ExperienceProfessionel extends Component {
 
                 { /* Content Row */}
                 <div className="row">
-                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                  <div className="col-lg-12 mb-4 ">
+                  {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                    <div className="col-lg-12 mb-4 ">
 
-                    <table className="table table-striped"  >
-                      <thead>
+                      <table className="table table-striped"  >
+                        <thead>
 
-                        <tr >
-                          <th className="control-label">Date de début </th>
-                          <th className="control-label">Date de fin </th>
-                          <th className="control-label">Etablissement </th>
-                          <th className="control-label">Poste </th>
-                          <th className="control-label">Pays </th>
-                          <th className="control-label">Ville </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items.map((item, index) =>
-                          <tr key={index} >
-                            <td class=""> 
-                            {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                            <div className="form-group">
-                              <input
-                                type="date"
-                                className={!this.state.ignorer &&
-                                  this.state.touched &&
-                                  this.state.touched[expProFields.dateDeb + index] &&
-                                  (!item.dateDebut || DateValidators.isSameToday(item.dateDebut) || DateValidators.isAfterToday(item.dateDebut) || DateValidators.isAfterDate(item.dateDebut, item.dateFin) || DateValidators.isSameDate(item.dateDebut, item.dateFin)) ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
-                                name="telephone"
-                                value={item.dateDebut}
-                                onChange={(e) => { this.onChangeDateDeb(e, index) }}
-                                data-tip
-                                data-for={"dateDebTip" + index}
-                              />
-                              {/* msg erreur */}
-                              {!this.state.ignorer &&
-                                this.state.touched &&
-                                this.state.touched[expProFields.dateDeb + index] &&
-                                (!item.dateDebut || DateValidators.isSameToday(item.dateDebut) || DateValidators.isAfterToday(item.dateDebut) || DateValidators.isAfterDate(item.dateDebut, item.dateFin) || DateValidators.isSameDate(item.dateDebut, item.dateFin)) && (
-                                  <ReactTooltip id={"dateDebTip" + index} place="top" effect="solid">
-                                    {ValidationService.validator.message(expProFields.dateDeb + index, item.dateDebut, ['dateAfterToday', 'required', { dateAfter: item.dateFin }])}
-                                  </ReactTooltip>
-                                )}
-                            </div>
-                            )}
-                               {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
-                                  <span>{item.dateDebut}</span>
-                              )}
-                            </td>
-                            <td class=""> 
-                            {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                            <div className="form-group">
-                              <Input
-                                type="date"
-                                className={!this.state.ignorer &&
-                                  this.state.touched &&
-                                  this.state.touched[expProFields.dateFin + index] &&
-                                  (!item.dateFin || DateValidators.isSameToday(item.dateFin) || DateValidators.isAfterToday(item.dateFin) || DateValidators.isbeforeDate(item.dateFin, item.dateDebut) || DateValidators.isSameDate(item.dateDebut, item.dateFin)) ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
-                                name="telephone"
-                                value={item.dateFin}
-                                onChange={(e) => { this.onChangeDateFin(e, index) }}
-                                data-tip
-                                data-for={"dateFinTip" + index}
-                              />
-                              {/* msg erreur */}
-                              {!this.state.ignorer &&
-                                this.state.touched &&
-                                this.state.touched[expProFields.dateFin + index] &&
-                                (!item.dateFin || DateValidators.isSameToday(item.dateFin) || DateValidators.isAfterToday(item.dateFin) || DateValidators.isbeforeDate(item.dateFin, item.dateDebut) || DateValidators.isSameDate(item.dateDebut, item.dateFin)) && (
-                                  <ReactTooltip id={"dateFinTip" + index} place="top" effect="solid">
-                                    {ValidationService.validator.message(expProFields.dateFin + index, item.dateFin, ['dateAfterToday', 'required', { dateBefore: item.dateDebut }])}
-                                  </ReactTooltip>
-                                )}
-                            </div>
-                            )}
-                            
-                            {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
-                                  <span>{item.dateFin}</span>
-                              )}
-                            </td>
-
-                            <td class="">
-                            {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                              <div className="form-group">
-                              <input
-                                type="text"
-                                className={!this.state.ignorer && this.state.touched && this.state.touched[expProFields.etablissement + index] && item.etablissement.libelle == "" ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
-                                id="sel1"
-                                onChange={(e) => { this.onChangeEtablissement(e, index) }}
-                                value={item.etablissement && item.etablissement.libelle}
-                                data-tip
-                                data-for={"etablissementTip" + index} />
-                              
-                              {/* msg erreur */}
-                              {!this.state.ignorer && this.state.touched && this.state.touched[expProFields.etablissement + index] && item.etablissement.libelle == "" && (
-                                <ReactTooltip id={"etablissementTip" + index} place="top" effect="solid">
-                                  {ValidationService.validator.message(expProFields.etablissement + index, item.etablissement.id, 'requiredSelect:etablissement')}
-                                </ReactTooltip>
-                              )}
-                            </div>
-                            )}
-                            {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
-                                  <span>{item.etablissement.libelle}</span>
-                              )}
-                            </td>
-
-                            <td class=""> 
-                            {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                            <div className="form-group">
-                              <select
-                                className={!this.state.ignorer && this.state.touched && this.state.touched[expProFields.poste + index] && item.poste.id == -1 ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
-                                id="sel1"
-                                onChange={(e) => { this.onChangePoste(e, index) }}
-                                value={item.poste.id}
-                                data-tip
-                                data-for={"posteTip" + index}>
-                                <option value="-1" key="defaultposte"></option>
-                                {postes.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
-                              </select>
-                              {/* msg erreur */}
-                              {!this.state.ignorer && this.state.touched && this.state.touched[expProFields.poste + index] && item.poste.id == -1 && (
-                                <ReactTooltip id={"posteTip" + index} place="top" effect="solid">
-                                  {ValidationService.validator.message(expProFields.poste + index, item.poste.id, 'requiredSelect:poste')}
-                                </ReactTooltip>
-                              )}
-                            </div>
-                            )}
-                             {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
-                                  <span>{item.poste.libelle}</span>
-                              )}
-                            </td>
-
-                            <td class="">
-                            {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                              <div className="form-group">
-                              <select
-                                className={!this.state.ignorer && this.state.touched && this.state.touched[expProFields.pays + index] && item.pays.id == -1 ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
-                                id="sel1"
-                                onChange={(e) => { this.onChangePays(e, index) }}
-                                value={item.pays.id}
-                                data-tip
-                                data-for={"paysTip" + index}>
-                                <option value="-1" key="defaulpays"></option>
-                                {pays.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
-                              </select>
-                              {/* msg erreur */}
-                              {!this.state.ignorer && this.state.touched && this.state.touched[expProFields.pays + index] && item.pays.id == -1 && (
-                                <ReactTooltip id={"paysTip" + index} place="top" effect="solid">
-                                  {ValidationService.validator.message(expProFields.pays + index, item.pays.id, 'requiredSelect:pays')}
-                                </ReactTooltip>
-                              )}
-                            </div>
-                            )}
-                               {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
-                                  <span>{item.pays.libelle}</span>
-                              )}
-                            </td>
-                            <td className="col-3"> 
-                            {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                            <div className="form-group">
-                              <input
-                                type="text"
-                                className={!this.state.ignorer && this.state.touched && this.state.touched[expProFields.ville + index] && !item.ville ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
-                                name="ville"
-                                value={item.ville}
-                                onChange={(e) => { this.onChangeVille(e, index) }}
-                                data-tip
-                                data-for={"villeTip" + index}
-                              />
-                              {/* msg erreur */}
-                              {!this.state.ignorer && this.state.touched && this.state.touched[expProFields.ville + index] && !item.ville && (
-                                <ReactTooltip id={"villeTip" + index} place="top" effect="solid">
-                                  {ValidationService.validator.message(expProFields.ville + index, item.ville, 'required')}
-                                </ReactTooltip>
-                              )}
-
-                            </div>
-                            )}
-                             {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                              <Fab color="secondary" aria-label="delete" size="small" className={classes.fab} style={{ zIndex: 100 }} >
-                                <DeleteIcon onClick={(e) => this.deleteTabElement(e, index)} />
-                              </Fab>
-                             )}
-                              {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
-                                  <span>{item.ville}</span>
-                              )}
-                            </td>
+                          <tr >
+                            <th className="control-label">Date de début </th>
+                            <th className="control-label">Date de fin </th>
+                            <th className="control-label">Etablissement </th>
+                            <th className="control-label">Poste </th>
+                            <th className="control-label">Pays </th>
+                            <th className="control-label">Ville </th>
                           </tr>
-                        )}
-                      </tbody>
-                    </table>
-                    {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                      <div>
-                        <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
-                        <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={this.ignorerEtape}>Ignorer cette étape</button>
-                      </div>
-                    )}
-                  </div>
-                )}
+                        </thead>
+                        <tbody>
+                          {items.map((item, index) =>
+                            <tr key={index} >
+                              <td class="">
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <div className="form-group">
+                                    <input
+                                      type="date"
+                                      className={!this.state.ignorer &&
+                                        this.state.touched &&
+                                        this.state.touched[expProFields.dateDeb + index] &&
+                                        (!item.dateDebut || DateValidators.isSameToday(item.dateDebut) || DateValidators.isAfterToday(item.dateDebut) || DateValidators.isAfterDate(item.dateDebut, item.dateFin) || DateValidators.isSameDate(item.dateDebut, item.dateFin)) ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
+                                      name="telephone"
+                                      value={item.dateDebut}
+                                      onChange={(e) => { this.onChangeDateDeb(e, index) }}
+                                      data-tip
+                                      data-for={"dateDebTip" + index}
+                                    />
+                                    {/* msg erreur */}
+                                    {!this.state.ignorer &&
+                                      this.state.touched &&
+                                      this.state.touched[expProFields.dateDeb + index] &&
+                                      (!item.dateDebut || DateValidators.isSameToday(item.dateDebut) || DateValidators.isAfterToday(item.dateDebut) || DateValidators.isAfterDate(item.dateDebut, item.dateFin) || DateValidators.isSameDate(item.dateDebut, item.dateFin)) && (
+                                        <ReactTooltip id={"dateDebTip" + index} place="top" effect="solid">
+                                          {ValidationService.validator.message(expProFields.dateDeb + index, item.dateDebut, ['dateAfterToday', 'required', { dateAfter: item.dateFin }])}
+                                        </ReactTooltip>
+                                      )}
+                                  </div>
+                                )}
+                                {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                  <span>{item.dateDebut}</span>
+                                )}
+                              </td>
+                              <td class="">
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <div className="form-group">
+                                    <Input
+                                      type="date"
+                                      className={!this.state.ignorer &&
+                                        this.state.touched &&
+                                        this.state.touched[expProFields.dateFin + index] &&
+                                        (!item.dateFin || DateValidators.isSameToday(item.dateFin) || DateValidators.isAfterToday(item.dateFin) || DateValidators.isbeforeDate(item.dateFin, item.dateDebut) || DateValidators.isSameDate(item.dateDebut, item.dateFin)) ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
+                                      name="telephone"
+                                      value={item.dateFin}
+                                      onChange={(e) => { this.onChangeDateFin(e, index) }}
+                                      data-tip
+                                      data-for={"dateFinTip" + index}
+                                    />
+                                    {/* msg erreur */}
+                                    {!this.state.ignorer &&
+                                      this.state.touched &&
+                                      this.state.touched[expProFields.dateFin + index] &&
+                                      (!item.dateFin || DateValidators.isSameToday(item.dateFin) || DateValidators.isAfterToday(item.dateFin) || DateValidators.isbeforeDate(item.dateFin, item.dateDebut) || DateValidators.isSameDate(item.dateDebut, item.dateFin)) && (
+                                        <ReactTooltip id={"dateFinTip" + index} place="top" effect="solid">
+                                          {ValidationService.validator.message(expProFields.dateFin + index, item.dateFin, ['dateAfterToday', 'required', { dateBefore: item.dateDebut }])}
+                                        </ReactTooltip>
+                                      )}
+                                  </div>
+                                )}
+
+                                {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                  <span>{item.dateFin}</span>
+                                )}
+                              </td>
+
+                              <td class="">
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <div className="form-group">
+                                    <input
+                                      type="text"
+                                      className={!this.state.ignorer && this.state.touched && this.state.touched[expProFields.etablissement + index] && item.etablissement.libelle == "" ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
+                                      id="sel1"
+                                      onChange={(e) => { this.onChangeEtablissement(e, index) }}
+                                      value={item.etablissement && item.etablissement.libelle}
+                                      data-tip
+                                      data-for={"etablissementTip" + index} />
+
+                                    {/* msg erreur */}
+                                    {!this.state.ignorer && this.state.touched && this.state.touched[expProFields.etablissement + index] && item.etablissement.libelle == "" && (
+                                      <ReactTooltip id={"etablissementTip" + index} place="top" effect="solid">
+                                        {ValidationService.validator.message(expProFields.etablissement + index, item.etablissement.id, 'requiredSelect:etablissement')}
+                                      </ReactTooltip>
+                                    )}
+                                  </div>
+                                )}
+                                {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                  <span>{item.etablissement.libelle}</span>
+                                )}
+                              </td>
+
+                              <td class="">
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <div className="form-group">
+                                    <select
+                                      className={!this.state.ignorer && this.state.touched && this.state.touched[expProFields.poste + index] && item.poste.id == -1 ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
+                                      id="sel1"
+                                      onChange={(e) => { this.onChangePoste(e, index) }}
+                                      value={item.poste.id}
+                                      data-tip
+                                      data-for={"posteTip" + index}>
+                                      <option value="-1" key="defaultposte"></option>
+                                      {postes.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
+                                    </select>
+                                    {/* msg erreur */}
+                                    {!this.state.ignorer && this.state.touched && this.state.touched[expProFields.poste + index] && item.poste.id == -1 && (
+                                      <ReactTooltip id={"posteTip" + index} place="top" effect="solid">
+                                        {ValidationService.validator.message(expProFields.poste + index, item.poste.id, 'requiredSelect:poste')}
+                                      </ReactTooltip>
+                                    )}
+                                  </div>
+                                )}
+                                {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                  <span>{item.poste.libelle}</span>
+                                )}
+                              </td>
+
+                              <td class="">
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <div className="form-group">
+                                    <select
+                                      className={!this.state.ignorer && this.state.touched && this.state.touched[expProFields.pays + index] && item.pays.id == -1 ? "form-control form-control-sm invalide-field" : "form-control form-control-sm"}
+                                      id="sel1"
+                                      onChange={(e) => { this.onChangePays(e, index) }}
+                                      value={item.pays.id}
+                                      data-tip
+                                      data-for={"paysTip" + index}>
+                                      <option value="-1" key="defaulpays"></option>
+                                      {pays.map(({ id, libelle }, index) => <option value={id} key={index} >{libelle}</option>)}
+                                    </select>
+                                    {/* msg erreur */}
+                                    {!this.state.ignorer && this.state.touched && this.state.touched[expProFields.pays + index] && item.pays.id == -1 && (
+                                      <ReactTooltip id={"paysTip" + index} place="top" effect="solid">
+                                        {ValidationService.validator.message(expProFields.pays + index, item.pays.id, 'requiredSelect:pays')}
+                                      </ReactTooltip>
+                                    )}
+                                  </div>
+                                )}
+                                {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                  <span>{item.pays.libelle}</span>
+                                )}
+                              </td>
+                              <td className="col-3">
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <div className="form-group">
+                                    <input
+                                      type="text"
+                                      className={!this.state.ignorer && this.state.touched && this.state.touched[expProFields.ville + index] && !item.ville ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                                      name="ville"
+                                      value={item.ville}
+                                      onChange={(e) => { this.onChangeVille(e, index) }}
+                                      data-tip
+                                      data-for={"villeTip" + index}
+                                    />
+                                    {/* msg erreur */}
+                                    {!this.state.ignorer && this.state.touched && this.state.touched[expProFields.ville + index] && !item.ville && (
+                                      <ReactTooltip id={"villeTip" + index} place="top" effect="solid">
+                                        {ValidationService.validator.message(expProFields.ville + index, item.ville, 'required')}
+                                      </ReactTooltip>
+                                    )}
+
+                                  </div>
+                                )}
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <Fab color="secondary" aria-label="delete" size="small" className={classes.fab} style={{ zIndex: 100 }} >
+                                    <DeleteIcon onClick={(e) => this.deleteTabElement(e, index)} />
+                                  </Fab>
+                                )}
+                                {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                  <span>{item.ville}</span>
+                                )}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                      {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                        <div>
+                          <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
+                          <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={this.ignorerEtape}>Ignorer cette étape</button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
                     <ExperienceProLecture items={items} />
                   )}

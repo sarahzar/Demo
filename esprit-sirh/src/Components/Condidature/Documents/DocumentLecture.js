@@ -3,22 +3,22 @@ import AuthService from "../../../services/Authentification/AuthService";
 import CondidatService from "../../../services/Condidature/CondidatService";
 class DocumentLecture extends React.Component {
 
-    constructor(props){
-       super(props)
+    constructor(props) {
+        super(props)
 
-       this.state ={
-         username: AuthService.getLogin(),
-       }
+        this.state = {
+            username: AuthService.getLogin(),
+        }
     }
 
-    download = (e,nom) =>{
-        CondidatService.downlodFiles(nom,this.state.username).then(resp => {
-          console.log(resp)
-          const url = resp.config.url;
-          window.location.href = url;
-    
+    download = (e, nom) => {
+        CondidatService.downlodFiles(nom, this.state.username).then(resp => {
+            console.log(resp)
+            const url = resp.config.url;
+            window.location.href = url;
+
         });
-      }
+    }
 
     render() {
 
@@ -39,8 +39,8 @@ class DocumentLecture extends React.Component {
 
                                     <label className="col-md-5 control-label">Photo d'identité: (jpg/png) </label >
                                     <div className="col-md-6">
-                                      
-                                        <a href="#" onClick={(e) => {this.download(e,item.nom)}}>{item.nom}</a>
+
+                                        <a href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 
@@ -53,7 +53,7 @@ class DocumentLecture extends React.Component {
                                     <label className="col-md-5 control-label">Curriculum vitae: (PDF) </label >
                                     <div className="col-md-6">
 
-                                        <a  href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
+                                        <a href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 
@@ -66,32 +66,32 @@ class DocumentLecture extends React.Component {
                                     <label className="col-md-5 control-label">lettre de motivation: (pdf) </label >
                                     <div className="col-md-6">
 
-                                        <a  href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
+                                        <a href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 
                                 </div>
                             )}
 
-                              {item.nom && item.type == 'DIPLOME' && (
+                            {item.nom && item.type == 'DIPLOME' && (
                                 <div className="form-group row">
 
                                     <label className="col-md-5 control-label">Diplome: (pdf) </label >
                                     <div className="col-md-6">
 
-                                        <a  href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
+                                        <a href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 
                                 </div>
                             )}
-                             {item.nom && item.type == 'ANNEXE' && (
+                            {item.nom && item.type == 'ANNEXE' && (
                                 <div className="form-group row">
 
                                     <label className="col-md-5 control-label">Annexe: (pdf) </label >
                                     <div className="col-md-6">
 
-                                        <a  href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
+                                        <a href="#" onClick={(e) => { this.download(e, item.nom) }}>{item.nom}</a>
 
                                     </div>
 

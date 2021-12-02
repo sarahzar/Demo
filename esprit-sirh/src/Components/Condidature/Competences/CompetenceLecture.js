@@ -11,7 +11,7 @@ class CompetenceLecture extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.condidatReducer.competences == null || this.props.condidatReducer.competences.length == 0 ) {
+        if (this.props.condidatReducer.competences == null || this.props.condidatReducer.competences.length == 0) {
             this.setState({
                 empty: true
             })
@@ -22,18 +22,18 @@ class CompetenceLecture extends React.Component {
 
         return (
 
-                <div className="col-lg-12 mb-4 ">
-                {(!this.state.empty &&      
-                  <table className="table table-striped"  >
-                  <thead>
-  
+            <div className="col-lg-12 mb-4 ">
+                {(!this.state.empty &&
+                    <table className="table table-striped"  >
+                        <thead>
+
                             <tr >
                                 <th >Compétence </th>
                                 <th >Description </th>
 
                             </tr>
-                  </thead>
-                 
+                        </thead>
+
                         <tbody>
                             {this.props.items.map((item, index) =>
                                 <tr key={index}>
@@ -48,17 +48,17 @@ class CompetenceLecture extends React.Component {
                             )}
                         </tbody>
 
-              </table>
+                    </table>
                 )}
-                   {(this.state.empty &&  
-                        <div className="card border-left-danger shadow">
-                            <div className="card-body">
-                                Aucune compétence ajoutée
-                            </div>
+                {(this.state.empty &&
+                    <div className="card border-left-danger shadow">
+                        <div className="card-body">
+                            Aucune compétence ajoutée
                         </div>
-                    )}
-                </div>
-   
+                    </div>
+                )}
+            </div>
+
 
         )
     }
@@ -66,8 +66,8 @@ class CompetenceLecture extends React.Component {
 
 }
 function mapStateToProps(state) {
-  
+
     const { condidatReducer } = state.condidat;
-    return {  condidatReducer };
-  }
-export default connect(mapStateToProps)( CompetenceLecture);
+    return { condidatReducer };
+}
+export default connect(mapStateToProps)(CompetenceLecture);

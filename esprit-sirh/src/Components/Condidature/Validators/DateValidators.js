@@ -1,14 +1,14 @@
 import moment from 'moment';
-export const DateValidators ={
+export const DateValidators = {
   isAfterToday,
-  isSameToday, 
+  isSameToday,
   isAfterDate,
   isSameDate,
   isbeforeDate
 }
 
 
-function isAfterToday (date)  {
+function isAfterToday(date) {
   let d = new Date(),
     month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
@@ -19,7 +19,7 @@ function isAfterToday (date)  {
   let isAfter = momentObject.isAfter(today)
   return isAfter;
 };
-function isSameToday (date) {
+function isSameToday(date) {
   let d = new Date(),
     month = '' + (d.getMonth() + 1),
     day = '' + d.getDate(),
@@ -31,23 +31,23 @@ function isSameToday (date) {
   return isSame;
 }
 
-function isAfterDate (date1,date2) { 
+function isAfterDate(date1, date2) {
   let momentObject1 = moment(date1, 'YYYY-MM-DD');
-  let momentObject2 = moment(date2, 'YYYY-MM-DD'); 
-  let isAfter=momentObject1.isAfter(momentObject2)
+  let momentObject2 = moment(date2, 'YYYY-MM-DD');
+  let isAfter = momentObject1.isAfter(momentObject2)
   return isAfter;
 }
-function isSameDate (date1,date2)  {
+function isSameDate(date1, date2) {
   let momentObject1 = moment(date1, 'YYYY-MM-DD');
-  let momentObject2 = moment(date2, 'YYYY-MM-DD'); 
-  let isSame=momentObject1.isSame(momentObject2)
+  let momentObject2 = moment(date2, 'YYYY-MM-DD');
+  let isSame = momentObject1.isSame(momentObject2)
   return isSame;
 }
-function isbeforeDate (date1,date2) { 
+function isbeforeDate(date1, date2) {
   let momentObject1 = moment(date1, 'YYYY-MM-DD');
-  let momentObject2 = moment(date2, 'YYYY-MM-DD'); 
-  let isAfter=momentObject1.isBefore(momentObject2)
+  let momentObject2 = moment(date2, 'YYYY-MM-DD');
+  let isAfter = momentObject1.isBefore(momentObject2)
   return isAfter;
-} 
-  
-  export default DateValidators;
+}
+
+export default DateValidators;

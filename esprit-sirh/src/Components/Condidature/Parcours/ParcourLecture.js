@@ -1,29 +1,29 @@
 import React, { Component } from "react";
-class ParcourLecture extends React.Component{
+class ParcourLecture extends React.Component {
 
-   
 
-render(){
 
-    return(
+    render() {
 
-  
+        return (
 
-        <div className="col-lg-12 mb-4 ">
-      
-            <table className="table table-striped"  >
-                <thead>
 
-                <tr>
-                          <th >Année </th>
-                          <th >Nom du diplôme </th>
-                          <th >Etablissement </th>
-                          <th>Spécialité </th>
-                          <th >Mention </th>
-                          <th >Pays </th>
+
+            <div className="col-lg-12 mb-4 ">
+
+                <table className="table table-striped"  >
+                    <thead>
+
+                        <tr>
+                            <th >Année </th>
+                            <th >Nom du diplôme </th>
+                            <th >Etablissement </th>
+                            <th>Spécialité </th>
+                            <th >Mention </th>
+                            <th >Pays </th>
                         </tr>
-                </thead>
-              
+                    </thead>
+
                     <tbody>
                         {this.props.items.map((item, index) =>
                             <tr key={index}>
@@ -48,16 +48,16 @@ render(){
                             </tr>
                         )}
                     </tbody>
-                
-            </table>
-       
-           
-        </div>
+
+                </table>
+
+
+            </div>
 
 
 
-    )
-}
+        )
+    }
 
 
 

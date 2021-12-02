@@ -17,7 +17,7 @@ import { validerEtapeActions } from "../../../_actions/Shared/valider.etape.acti
 import DocumentLecture from "./DocumentLecture";
 import { Switch } from "@material-ui/core";
 import DocumentModif from "./DocumentModif";
-import {Prompt} from 'react-router-dom'
+import { Prompt } from 'react-router-dom'
 import { imageProfileAtions } from "../../../_actions/Shared/image.profile.ations";
 
 const FILES_LOCATION = "http://localhost/uploads/"
@@ -60,7 +60,7 @@ class Documents extends Component {
       diplomePath: "",
       annexeName: "",
       annexePath: "",
-      modification:false
+      modification: false
     };
 
   }
@@ -130,7 +130,7 @@ class Documents extends Component {
     this.setState({
       photo: e.target.files[0],
       touched: touchedElements,
-      photoName: e.target.files[0] ?  e.target.files[0].name : null
+      photoName: e.target.files[0] ? e.target.files[0].name : null
     });
   }
 
@@ -180,7 +180,7 @@ class Documents extends Component {
     });
   }
 
-  handleSubmitCondidat = (e,type) => {
+  handleSubmitCondidat = (e, type) => {
     e.preventDefault();
 
     console.log("document validator", ValidationService.validator)
@@ -192,7 +192,7 @@ class Documents extends Component {
         loading: true
       })
       const formData = new FormData();
-     
+
       let documents = [
         // { nom: this.state.cv.name, type: DocumentType.CV },
         // { nom: this.state.photo.name, type: DocumentType.PHOTO },
@@ -200,29 +200,29 @@ class Documents extends Component {
         // { nom: this.state.diplome.name, type: DocumentType.DIPLOME },
         // { nom: this.state.annexe ? this.state.annexe.name : null, type: DocumentType.ANNEXE },
       ]
-      
-      if(this.state.cv) {
+
+      if (this.state.cv) {
         formData.append('file', this.state.cv);
-        documents[0] = {nom: this.state.cv.name, type: DocumentType.CV}
+        documents[0] = { nom: this.state.cv.name, type: DocumentType.CV }
       }
-      if(this.state.photo){
+      if (this.state.photo) {
         formData.append('file', this.state.photo);
-        documents[1] =  { nom: this.state.photo.name, type: DocumentType.PHOTO }
+        documents[1] = { nom: this.state.photo.name, type: DocumentType.PHOTO }
       }
-      if(this.state.lettreMotivation){
+      if (this.state.lettreMotivation) {
         formData.append('file', this.state.lettreMotivation);
         documents[2] = { nom: this.state.lettreMotivation.name, type: DocumentType.LM }
       }
-      if(this.state.diplome){
+      if (this.state.diplome) {
         formData.append('file', this.state.diplome);
         documents[3] = { nom: this.state.diplome.name, type: DocumentType.DIPLOME }
       }
-      if(this.state.annexe){
+      if (this.state.annexe) {
         formData.append('file', this.state.annexe);
         documents[4] = { nom: this.state.annexe ? this.state.annexe.name : null, type: DocumentType.ANNEXE }
       }
 
-      if(type === 'update'){
+      if (type === 'update') {
         documents = this.updateListDocuments(condidatReducer, documents);
       }
 
@@ -246,23 +246,23 @@ class Documents extends Component {
                 typeMessage: "alert alert-success",
                 saved: true
               })
-              
-              if(type === 'update'){
+
+              if (type === 'update') {
                 this.setState({
-                  modification:true
+                  modification: true
                 })
-                
+
               }
 
               this.updateFilesPaths(documents, year)
-              
+
               CondidatService.getCondidat(this.state.login).then(
-                resp =>{  
-                  this.updatePhoto(resp)          
+                resp => {
+                  this.updatePhoto(resp)
                   this.props.setCondidat(resp)
                 }
               )
-             
+
 
             } else {
               this.setState({
@@ -285,7 +285,7 @@ class Documents extends Component {
     let documentsFromDB = condidatReducer ? condidatReducer.documents : null;
     if (documentsFromDB) {
       documents.forEach((d, index) => {
-        if (d.type === condidatReducer.documents[index].type ) {
+        if (d.type === condidatReducer.documents[index].type) {
           condidatReducer.documents[index].nom = d.nom;
         }
       });
@@ -344,38 +344,38 @@ class Documents extends Component {
 
   }
 
-  photoClick= e => {
+  photoClick = e => {
     let photo = document.getElementById("selectedPhoto")
     if (photo) {
       this.setState({
-        modification:false
+        modification: false
       })
       photo.click()
     }
   }
-  cvClick= e => {
+  cvClick = e => {
     let cv = document.getElementById("selectedCv")
     if (cv) {
       this.setState({
-        modification:false
+        modification: false
       })
       cv.click()
     }
   }
-  lmClick= e => {
+  lmClick = e => {
     let lm = document.getElementById("selectedLM")
     if (lm) {
       this.setState({
-        modification:false
+        modification: false
       })
       lm.click()
     }
   }
-  diplomeClick= e => {
+  diplomeClick = e => {
     let diplome = document.getElementById("selectedDiplome")
     if (diplome) {
       this.setState({
-        modification:false
+        modification: false
       })
       diplome.click()
     }
@@ -384,7 +384,7 @@ class Documents extends Component {
     let annexe = document.getElementById("selectedAnnexe")
     if (annexe) {
       this.setState({
-        modification:false
+        modification: false
       })
       annexe.click()
     }
@@ -394,19 +394,19 @@ class Documents extends Component {
     let pathLogin = AuthService.getLogin();
     let path = "";
     data.documents.forEach(d => {
-        if (d.type == 'PHOTO') {
-            path = FILES_LOCATION + "/" + year + "/" + pathLogin + "/" + d.nom;
-        }
+      if (d.type == 'PHOTO') {
+        path = FILES_LOCATION + "/" + year + "/" + pathLogin + "/" + d.nom;
+      }
     });
     this.props.setImage(path);
-}
+  }
   handleBlockedNavigation = () => {
 
     ValidationService.validator.purgeFields();
     this.addMessages();
     console.log("validation", ValidationService.validator)
 
-    if (this.props.condidatReducer && !this.props.condidatReducer.dateModif && !ValidationService.validator.allValid()  && window.location.pathname != '/terminer' && window.location.pathname != '/') {
+    if (this.props.condidatReducer && !this.props.condidatReducer.dateModif && !ValidationService.validator.allValid() && window.location.pathname != '/terminer' && window.location.pathname != '/') {
       this.markUsTouched();
       ValidationService.validator.showMessages();
       return false
@@ -421,7 +421,7 @@ class Documents extends Component {
     const { typeMessage } = this.state;
     const { condidatReducer } = this.props;
     const { show } = this.state;
-    const {when} = this.props
+    const { when } = this.props
 
     const test = document.getElementById("selectedFile")
     console.log("show btn", test && test.value)
@@ -468,7 +468,7 @@ class Documents extends Component {
 
               <Form
                 encType="multipart/form-data"
-                onSubmit={e => {this.handleSubmitCondidat(e,'create')}}
+                onSubmit={e => { this.handleSubmitCondidat(e, 'create') }}
                 ref={(c) => {
                   this.form = c;
                 }}
@@ -480,7 +480,7 @@ class Documents extends Component {
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
-                    {(!this.props.condidatReducer.dateModif  && !condidatReducer.aConfirmer &&  this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                    {(!this.props.condidatReducer.dateModif && !condidatReducer.aConfirmer && this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
                       <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                         className="fas fa-angle-double-right fa-sm text-white-50"
                         disabled={loading}></i>
@@ -489,8 +489,8 @@ class Documents extends Component {
                         )}
                         enregistrer </button>
                     )}
-                      {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
-                      <button  className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2" onClick={e => {this.handleSubmitCondidat(e,'update')}}>modifier</button>
+                    {this.props.condidatReducer && this.props.condidatReducer.dateModif && (
+                      <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2" onClick={e => { this.handleSubmitCondidat(e, 'update') }}>modifier</button>
                     )}
                   </div>
                 </div>

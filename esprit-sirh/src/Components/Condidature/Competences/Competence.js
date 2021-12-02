@@ -36,7 +36,7 @@ class Competence extends Component {
 
     this.state = {
       loading: false,
-      items: [{ id:-1, titre: "", description: "" }],
+      items: [{ id: -1, titre: "", description: "" }],
       retour: false,
       // condidat: null,
       changePath: false,
@@ -50,13 +50,13 @@ class Competence extends Component {
   componentDidMount() {
     let localCopy = Object.assign({}, this.props);
     let cdtString = JSON.stringify(localCopy.condidatReducer)
-    const cdt = JSON.parse(cdtString) 
+    const cdt = JSON.parse(cdtString)
 
     if (cdt) {
       if (cdt.competences && cdt.competences.length > 0) {
 
         this.setState({
-          items: [ ...cdt.competences]
+          items: [...cdt.competences]
         });
 
       }
@@ -65,27 +65,27 @@ class Competence extends Component {
 
   componentWillUnmount() {
 
-    if(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer){
+    if (this.props.condidatReducer && !this.props.condidatReducer.aConfirmer) {
 
-    let elements = []
-    elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.competences : [...this.state.items]
-    elements = this.initListe(elements)
+      let elements = []
+      elements = this.props.condidatReducer && this.props.condidatReducer.dateModif ? this.props.condidatReducer.competences : [...this.state.items]
+      elements = this.initListe(elements)
 
-    if (localStorage.getItem('persist:root')) {
+      if (localStorage.getItem('persist:root')) {
 
-      if(this.props.condidatReducer && !this.props.condidatReducer.dateModif && !this.props.condidatReducer.aConfirmer){
-      this.props.condidatReducer.competences = elements;
-      this.props.setCondidat(this.props.condidatReducer)
+        if (this.props.condidatReducer && !this.props.condidatReducer.dateModif && !this.props.condidatReducer.aConfirmer) {
+          this.props.condidatReducer.competences = elements;
+          this.props.setCondidat(this.props.condidatReducer)
+        }
+
+        if (elements && elements.length > 0) {
+          this.props.ignorerCompetence(false);
+        } else {
+          this.props.ignorerCompetence(true);
+        }
       }
 
-      if (elements && elements.length > 0) {
-        this.props.ignorerCompetence(false);
-      } else {
-        this.props.ignorerCompetence(true);
-      }
     }
-    
-  }
 
   }
 
@@ -133,7 +133,7 @@ class Competence extends Component {
   }
 
   updateTabElements = (e) => {
-    const defaultElem = { id:-1, titre: "", description: "" }
+    const defaultElem = { id: -1, titre: "", description: "" }
     e.preventDefault();
     let elements = [...this.state.items];
     elements.push(defaultElem);
@@ -148,13 +148,13 @@ class Competence extends Component {
     const competences = this.state.items.slice()
     const touchedcp = { ...this.state.touched }
     const replacedTouched = []
-    const defaultElem = { id:-1, titre: "", description: "" }
+    const defaultElem = { id: -1, titre: "", description: "" }
 
     //spprimer l'élément sélectionner
     competences.splice(index, 1)
     //mettre à jour la variable du state touched après la suppression d'un élément
     this.updateTouchedAfterDelete(index, replacedTouched, touchedcp);
-   
+
     //rajouter l'élément par défaut si la liste est vide
     if (competences.length == 0) {
       competences.unshift(defaultElem)
@@ -165,7 +165,7 @@ class Competence extends Component {
       touched: replacedTouched
     })
   }
-  
+
   updateTouchedAfterDelete(index, replacedTouched, touchedcp) {
     this.state.items.forEach((elem, i) => {
       if (i < index) {
@@ -179,29 +179,29 @@ class Competence extends Component {
 
   initListe(liste) {
 
-    const defaultElem = { id:-1, titre: "", description: "" }
+    const defaultElem = { id: -1, titre: "", description: "" }
     const firstElem = Array.isArray(liste) ? liste[0] : !Array.isArray(liste) ? liste : null;
 
     if (JSON.stringify(defaultElem) === JSON.stringify(firstElem)) {
-        Array.isArray(liste) ? liste.splice(0,1) : liste =[];
+      Array.isArray(liste) ? liste.splice(0, 1) : liste = [];
     }
     return liste;
   }
 
   handleSubmitCondidat = (e) => {
     e.preventDefault();
- 
+
     ValidationService.validator.purgeFields();
     this.addMessages();
     let elements = this.initListe(...this.state.items)
 
-    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer) || (elements && elements.length == 0 )) {
+    if (ValidationService.validator.allValid() || (this.props.condidatReducer && this.props.condidatReducer.aConfirmer) || (elements && elements.length == 0)) {
 
       this.setState({
         loading: true,
         changePath: true,
       })
-     
+
     } else {
 
       this.markUsTouched();
@@ -236,7 +236,7 @@ class Competence extends Component {
     })
   }
 
-  modifierCondidat= (e) => {
+  modifierCondidat = (e) => {
 
     e.preventDefault();
     const formData = new FormData();
@@ -244,7 +244,7 @@ class Competence extends Component {
     this.addMessages();
     let elements = this.initListe(...this.state.items)
 
-    if (ValidationService.validator.allValid() || (elements && elements.length == 0 )) {      
+    if (ValidationService.validator.allValid() || (elements && elements.length == 0)) {
       let condidatToSave = this.props.condidatReducer
       condidatToSave.competences = [...this.state.items]
 
@@ -256,32 +256,32 @@ class Competence extends Component {
       formData.append('condidat', JSON.stringify(condidatToSave));
 
       CondidatService.registerCondidatInfos(AuthService.getLogin(), formData)
-      .then(
-        resp => {
-          if (resp.data.succesMessage) {
-            this.setState({
-              message: resp.data.succesMessage,
-              typeMessage: "alert alert-success",
-            })
-            CondidatService.getCondidat(AuthService.getLogin()).then(
-              data =>{
-                this.props.setCondidat(data)
-              }
-            )
-          } else {
-            this.setState({
-              message: resp.data.errorMessage,
-              typeMessage: "alert alert-danger",
-            })
+        .then(
+          resp => {
+            if (resp.data.succesMessage) {
+              this.setState({
+                message: resp.data.succesMessage,
+                typeMessage: "alert alert-success",
+              })
+              CondidatService.getCondidat(AuthService.getLogin()).then(
+                data => {
+                  this.props.setCondidat(data)
+                }
+              )
+            } else {
+              this.setState({
+                message: resp.data.errorMessage,
+                typeMessage: "alert alert-danger",
+              })
+            }
           }
-        }
 
-      );
-    }else {
+        );
+    } else {
       this.markUsTouched();
       ValidationService.validator.showMessages();
     }
-    
+
   }
 
   render() {
@@ -294,7 +294,7 @@ class Competence extends Component {
     const { message } = this.state;
     const { typeMessage } = this.state;
 
-    if (this.state.retour) {   
+    if (this.state.retour) {
       return <Redirect to={{
         pathname: '/expPro',
       }} />;
@@ -326,13 +326,13 @@ class Competence extends Component {
                 <div className="d-sm-flex align-items-center justify-content-between mb-4 ">
                   <h1 className="h3 mb-0 text-gray-800">Compétence (Scientifique, Culturelle, Artistique, ...)</h1>
                   <div className="form-group m-0">
-               
+
                     <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-1" onClick={this.goBack}>
                       <i className="fas fa-angle-double-left fa-sm text-white-50"></i>Précédent
                     </button>
 
-                    {this.props.condidatReducer  && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
-                      <button  className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat} >modifier</button>
+                    {this.props.condidatReducer && !this.props.condidatReducer.aConfirmer && this.props.condidatReducer.dateModif && (
+                      <button className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-2 mr-2" onClick={this.modifierCondidat} >modifier</button>
                     )}
 
 
@@ -358,81 +358,81 @@ class Competence extends Component {
 
                 { /* Content Row */}
                 <div className="row">
-                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                  <div className="col-lg-12 mb-4 ">
+                  {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                    <div className="col-lg-12 mb-4 ">
 
-                    <table className="table table-striped"  >
-                      <thead>
+                      <table className="table table-striped"  >
+                        <thead>
 
-                        <tr>
-                          <th className="control-label">Compétence </th>
-                          <th>Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items.map((item, index) =>
-                          <tr key={index}>
-                            <td> 
-                            {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                              <div className="form-group">
-                              <input
-                                type="text"
-                                className={!this.state.ignorer && this.state.touched && this.state.touched['titre' + index] && !item.titre ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
-                                name="titre"
-                                value={item.titre}
-                                onChange={(e) => { this.onChangeTitre(e, index) }}
-                                data-tip
-                                data-for={"titreTip" + index}
-                              />
-                              {/* msg erreur */}
-                              {!this.state.ignorer && this.state.touched && this.state.touched['titre' + index] && !item.titre && (
-                                <ReactTooltip id={"titreTip" + index} place="top" effect="solid">
-                                  {ValidationService.validator.message('titre' + index, item.titre, 'required')}
-                                </ReactTooltip>
-                              )}
-                            </div>
-                            )}
-                              {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
-                                  <span>{item.titre}</span>
-                              )}
-                            </td>
-                            <td className="col-6"> 
-                            {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                            <div className="form-group">
-                              <input
-                                type="text"
-                                className="form-control form-control-sm"
-                                name="description"
-                                value={item.description}
-                                onChange={(e) => { this.onChangeDescription(e, index) }}
-
-                              />
-                            </div>
-                            )}
-                               {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
-                              <Fab color="secondary" aria-label="delete" size="small" className={classes.fab} style={{ zIndex: 100 }} >
-                                <DeleteIcon onClick={(e) => this.deleteTabElement(e, index)} />
-                              </Fab>
-                               )}
-
-                              {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
-                                  <span>{item.description}</span>
-                              )}
-                            </td>
-
+                          <tr>
+                            <th className="control-label">Compétence </th>
+                            <th>Description</th>
                           </tr>
-                        )}
-                      </tbody>
-                    </table>
-                 
+                        </thead>
+                        <tbody>
+                          {items.map((item, index) =>
+                            <tr key={index}>
+                              <td>
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <div className="form-group">
+                                    <input
+                                      type="text"
+                                      className={!this.state.ignorer && this.state.touched && this.state.touched['titre' + index] && !item.titre ? "form-control form-control-sm is-invalid" : "form-control form-control-sm"}
+                                      name="titre"
+                                      value={item.titre}
+                                      onChange={(e) => { this.onChangeTitre(e, index) }}
+                                      data-tip
+                                      data-for={"titreTip" + index}
+                                    />
+                                    {/* msg erreur */}
+                                    {!this.state.ignorer && this.state.touched && this.state.touched['titre' + index] && !item.titre && (
+                                      <ReactTooltip id={"titreTip" + index} place="top" effect="solid">
+                                        {ValidationService.validator.message('titre' + index, item.titre, 'required')}
+                                      </ReactTooltip>
+                                    )}
+                                  </div>
+                                )}
+                                {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                  <span>{item.titre}</span>
+                                )}
+                              </td>
+                              <td className="col-6">
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <div className="form-group">
+                                    <input
+                                      type="text"
+                                      className="form-control form-control-sm"
+                                      name="description"
+                                      value={item.description}
+                                      onChange={(e) => { this.onChangeDescription(e, index) }}
+
+                                    />
+                                  </div>
+                                )}
+                                {(this.props.condidatReducer && !this.props.condidatReducer.aConfirmer &&
+                                  <Fab color="secondary" aria-label="delete" size="small" className={classes.fab} style={{ zIndex: 100 }} >
+                                    <DeleteIcon onClick={(e) => this.deleteTabElement(e, index)} />
+                                  </Fab>
+                                )}
+
+                                {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
+                                  <span>{item.description}</span>
+                                )}
+                              </td>
+
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+
                       <div>
                         <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onClick={this.updateTabElements}>+Ajouter</button>
                         <button type="button" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm ml-1" onClick={this.ignorerEtape}>Ignorer cette étape</button>
                       </div>
-                  
-                    
-                  </div>
-                )}
+
+
+                    </div>
+                  )}
                   {(this.props.condidatReducer && this.props.condidatReducer.aConfirmer &&
                     <CompetenceLecture items={items} />
                   )}
@@ -455,7 +455,7 @@ class Competence extends Component {
   }
 }
 function mapStateToProps(state) {
-   const { condidatReducer } = state.condidat;
+  const { condidatReducer } = state.condidat;
   return { condidatReducer };
 }
 const actionCreators = {

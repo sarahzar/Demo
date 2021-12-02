@@ -1,19 +1,19 @@
-import React, { Component } from 'react'  
+import React, { Component } from 'react'
 import AuthService from '../services/Authentification/AuthService';
-import { history } from '../_helpers'; 
-import { Redirect,Link } from 'react-router-dom';
+import { history } from '../_helpers';
+import { Redirect, Link } from 'react-router-dom';
 import { userActions } from '../_actions';
 import { connect } from "react-redux";
 import { condidatActions } from '../_actions/Shared/condidat.actions';
-import { persistor} from '../_helpers'
-import  avatar  from '../img/unknown_avatar2.jpg';
+import { persistor } from '../_helpers'
+import avatar from '../img/unknown_avatar2.jpg';
 import logo from '../img/logo.jpg'
 import UserService from '../services/Authentification/UserService';
 // import avatar from 'http://localhost/uploads/2021/sarah.zaroui@esprit.tn/avatar.jpg';
-export class Header extends Component {  
-  constructor(props){
+export class Header extends Component {
+  constructor(props) {
     super(props);
-    this.logout=this.logout.bind(this);
+    this.logout = this.logout.bind(this);
     this.state = {
       username: AuthService.getLogin(),
       password: "",
@@ -26,55 +26,55 @@ export class Header extends Component {
     persistor.purge();
   }
 
-    render() {  
-        return (  
-            <div>  
-                <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">  
-  
-         
-<button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle mr-3">  
-  <i className="fa fa-bars"></i>  
-</button>  
-  
-  
-<form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">  
-  {/* <div className="col-lg-6 d-none d-lg-block">   */}
-  <img src={logo} class="bg-logo" />
-  {/* <img src="logo.jpg" /> */}
-    {/* <input type="text" className="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2"/>  
+  render() {
+    return (
+      <div>
+        <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+
+          <button id="sidebarToggleTop" className="btn btn-link d-md-none rounded-circle mr-3">
+            <i className="fa fa-bars"></i>
+          </button>
+
+
+          <form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            {/* <div className="col-lg-6 d-none d-lg-block">   */}
+            <img src={logo} class="bg-logo" />
+            {/* <img src="logo.jpg" /> */}
+            {/* <input type="text" className="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2"/>  
     <div className="input-group-append">  
       <button className="btn btn-primary" type="button">  
         <i className="fas fa-search fa-sm"></i>  
       </button>  
     </div>   */}
-  {/* </div>   */}
-</form>  
-  
-  
-<ul className="navbar-nav ml-auto">  
-  
-  
-  <li className="nav-item dropdown no-arrow d-sm-none">  
-    <a className="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  
-      <i className="fas fa-search fa-fw"></i>  
-    </a>  
-   
-    <div className="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">  
-      <form className="form-inline mr-auto w-100 navbar-search">  
-        <div className="input-group">  
-          <input type="text" className="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2"/>  
-          <div className="input-group-append">  
-            <button className="btn btn-primary" type="button">  
-              <i className="fas fa-search fa-sm"></i>  
-            </button>  
-          </div>  
-        </div>  
-      </form>  
-    </div>  
-  </li>  
-  
-   
-  {/* <li className="nav-item dropdown no-arrow mx-1">  
+            {/* </div>   */}
+          </form>
+
+
+          <ul className="navbar-nav ml-auto">
+
+
+            <li className="nav-item dropdown no-arrow d-sm-none">
+              <a className="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i className="fas fa-search fa-fw"></i>
+              </a>
+
+              <div className="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                <form className="form-inline mr-auto w-100 navbar-search">
+                  <div className="input-group">
+                    <input type="text" className="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+                    <div className="input-group-append">
+                      <button className="btn btn-primary" type="button">
+                        <i className="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </li>
+
+
+            {/* <li className="nav-item dropdown no-arrow mx-1">  
     <a className="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  
       <i className="fas fa-bell fa-fw"></i>  
       <span className="badge badge-danger badge-counter">3+</span>  
@@ -176,29 +176,29 @@ export class Header extends Component {
       <a className="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>  
     </div>  
   </li>   */}
-  
-  <div className="topbar-divider d-none d-sm-block"></div>  
-  
-  
-  <li className="nav-item dropdown no-arrow">  
-    <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  
-      <span className="mr-2 d-none d-lg-inline text-gray-600 small">{this.props.userlogin ? this.props.userlogin :this.state.username}</span>  
-     
-                    {(this.props.imagePath || this.props.imageProfilePath) && (
-                      <img className="img-profile rounded-circle" src={this.props.imagePath ? this.props.imagePath : this.props.imageProfilePath} />
-                    )}
-                    {!this.props.imagePath && !this.props.imageProfilePath && (
-                      <img className="img-profile rounded-circle" src={avatar} />
-                    )}
-   
-      </a>  
-  
-    <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">  
-      <Link className="dropdown-item" to="/profile">  
-        <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>  
-        Profile  
-      </Link>  
-      {/* <a className="dropdown-item" href="#">  
+
+            <div className="topbar-divider d-none d-sm-block"></div>
+
+
+            <li className="nav-item dropdown no-arrow">
+              <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span className="mr-2 d-none d-lg-inline text-gray-600 small">{this.props.userlogin ? this.props.userlogin : this.state.username}</span>
+
+                {(this.props.imagePath || this.props.imageProfilePath) && (
+                  <img className="img-profile rounded-circle" src={this.props.imagePath ? this.props.imagePath : this.props.imageProfilePath} />
+                )}
+                {!this.props.imagePath && !this.props.imageProfilePath && (
+                  <img className="img-profile rounded-circle" src={avatar} />
+                )}
+
+              </a>
+
+              <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <Link className="dropdown-item" to="/profile">
+                  <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Profile
+                </Link>
+                {/* <a className="dropdown-item" href="#">  
         <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>  
         Settings  
       </a>  
@@ -206,28 +206,28 @@ export class Header extends Component {
         <i className="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>  
         Activity Log  
       </a>   */}
-      <div className="dropdown-divider"></div>  
-     <Link className="dropdown-item" to="/"  onClick={this.logout}>  
-        <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>  
-        Logout  
-      </Link>  
-    </div>  
-  </li>  
-  
-</ul>  
-  
-</nav>  
-            </div>  
-        )  
-    }  
-}  
+                <div className="dropdown-divider"></div>
+                <Link className="dropdown-item" to="/" onClick={this.logout}>
+                  <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </Link>
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+      </div>
+    )
+  }
+}
 function mapStateToProps(state) {
-  const {imagePath} = state.imageProfile;
-  return { imagePath};
+  const { imagePath } = state.imageProfile;
+  return { imagePath };
 }
 const actionCreators = {
   login: userActions.login,
   logout: userActions.logout,
   setCondidat: condidatActions.setCondidat,
 };
-export default connect(mapStateToProps,actionCreators)(Header);
+export default connect(mapStateToProps, actionCreators)(Header);

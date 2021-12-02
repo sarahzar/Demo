@@ -12,71 +12,71 @@ class TerminerInscription extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state ={
-            msg:false,
-            message:"",
-            typeMessage:"",
-            confirme:false,
-            demandeModification:false
+        this.state = {
+            msg: false,
+            message: "",
+            typeMessage: "",
+            confirme: false,
+            demandeModification: false
         }
     }
 
-    terminerInscrit = () =>{
+    terminerInscrit = () => {
         CondidatService.confirmerCondidature(AuthService.getLogin()).then(
             resp => {
-                if(resp.data.succesMessage){
-                   this.setState({
-                       message : resp.data.succesMessage,
-                       typeMessage : "alert alert-success",
-                       confirme: true
-                   })
-                   const {condidatReducer}=this.props
-                   condidatReducer.aConfirmer = true;
-                   this.props.setCondidat(condidatReducer)
-
-                }else{
+                if (resp.data.succesMessage) {
                     this.setState({
-                        message : resp.data.errorMessage,
-                        typeMessage : "alert alert-danger"
+                        message: resp.data.succesMessage,
+                        typeMessage: "alert alert-success",
+                        confirme: true
+                    })
+                    const { condidatReducer } = this.props
+                    condidatReducer.aConfirmer = true;
+                    this.props.setCondidat(condidatReducer)
+
+                } else {
+                    this.setState({
+                        message: resp.data.errorMessage,
+                        typeMessage: "alert alert-danger"
                     })
                 }
             }
-              );
+        );
     }
 
-    demandeModif = () =>{
+    demandeModif = () => {
         CondidatService.demandeModif(AuthService.getLogin()).then(
             resp => {
-                if(resp.data.succesMessage){
-                   this.setState({
-                       message : resp.data.succesMessage,
-                       typeMessage : "alert alert-success",
-                       demandeModification: true
-                   })
-                   const {condidatReducer}=this.props
-                   condidatReducer.demandeModif = true;
-                   this.props.setCondidat(condidatReducer)
-
-                }else{
+                if (resp.data.succesMessage) {
                     this.setState({
-                        message : resp.data.errorMessage,
-                        typeMessage : "alert alert-danger"
+                        message: resp.data.succesMessage,
+                        typeMessage: "alert alert-success",
+                        demandeModification: true
+                    })
+                    const { condidatReducer } = this.props
+                    condidatReducer.demandeModif = true;
+                    this.props.setCondidat(condidatReducer)
+
+                } else {
+                    this.setState({
+                        message: resp.data.errorMessage,
+                        typeMessage: "alert alert-danger"
                     })
                 }
             }
-              );
+        );
     }
 
     render() {
 
-      const {ignorerCpt,ignorerExpEns,ignorerExpPro,ignorerRecherche,condidatReducer,validateParcours,validateDocuments} =this.props;
-      const showMsg = 
-      (this.props.ignorerExpEns == undefined || this.props.ignorerExpEns) ||
-      (this.props.ignorerExpPro == undefined || this.props.ignorerExpPro) ||
-      (this.props.ignorerCpt == undefined || this.props.ignorerCpt) ||
-      (this.props.ignorerRecherche == undefined || this.props.ignorerRecherche) ;
+        const { ignorerCpt, ignorerExpEns, ignorerExpPro, ignorerRecherche, condidatReducer, validateParcours, validateDocuments } = this.props;
+        const showMsg =
+            (this.props.ignorerExpEns == undefined || this.props.ignorerExpEns) ||
+            (this.props.ignorerExpPro == undefined || this.props.ignorerExpPro) ||
+            (this.props.ignorerCpt == undefined || this.props.ignorerCpt) ||
+            (this.props.ignorerRecherche == undefined || this.props.ignorerRecherche);
 
-      console.log("empty",validateParcours )
+        console.log("empty", validateParcours)
         return (
             <div id="wrapper">
                 <Leftside></Leftside>
@@ -86,7 +86,7 @@ class TerminerInscription extends React.Component {
 
 
                         <div className="container-fluid pl-5">
-                        <div className="col-lg-6">
+                            <div className="col-lg-6">
                                 {this.state.message && (
                                     <div className="form-group">
                                         <div className={this.state.typeMessage} role="alert">
@@ -95,17 +95,17 @@ class TerminerInscription extends React.Component {
                                     </div>
                                 )}
 
-<div className="card shadow mb-4">
-    <div className="card-header py-3">
-        <h6 className="m-0 font-weight-bold text-primary">Terminer l'inscription</h6>
-    </div>
-    <div className="card-body">
+                                <div className="card shadow mb-4">
+                                    <div className="card-header py-3">
+                                        <h6 className="m-0 font-weight-bold text-primary">Terminer l'inscription</h6>
+                                    </div>
+                                    <div className="card-body">
 
-        {showMsg && (
-        <p class="text-xs font-weight-bold text-primary">Votre inscription manque quelques informtions!</p>
-        )}
+                                        {showMsg && (
+                                            <p class="text-xs font-weight-bold text-primary">Votre inscription manque quelques informtions!</p>
+                                        )}
 
-        {/* <Link to={{pathname: "/profile", state: {}, }} className="btn btn-success btn-icon-split">
+                                        {/* <Link to={{pathname: "/profile", state: {}, }} className="btn btn-success btn-icon-split">
             <span className="icon text-white-50">
                 <i className="fas fa-check"></i>
             </span>
@@ -125,63 +125,63 @@ class TerminerInscription extends React.Component {
             <span className="text">Etape 2: Parcour académique</span>
         </Link> */}
 
-        <div className="my-2"></div>
-        <Link   to={{pathname: "/expEnseignant", state: {}, }} className={ignorerExpEns == undefined || (ignorerExpEns && ignorerExpEns == true) ? "btn btn-danger btn-icon-split" : "btn btn-success btn-icon-split"}>
-            <span className="icon text-white-50">
-            {(ignorerExpEns == undefined || (ignorerExpEns && ignorerExpEns == true)) && (
-                <i className="fas fa-info-circle"></i>
-                )}
-                 {ignorerExpEns == false && (
-                <i className="fas fa-check"></i>
-                )}
-            </span>
-            <span className="text">Etape 3: Expériences d'enseignant </span>
-        </Link>
+                                        <div className="my-2"></div>
+                                        <Link to={{ pathname: "/expEnseignant", state: {}, }} className={ignorerExpEns == undefined || (ignorerExpEns && ignorerExpEns == true) ? "btn btn-danger btn-icon-split" : "btn btn-success btn-icon-split"}>
+                                            <span className="icon text-white-50">
+                                                {(ignorerExpEns == undefined || (ignorerExpEns && ignorerExpEns == true)) && (
+                                                    <i className="fas fa-info-circle"></i>
+                                                )}
+                                                {ignorerExpEns == false && (
+                                                    <i className="fas fa-check"></i>
+                                                )}
+                                            </span>
+                                            <span className="text">Etape 3: Expériences d'enseignant </span>
+                                        </Link>
 
 
-        <div className="my-2"></div>
-        <Link   to={{pathname: "/expPro", state: {}, }} className={ignorerExpPro == undefined || (ignorerExpPro && ignorerExpPro == true) ? "btn btn-danger btn-icon-split" : "btn btn-success btn-icon-split"}>
-            <span className="icon text-white-50">
-                {(ignorerExpPro == undefined || (ignorerExpPro && ignorerExpPro == true)) && (
-                <i className="fas fa-info-circle"></i>
-                )}
-                 {ignorerExpPro == false && (
-                <i className="fas fa-check"></i>
-                )}
-            </span>
-            <span className="text">Etape 4: Expériences professionelles</span>
-        </Link>
+                                        <div className="my-2"></div>
+                                        <Link to={{ pathname: "/expPro", state: {}, }} className={ignorerExpPro == undefined || (ignorerExpPro && ignorerExpPro == true) ? "btn btn-danger btn-icon-split" : "btn btn-success btn-icon-split"}>
+                                            <span className="icon text-white-50">
+                                                {(ignorerExpPro == undefined || (ignorerExpPro && ignorerExpPro == true)) && (
+                                                    <i className="fas fa-info-circle"></i>
+                                                )}
+                                                {ignorerExpPro == false && (
+                                                    <i className="fas fa-check"></i>
+                                                )}
+                                            </span>
+                                            <span className="text">Etape 4: Expériences professionelles</span>
+                                        </Link>
 
 
-        <div className="my-2"></div>
-        <Link   to={{pathname: "/competence", state: {}, }} className={ignorerCpt == undefined || (ignorerCpt && ignorerCpt == true) ? "btn btn-danger btn-icon-split" : "btn btn-success btn-icon-split"}>
-            <span className="icon text-white-50">
-                {(ignorerCpt == undefined || (ignorerCpt && ignorerCpt == true) ) && (
-                <i className="fas fa-info-circle"></i>
-                )}
-                 {ignorerCpt == false && (
-                <i className="fas fa-check"></i>
-                )}
-            </span>
-            <span className="text">Etape 5: Compétences</span>
-        </Link>
+                                        <div className="my-2"></div>
+                                        <Link to={{ pathname: "/competence", state: {}, }} className={ignorerCpt == undefined || (ignorerCpt && ignorerCpt == true) ? "btn btn-danger btn-icon-split" : "btn btn-success btn-icon-split"}>
+                                            <span className="icon text-white-50">
+                                                {(ignorerCpt == undefined || (ignorerCpt && ignorerCpt == true)) && (
+                                                    <i className="fas fa-info-circle"></i>
+                                                )}
+                                                {ignorerCpt == false && (
+                                                    <i className="fas fa-check"></i>
+                                                )}
+                                            </span>
+                                            <span className="text">Etape 5: Compétences</span>
+                                        </Link>
 
-        <div className="my-2"></div>
-        <Link   to={{pathname: "/recherche", state: {}, }} className={ignorerRecherche == undefined || (ignorerRecherche && ignorerRecherche ==true) ? "btn btn-danger btn-icon-split" : "btn btn-success btn-icon-split"}>
-            <span className="icon text-white-50">
-            {(ignorerRecherche == undefined || (ignorerRecherche && ignorerRecherche ==true))  && (
-                <i className="fas fa-info-circle"></i>
-                )}
-                 {ignorerRecherche == false && (
-                <i className="fas fa-check"></i>
-                )}
-            </span>
-            <span className="text">Etape 6: Activités de recherche</span>
-        </Link>
+                                        <div className="my-2"></div>
+                                        <Link to={{ pathname: "/recherche", state: {}, }} className={ignorerRecherche == undefined || (ignorerRecherche && ignorerRecherche == true) ? "btn btn-danger btn-icon-split" : "btn btn-success btn-icon-split"}>
+                                            <span className="icon text-white-50">
+                                                {(ignorerRecherche == undefined || (ignorerRecherche && ignorerRecherche == true)) && (
+                                                    <i className="fas fa-info-circle"></i>
+                                                )}
+                                                {ignorerRecherche == false && (
+                                                    <i className="fas fa-check"></i>
+                                                )}
+                                            </span>
+                                            <span className="text">Etape 6: Activités de recherche</span>
+                                        </Link>
 
 
-        <div className="my-2"></div>
-        {/* <Link to={{pathname: "/documents", state: {}, }} className={validateDocuments ? "btn btn-success btn-icon-split" : "btn btn-danger btn-icon-split"} >
+                                        <div className="my-2"></div>
+                                        {/* <Link to={{pathname: "/documents", state: {}, }} className={validateDocuments ? "btn btn-success btn-icon-split" : "btn btn-danger btn-icon-split"} >
             <span className="icon text-gray-600">      
             {!validateDocuments  && (
                 <i className="fas fa-info-circle"></i>
@@ -199,21 +199,21 @@ class TerminerInscription extends React.Component {
                                             {/* <button className="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mr-1 " >
            <i className="fas fa-download"></i>Générer un document PDF
                                         </button> */}
-                                           {this.props.condidatReducer && (!this.props.condidatReducer.aConfirmer && !this.state.confirme) && (
-                                            <button className="d-none d-sm-inline-block btn btn-sm btn-primary " disabled={!validateDocuments || !validateParcours} onClick={this.terminerInscrit}>
-                                                <i className="fas fa-check"></i>Confirmer ma condidature
-                                            </button>
-                                           )}
-                                            {this.props.condidatReducer && (this.props.condidatReducer.aConfirmer || this.state.confirme)  && (
+                                            {this.props.condidatReducer && (!this.props.condidatReducer.aConfirmer && !this.state.confirme) && (
+                                                <button className="d-none d-sm-inline-block btn btn-sm btn-primary " disabled={!validateDocuments || !validateParcours} onClick={this.terminerInscrit}>
+                                                    <i className="fas fa-check"></i>Confirmer ma condidature
+                                                </button>
+                                            )}
+                                            {this.props.condidatReducer && (this.props.condidatReducer.aConfirmer || this.state.confirme) && (
                                                 <button className="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mr-1 " disabled={this.props.condidatReducer.demandeModif || this.state.demandeModification} onClick={this.demandeModif}>
                                                     <i className="fas fa-check"></i>demande de modification
                                                 </button>
                                             )}
                                         </div>
                                     </div>
-</div>
+                                </div>
 
-</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -223,18 +223,18 @@ class TerminerInscription extends React.Component {
 
 }
 function mapStateToProps(state) {
- 
-    const {ignorerCpt} = state.ignorerCompetence;
-    const {ignorerExpEns} = state.ignorerExpEns;
-    const {ignorerExpPro} = state.ignorerExpPro;
-    const {ignorerRecherche} = state.ignorerRecherche;   
-    const {condidatReducer} = state.condidat;  
-    const {validateParcours} = state.validerEtapeParcours 
-    const {validateDocuments} = state.validerEtapeDocuments     
-    return { ignorerCpt,ignorerExpEns,ignorerExpPro,ignorerRecherche,condidatReducer,validateParcours,validateDocuments};
-  }
-  const actionCreators = {
+
+    const { ignorerCpt } = state.ignorerCompetence;
+    const { ignorerExpEns } = state.ignorerExpEns;
+    const { ignorerExpPro } = state.ignorerExpPro;
+    const { ignorerRecherche } = state.ignorerRecherche;
+    const { condidatReducer } = state.condidat;
+    const { validateParcours } = state.validerEtapeParcours
+    const { validateDocuments } = state.validerEtapeDocuments
+    return { ignorerCpt, ignorerExpEns, ignorerExpPro, ignorerRecherche, condidatReducer, validateParcours, validateDocuments };
+}
+const actionCreators = {
     terminerInscription: validerEtapeActions.terminerInscription,
     setCondidat: condidatActions.setCondidat,
-  };
-export default connect(mapStateToProps,actionCreators)(TerminerInscription);
+};
+export default connect(mapStateToProps, actionCreators)(TerminerInscription);

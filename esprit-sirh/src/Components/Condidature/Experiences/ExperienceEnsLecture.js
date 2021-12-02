@@ -11,9 +11,9 @@ class ExperienceEnsLecture extends React.Component {
     }
 
     componentDidMount() {
-      
-    
-        if (this.props.condidatReducer.experienceEnseignants == null || this.props.condidatReducer.experienceEnseignants.length == 0 ) {
+
+
+        if (this.props.condidatReducer.experienceEnseignants == null || this.props.condidatReducer.experienceEnseignants.length == 0) {
             this.setState({
                 empty: true
             })
@@ -24,21 +24,21 @@ class ExperienceEnsLecture extends React.Component {
 
         return (
 
-       
-                <div className="col-lg-12 mb-4 ">
-                {(!this.state.empty &&      
-                  <table className="table table-striped"  >
-                  <thead>
-  
-                  <tr >
-                          <th >Date de début </th>
-                          <th >Date de fin </th>
-                          <th >Etablissement </th>
-                          <th >Poste </th>
-                          <th >Module enseigné </th>
-                        </tr>
-                  </thead>
-              
+
+            <div className="col-lg-12 mb-4 ">
+                {(!this.state.empty &&
+                    <table className="table table-striped"  >
+                        <thead>
+
+                            <tr >
+                                <th >Date de début </th>
+                                <th >Date de fin </th>
+                                <th >Etablissement </th>
+                                <th >Poste </th>
+                                <th >Module enseigné </th>
+                            </tr>
+                        </thead>
+
                         <tbody>
                             {this.props.items.map((item, index) =>
                                 <tr key={index}>
@@ -59,18 +59,18 @@ class ExperienceEnsLecture extends React.Component {
                                     </td>
                                 </tr>
                             )}
-                      </tbody>
-                 
-              </table>
+                        </tbody>
+
+                    </table>
                 )}
-                   {(this.state.empty &&  
-                        <div className="card border-left-danger shadow">
-                            <div className="card-body">
-                                Aucune experience enseignant ajoutée
-                            </div>
+                {(this.state.empty &&
+                    <div className="card border-left-danger shadow">
+                        <div className="card-body">
+                            Aucune experience enseignant ajoutée
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
+            </div>
 
 
         )
@@ -79,8 +79,8 @@ class ExperienceEnsLecture extends React.Component {
 
 }
 function mapStateToProps(state) {
-  
+
     const { condidatReducer } = state.condidat;
-    return {  condidatReducer };
-  }
-  export default connect(mapStateToProps)(ExperienceEnsLecture);
+    return { condidatReducer };
+}
+export default connect(mapStateToProps)(ExperienceEnsLecture);

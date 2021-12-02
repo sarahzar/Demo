@@ -12,24 +12,24 @@ class DomaineCompetenceLecture extends React.Component {
 
 
           {/* Poste actuel */}
-       
+
 
           <div class="form-group form-inline">
-                <label className="small font-weight-bold text-left justify-content-start">Poste Actuel: </label>
-                <div class="col-8"> {this.props.domaine.posteActuel.libelle} </div>
-              </div>
+            <label className="small font-weight-bold text-left justify-content-start">Poste Actuel: </label>
+            <div class="col-8"> {this.props.domaine.posteActuel.libelle} </div>
+          </div>
           {/* domaine compétence */}
-         
+
           <div class="form-group form-inline">
-                <label className="small font-weight-bold text-left justify-content-start">Domaine de compétence: </label>
-                <div class="col-6"> {this.props.domaine.domaine.libelle} </div>
-              </div>
+            <label className="small font-weight-bold text-left justify-content-start">Domaine de compétence: </label>
+            <div class="col-6"> {this.props.domaine.domaine.libelle} </div>
+          </div>
           {/* Type de condidature */}
-        
+
           <div class="form-group form-inline">
-                <label className="small font-weight-bold text-left justify-content-start">Type de condidature: </label>
-                <div class="col-4"> {this.props.domaine.typeCondidature.libelle} </div>
-              </div>
+            <label className="small font-weight-bold text-left justify-content-start">Type de condidature: </label>
+            <div class="col-4"> {this.props.domaine.typeCondidature.libelle} </div>
+          </div>
 
         </div>
       </div>

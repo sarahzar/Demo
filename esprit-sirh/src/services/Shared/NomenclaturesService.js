@@ -1,58 +1,58 @@
 import axios from "axios";
 const API_URL = "http://localhost:8085/SIRH_Esprit/";
 
-class NomenclaturesService{
+class NomenclaturesService {
 
-   getAllPostes(){
-     
+   getAllPostes() {
+
       return axios.get(API_URL + 'allPostes')
-     
+
    }
 
-   getAllTypesCondidatures(){
-     
+   getAllTypesCondidatures() {
+
       return axios.get(API_URL + 'allCandidaturesTypes')
-     
+
    }
 
-   getAllDiplomes(){
-     
+   getAllDiplomes() {
+
       return axios.get(API_URL + 'allDiplomes')
-     
+
    }
 
-   getAllDomaines(){
-     
+   getAllDomaines() {
+
       return axios.get(API_URL + 'allDomaines')
-     
+
    }
 
-   getAllEtablissement(){
-     
+   getAllEtablissement() {
+
       return axios.get(API_URL + 'allEtablissement')
-     
+
    }
 
-   getAllEtatCivil(){
-     
+   getAllEtatCivil() {
+
       return axios.get(API_URL + 'allEtatCivil')
-     
+
    }
 
-   getAllSpecialites(){
-     
+   getAllSpecialites() {
+
       return axios.get(API_URL + 'allSpecialite')
-     
+
    }
-   getAllPays(){
-     
+   getAllPays() {
+
       return axios.get(API_URL + 'allPays')
-     
+
    }
-   getAllModules(){
-     
+   getAllModules() {
+
       return axios.get(API_URL + 'allModules')
-     
+
    }
 
 }

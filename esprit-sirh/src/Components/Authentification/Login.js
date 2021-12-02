@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect,Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
@@ -60,7 +60,7 @@ class Login extends Component {
 
     this.setState({
       loading: true,
-      redirect:false
+      redirect: false
     });
 
     ValidationService.validator.purgeFields();
@@ -75,20 +75,20 @@ class Login extends Component {
       this.props.allDomaines();
       this.props.allPays();
       this.props.allModules()
-      this.props.login(this.state.username, this.state.password);   
-  } else {
-    this.markUsTouched()
-    ValidationService.validator.showMessages()
-    
-    this.setState({
-      loading: false,
-    });
-  }
+      this.props.login(this.state.username, this.state.password);
+    } else {
+      this.markUsTouched()
+      ValidationService.validator.showMessages()
+
+      this.setState({
+        loading: false,
+      });
+    }
   }
 
-  addMessages() {   
-    ValidationService.validator.message('mail', this.state.username,  'required|email', { className: 'text-danger' })
-    ValidationService.validator.message('pwd', this.state.password, 'required', { className: 'text-danger' }); 
+  addMessages() {
+    ValidationService.validator.message('mail', this.state.username, 'required|email', { className: 'text-danger' })
+    ValidationService.validator.message('pwd', this.state.password, 'required', { className: 'text-danger' });
   }
   markUsTouched() {
     this.state.touched['mail'] = true;
@@ -110,8 +110,8 @@ class Login extends Component {
     const { types } = this.props;
     const { domaines } = this.props;
     const { specialites } = this.props;
-    
-    console.log("postes from login",postes)
+
+    console.log("postes from login", postes)
     if (loggedIn) {
       return <Redirect to={{
         pathname: '/infosGenerales',
@@ -133,138 +133,140 @@ class Login extends Component {
 
     return (
       <div class="container">
-      <div className="row justify-content-center">
+        <div className="row justify-content-center">
 
           <div className="col-xl-10 col-lg-12 col-md-9">
 
-              <div className="card o-hidden border-0 shadow-lg my-5">
-                  <div className="card-body p-0">
-                  
-                      <div className="row">
-                          <div className="col-lg-5 d-none d-lg-block bg-login-image"></div>
-                          <div className="col-lg-7">
-                              <div className="p-5">
-                                  <div className="text-center">
-                                      <h1 className="h4 text-gray-900 mb-4">Authentication!</h1>
-                                  </div>
+            <div className="card o-hidden border-0 shadow-lg my-5">
+              <div className="card-body p-0">
 
-          <Form className="user"
-            onSubmit={this.handleLogin}
-            ref={(c) => {
-              this.form = c;
-            }}
-          >
-            <div className="form-group">
-              
-              <input
-                type="text"
-                className={this.state.touched && this.state.touched['mail'] && (!this.state.username || !isEmail(this.state.username))  ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
-                placeholder="Addresse Email"
-                name="username"
-                value={this.state.username}
-                onChange={this.onChangeUsername}
-                onBlur={() => ValidationService.validator.showMessageFor('mail')}
-                  />
-                   {/* msg erreur */}
-                   {this.state.touched && this.state.touched['mail']  && ValidationService.validator.message('mail', this.state.username, 'required|email', { className: 'text-danger' })}
+                <div className="row">
+                  <div className="col-lg-5 d-none d-lg-block bg-login-image"></div>
+                  <div className="col-lg-7">
+                    <div className="p-5">
+                      <div className="text-center">
+                        <h1 className="h4 text-gray-900 mb-4">Authentication!</h1>
+                      </div>
 
-            </div>
+                      <Form className="user"
+                        onSubmit={this.handleLogin}
+                        ref={(c) => {
+                          this.form = c;
+                        }}
+                      >
+                        <div className="form-group">
 
-            <div className="form-group">
-        
-              <input
-                type="password"
-                className={this.state.touched && this.state.touched['pwd'] && !this.state.password ? "form-control form-control-user is-invalid" : "form-control form-control-user" }
-                placeholder="Mot de passe"
-                name="password"
-                value={this.state.password}
-                onChange={this.onChangePassword}
-                onBlur={() => ValidationService.validator.showMessageFor('pwd')}
-              />
-              {/* msg erreur */}
-              {this.state.touched && this.state.touched['pwd']  && ValidationService.validator.message('pwd', this.state.password, 'required', { className: 'text-danger' })}
+                          <input
+                            type="text"
+                            className={this.state.touched && this.state.touched['mail'] && (!this.state.username || !isEmail(this.state.username)) ? "form-control form-control-user is-invalid" : "form-control form-control-user"}
+                            placeholder="Addresse Email"
+                            name="username"
+                            value={this.state.username}
+                            onChange={this.onChangeUsername}
+                            onBlur={() => ValidationService.validator.showMessageFor('mail')}
+                          />
+                          {/* msg erreur */}
+                          {this.state.touched && this.state.touched['mail'] && ValidationService.validator.message('mail', this.state.username, 'required|email', { className: 'text-danger' })}
 
-            </div>
+                        </div>
 
-            {alert.message && (
-              <div className="form-group mb-2">
-                <div className="alert alert-danger" role="alert">
-                  {alert.message}
+                        <div className="form-group">
+
+                          <input
+                            type="password"
+                            className={this.state.touched && this.state.touched['pwd'] && !this.state.password ? "form-control form-control-user is-invalid" : "form-control form-control-user"}
+                            placeholder="Mot de passe"
+                            name="password"
+                            value={this.state.password}
+                            onChange={this.onChangePassword}
+                            onBlur={() => ValidationService.validator.showMessageFor('pwd')}
+                          />
+                          {/* msg erreur */}
+                          {this.state.touched && this.state.touched['pwd'] && ValidationService.validator.message('pwd', this.state.password, 'required', { className: 'text-danger' })}
+
+                        </div>
+
+                        {alert.message && (
+                          <div className="form-group mb-2">
+                            <div className="alert alert-danger" role="alert">
+                              {alert.message}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="form-group">
+                          <button
+                            className="btn btn-primary btn-user btn-block"
+                            disabled={loading}
+                          >
+                            {loading && (
+                              <span className="spinner-border spinner-border-sm"></span>
+                            )}
+                            <span>Login</span>
+                          </button>
+                        </div>
+
+
+                        <CheckButton
+                          style={{ display: "none" }}
+                          ref={(c) => {
+                            this.checkBtn = c;
+                          }}
+                        />
+                      </Form>
+                      <hr />
+                      <div className="text-center small">
+                        <Link to="/forgot"
+                        >Mot de passe oublié?</Link>
+                      </div>
+                      <div className="text-center">
+                        <Link className="small" to="/home">créer un compte!</Link>
+                        {/* <a className="small" href="/profile" hidden="true" id="linkToProfile"></a> */}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            )}
-
-            <div className="form-group">
-            <button
-                className="btn btn-primary btn-user btn-block"
-                disabled={loading}
-              >
-                {loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
-                )}
-                <span>Login</span>
-              </button>
             </div>
 
-           
-            <CheckButton
-              style={{ display: "none" }}
-              ref={(c) => {
-                this.checkBtn = c;
-              }}
-            />
-          </Form>
-          <hr/>
-                    <div className="text-center small">
-                      <Link to="/forgot"
-                      >Mot de passe oublié?</Link>
-                    </div>
-                                    <div className="text-center">
-                                        <Link className="small" to="/home">créer un compte!</Link>
-                                        {/* <a className="small" href="/profile" hidden="true" id="linkToProfile"></a> */}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+          </div>
 
         </div>
-        </div>
+      </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-    const { loggedIn } = state.authentication;
-    const { alert } = state;
-    const { username } = state.authentication;
-    const { loading } = state.authentication;
-    const { postes } = state.poste;
-    const { diplomes } = state.diplome;
-    const { domaines } = state.domaine;
-    const { etablissements } = state.etablissement;
-    const { etatCivils } = state.etatCivil;
-    const { specialites } = state.specialite;
-    const { types } = state.typeCondidature;
-    const { pays } = state.pays;
-    const { modules } = state.module;
-    return { loggedIn,loading,alert ,username,postes,diplomes,domaines,
-      etablissements,etatCivils,specialites,types,pays,modules};
-}
-  const actionCreators = {
-    login: userActions.login,
-    logout: userActions.logout,
-    allPostes: posteActions.allPostes,
-    allDiplomes: diplomeActions.allDiplomes,
-    allDomaines: domaineActions.allDomaines,
-    allEtablissements: etablissementActions.allEtablissements,
-    allEtatCivil: etatCivilActions.allEtatCivil,
-    allSpecialites: specialiteActions.allSpecialites,
-    allTypesCondidatures: typeCondidatureActions.allTypesCondidatures,
-    allPays: paysActions.allPays,
-    allModules:modulesActions.allModules
+  const { loggedIn } = state.authentication;
+  const { alert } = state;
+  const { username } = state.authentication;
+  const { loading } = state.authentication;
+  const { postes } = state.poste;
+  const { diplomes } = state.diplome;
+  const { domaines } = state.domaine;
+  const { etablissements } = state.etablissement;
+  const { etatCivils } = state.etatCivil;
+  const { specialites } = state.specialite;
+  const { types } = state.typeCondidature;
+  const { pays } = state.pays;
+  const { modules } = state.module;
+  return {
+    loggedIn, loading, alert, username, postes, diplomes, domaines,
+    etablissements, etatCivils, specialites, types, pays, modules
   };
-export default connect(mapStateToProps,actionCreators)(Login);
+}
+const actionCreators = {
+  login: userActions.login,
+  logout: userActions.logout,
+  allPostes: posteActions.allPostes,
+  allDiplomes: diplomeActions.allDiplomes,
+  allDomaines: domaineActions.allDomaines,
+  allEtablissements: etablissementActions.allEtablissements,
+  allEtatCivil: etatCivilActions.allEtatCivil,
+  allSpecialites: specialiteActions.allSpecialites,
+  allTypesCondidatures: typeCondidatureActions.allTypesCondidatures,
+  allPays: paysActions.allPays,
+  allModules: modulesActions.allModules
+};
+export default connect(mapStateToProps, actionCreators)(Login);
