@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/private")
 public class CondidatController  {
 
     @Autowired
@@ -315,7 +316,7 @@ public class CondidatController  {
        return ResponseEntity.ok().body(dto);
    }
 
-   @PostMapping(value="/confirmer/{username}")
+   @PostMapping("/confirmer/{username}")
    public ResponseEntity<ResponseDto> confirmerCondidature(@PathVariable  String username){
         ResponseDto response=new ResponseDto();
         try {

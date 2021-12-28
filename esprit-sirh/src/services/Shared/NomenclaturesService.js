@@ -5,53 +5,89 @@ class NomenclaturesService {
 
    getAllPostes() {
 
-      return axios.get(API_URL + 'allPostes')
+      return axios.get(API_URL + 'private/allPostes', {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      })
 
    }
 
    getAllTypesCondidatures() {
 
-      return axios.get(API_URL + 'allCandidaturesTypes')
+      return axios.get(API_URL + 'private/allCandidaturesTypes', {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      })
 
    }
 
    getAllDiplomes() {
 
-      return axios.get(API_URL + 'allDiplomes')
+      return axios.get(API_URL + 'private/allDiplomes', {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      })
 
    }
 
    getAllDomaines() {
 
-      return axios.get(API_URL + 'allDomaines')
+      return axios.get(API_URL + 'private/allDomaines', {
+      params: {
+        access_token: localStorage.getItem("token"),
+      }
+    })
 
    }
 
    getAllEtablissement() {
 
-      return axios.get(API_URL + 'allEtablissement')
+      return axios.get(API_URL + 'private/allEtablissement', {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      })
 
    }
 
    getAllEtatCivil() {
 
-      return axios.get(API_URL + 'allEtatCivil')
+      return axios.get(API_URL + 'private/allEtatCivil', {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      })
 
    }
 
    getAllSpecialites() {
 
-      return axios.get(API_URL + 'allSpecialite')
+      return axios.get(API_URL + 'private/allSpecialite', {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      })
 
    }
    getAllPays() {
 
-      return axios.get(API_URL + 'allPays')
+      return axios.get(API_URL + 'private/allPays', {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      })
 
    }
    getAllModules() {
 
-      return axios.get(API_URL + 'allModules')
+      return axios.get(API_URL + 'private/allModules', {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      })
 
    }
 

@@ -47,7 +47,8 @@ const persistConfig ={
   'validerEtapeParcours',
   'validerEtapeDocuments',
   'terminerInscription',
-  'imageProfile'
+  'imageProfile',
+  'users'
   
 ]
 

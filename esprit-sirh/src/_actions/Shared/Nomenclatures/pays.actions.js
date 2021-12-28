@@ -1,19 +1,24 @@
 import { NomenclaturesConstants } from '../../../_constants/NomenclaturesConstants';
-import NomenclaturesService from  "../../../services/Shared/NomenclaturesService";
+import NomenclaturesService from "../../../services/Shared/NomenclaturesService";
+import { subscriber } from '../../../services/Shared/BehaviorSubjects';
 
 export const paysActions = {
-    
+
     allPays,
-    
+
 };
 
 function allPays() {
     return dispatch => {
-    NomenclaturesService.getAllPays().then(
+        subscriber.subscribe(v => {
+            if (v) {
+                NomenclaturesService.getAllPays().then(
 
-        resp =>{
-            dispatch(all(resp.data));
-        });
+                    resp => {
+                        dispatch(all(resp.data));
+                    });
+            }
+        })
     };
     function all(pays) { return { type: NomenclaturesConstants.GETALL_PAYS, pays } }
 }

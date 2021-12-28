@@ -4,15 +4,18 @@ const defaultElemExpEns = { id: -1, dateDebut: "", dateFin: "", etablissement: {
 const defaultElemExpPro = { id: -1, dateDebut: "", dateFin: "", etablissement: { id: -1, libelle: "", telephone: -1, mail: "" }, poste: { id: -1, libelle: "" }, pays: { id: -1, libelle: "" }, ville: "" }
 const defaultElemCpt = { id: -1, titre: "", description: "" }
 const defaultElemRecherche = { id: -1, thematique: { id: -1, description: "" }, chapitreLivre: 0, articleJornaux: 0, articleConference: 0, pfe: 0, mastere: 0, these: 0 }
-
+const ACCESS_TOKEN = localStorage.getItem("token");
 class CondidatService {
 
   registerCondidatInfos(username, formdata) {
 
-    return axios.post(API_URL + "saveCondidatInfos" + "/" + username,
-
-      formdata
-
+    return axios.post(API_URL + "private/saveCondidatInfos" + "/" + username,
+      formdata,
+      {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      }
     )
   }
 
@@ -32,20 +35,30 @@ class CondidatService {
     )
   }
   uploadFiles(file) {
-    return axios.post(API_URL + "upload",
-      file
+    return axios.post(API_URL + "private/upload",
+      file,
+      {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      }
     )
   }
   downlodFiles(fileName, username) {
-    return axios.get(API_URL + "files/" + fileName + "/" + username
+    return axios.get(API_URL + "private/files/" + fileName + "/" + username, {
+      params: {
+        access_token: localStorage.getItem("token"),
+      }
+    }
     )
   }
   getCondidat(username) {
-    const config = {
-      method: 'get',
-      url: API_URL + "getCondidat/" + username,
-    }
-    return axios.get(API_URL + "getCondidat/" + username)
+
+    return axios.get(API_URL + "private/getCondidat/" + username, {
+      params: {
+        access_token: localStorage.getItem("token"),
+      }
+    })
       .then(resp => {
         return resp.data;
       }
@@ -53,11 +66,19 @@ class CondidatService {
   }
 
   confirmerCondidature(username) {
-    return axios.post(API_URL + "confirmer" + "/" + username)
+    return axios.post(API_URL + "private/confirmer/" + username, null,{
+      params: {
+        access_token: localStorage.getItem("token"),
+      }
+    })
   }
 
   demandeModif(username) {
-    return axios.post(API_URL + "demandeModif" + "/" + username)
+    return axios.post(API_URL + "private/demandeModif" + "/" + username, null,{
+      params: {
+        access_token: localStorage.getItem("token"),
+      }
+    })
   }
 
   updateListEmpty(condidatToSave) {
@@ -80,9 +101,14 @@ class CondidatService {
 
   updateUserInfos(username, formdata) {
 
-    return axios.post(API_URL + "updateUserInfos" + "/" + username,
+    return axios.post(API_URL + "private/updateUserInfos" + "/" + username,
 
-      formdata
+      formdata,
+      {
+        params: {
+          access_token: localStorage.getItem("token"),
+        }
+      }
 
     )
   }

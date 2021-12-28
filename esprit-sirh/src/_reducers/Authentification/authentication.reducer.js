@@ -1,7 +1,7 @@
 import { userConstants } from '../../_constants';
 
 let user = {};
-const initialState = user ? { loggedIn: false, user,username:"" ,loading:false} : {};
+const initialState = user ? { loggedIn: false, user,username:"" ,loading:false,role:""} : {};
 
 export function authentication(state = initialState, action) {
   switch (action.type) {
@@ -17,7 +17,8 @@ export function authentication(state = initialState, action) {
         loggedIn: true,
         user: action.user,
         username: action.user.user.mail,
-        loading:false
+        loading:false,
+        role: action.user.user.role
       };
     case userConstants.LOGIN_FAILURE:
       return {

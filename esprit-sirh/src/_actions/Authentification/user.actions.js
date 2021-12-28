@@ -3,6 +3,7 @@ import AuthService from "../../services/Authentification/AuthService";
 import UserService from "../../services/Authentification/UserService";
 import { alertActions } from '..';
 import { history } from '../../_helpers';
+import { subscriber } from '../../services/Shared/BehaviorSubjects';
 
 export const userActions = {
     login,
@@ -21,7 +22,11 @@ function login(username, password) {
                 user => {
                     let token = user ? user.accessToken.token : null;
                     if (token) {
+                        localStorage.setItem("token", token)
+                        subscriber.next(token)
+                        dispatch(updateUserInfos(user));
                         dispatch(success(user));
+                        
                     }
                     else {
                         dispatch(failure(user.accessToken.authenticationError));
@@ -45,6 +50,7 @@ function login(username, password) {
 
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
+    function updateUserInfos(user) { return { type: userConstants.GET_INFOS, user } }
     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
 }
 

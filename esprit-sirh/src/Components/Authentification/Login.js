@@ -66,6 +66,8 @@ class Login extends Component {
     ValidationService.validator.purgeFields();
     this.addMessages();
     if (ValidationService.validator.allValid()) {
+    
+      this.props.login(this.state.username, this.state.password);
       this.props.allPostes();
       this.props.allDiplomes();
       this.props.allEtablissements();
@@ -75,7 +77,6 @@ class Login extends Component {
       this.props.allDomaines();
       this.props.allPays();
       this.props.allModules()
-      this.props.login(this.state.username, this.state.password);
     } else {
       this.markUsTouched()
       ValidationService.validator.showMessages()

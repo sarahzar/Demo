@@ -1,49 +1,18 @@
+import { PURGE } from 'redux-persist/es/constants';
 import { userConstants } from '../../_constants';
+
+const initialState = { loggedIn: false, role: "" };
 
 export function users(state = {}, action) {
   switch (action.type) {
-    case userConstants.GETALL_REQUEST:
+    case userConstants.GET_INFOS:
       return {
-        loading: true
+        loggedIn: true ,
+          role : action.user.user.role
       };
-    case userConstants.GETALL_SUCCESS:
-      return {
-        items: action.users
-      };
-    // case userConstants.GETALL_FAILURE:
-    //   return { 
-    //     error: action.error
-    //   };
-    // case userConstants.DELETE_REQUEST:
-    //   // add 'deleting:true' property to user being deleted
-    //   return {
-    //     ...state,
-    //     items: state.items.map(user =>
-    //       user.id === action.id
-    //         ? { ...user, deleting: true }
-    //         : user
-    //     )
-    //   };
-    // case userConstants.DELETE_SUCCESS:
-    //   // remove deleted user from state
-    //   return {
-    //     items: state.items.filter(user => user.id !== action.id)
-    //   };
-    // case userConstants.DELETE_FAILURE:
-    //   // remove 'deleting:true' property and add 'deleteError:[error]' property to user 
-    //   return {
-    //     ...state,
-    //     items: state.items.map(user => {
-    //       if (user.id === action.id) {
-    //         // make copy of user without 'deleting:true' property
-    //         const { deleting, ...userCopy } = user;
-    //         // return copy of user with 'deleteError:[error]' property
-    //         return { ...userCopy, deleteError: action.error };
-    //       }
+    case PURGE:
+      return { initialState };
 
-    //       return user;
-    //     })
-    //   };
     default:
       return state
   }
