@@ -113,5 +113,7 @@ class CondidatService {
     )
   }
 
+  
+
 }
 export default new CondidatService();

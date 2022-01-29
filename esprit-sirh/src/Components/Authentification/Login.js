@@ -99,6 +99,7 @@ class Login extends Component {
 
   render() {
     const { loggedIn } = this.props;
+    const {role} = this.props;
     const { alert } = this.props;
     const { loading } = this.props;
     const { username } = this.props;
@@ -113,7 +114,7 @@ class Login extends Component {
     const { specialites } = this.props;
 
     console.log("postes from login", postes)
-    if (loggedIn) {
+    if (loggedIn && role == 'ENSEIGNANT') {
       return <Redirect to={{
         pathname: '/infosGenerales',
         state: {
@@ -130,6 +131,11 @@ class Login extends Component {
         }
       }} />;
       // document.getElementById("linkToProfile").click();
+    }else if(loggedIn && role == 'ADMIN'){
+      return <Redirect to={{
+        pathname: '/adminHome',
+        state: {}
+      }} />;
     }
 
     return (
@@ -252,9 +258,10 @@ function mapStateToProps(state) {
   const { types } = state.typeCondidature;
   const { pays } = state.pays;
   const { modules } = state.module;
+  const { role } = state.users;
   return {
     loggedIn, loading, alert, username, postes, diplomes, domaines,
-    etablissements, etatCivils, specialites, types, pays, modules
+    etablissements, etatCivils, specialites, types, pays, modules,role
   };
 }
 const actionCreators = {

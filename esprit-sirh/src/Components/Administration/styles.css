@@ -1,0 +1,7 @@
+.modal-dialog {
+    max-width: 800px!important;
+    margin: 1.75rem auto;
+}
+.modal-body{
+    max-height: 272px!important;
+}

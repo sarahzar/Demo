@@ -83,11 +83,11 @@ export class Leftside extends Component {
                         <span>Menu</span></a>
                 </li>
                 <hr className="sidebar-divider" />
-                <div className="sidebar-heading">
+                {(this.props.role && this.props.role == 'ENSEIGNANT') && (<div className="sidebar-heading">
                     Paramétrage
-                </div>
+                </div>)}
 
-                <li className="nav-item">
+                {(this.props.role && this.props.role == 'ENSEIGNANT') && (<li className="nav-item">
                     <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
                         <i className="fas fa-fw fa-cog"></i>
                         <span>Profile</span>
@@ -98,13 +98,13 @@ export class Leftside extends Component {
                             <Link className="collapse-item" to="/profile">Modification Profile</Link>
                         </div>
                     </div>
-                </li>
-                <hr className="sidebar-divider" />
+                </li>)}
+                {(this.props.role && this.props.role == 'ENSEIGNANT') && (<hr className="sidebar-divider" />)}
 
                 <div className="sidebar-heading">
                     Interfaces
                 </div>
-                <li className="nav-item">
+                {(this.props.role && this.props.role == 'ENSEIGNANT') && (<li className="nav-item">
                     <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
                         <i className="fas fa-fw fa-folder"></i>
                         <span>Pages</span>
@@ -125,6 +125,22 @@ export class Leftside extends Component {
                         </div>
                     </div>
                 </li>
+                )}
+
+                {(this.props.role && this.props.role == 'ADMIN') && (<li className="nav-item">
+                    <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                        <i className="fas fa-fw fa-folder"></i>
+                        <span>Pages</span>
+                    </a>
+                    <div id="collapsePages" className="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div className="bg-white py-2 collapse-inner rounded">
+                            {/* <h6 className="collapse-header">Custom Components:</h6>   */}
+                            <Link className="collapse-item" to="/rechercheCondidat">Recherches</Link>
+                            {/* )}  */}
+                        </div>
+                    </div>
+                </li>
+                )}
                 {/* <li className="nav-item">  
                         <Link className="nav-link" to="/color"> <i className="fas fa-fw fa-chart-area"></i>Colors</Link>  
                         <a className="nav-link" href="charts.html"> 
@@ -151,8 +167,9 @@ export class Leftside extends Component {
 }
 function mapStateToProps(state) {
     const { condidatReducer } = state.condidat;
+    const { role } = state.users;
     return {
-        condidatReducer
+        condidatReducer, role
     };
 }
 
