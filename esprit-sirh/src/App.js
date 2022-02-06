@@ -25,7 +25,8 @@ import { connect } from 'react-redux';
 import { AccesDenied } from './Components/Authentification/AccesDenied';
 import { AdminHome } from './Components/Administration/AdminHome';
 import RechercheCondidat from './Components/Administration/RechercheCondidat';
-
+import Utilisateurs from './Components/Administration/Utilisateurs';
+import Roles from './Components/Administration/Roles';
 
 // using CommonJS modules
 // const GuardProvider = require('react-router-guards').GuardProvider;
@@ -102,6 +103,9 @@ class App extends Component {
           <GuardProvider guards={[requireLoginAdmin]}>
             <Switch>
             <GuardedRoute path="/adminHome" component={AdminHome} meta={{ auth: true }} />
+            <GuardedRoute exact path="/rechercheCondidat" component={RechercheCondidat} />
+            <GuardedRoute exact path="/users" component={Utilisateurs} />
+            <GuardedRoute exact path="/roles" component={Roles} />
             </Switch>
           </GuardProvider>
 
@@ -112,7 +116,7 @@ class App extends Component {
               <GuardedRoute exact path="/forgot" component={Forgot} />
               <GuardedRoute exact path="/reset/:token" component={Reset} />
               <GuardedRoute exact path="/login" component={Login} />
-              <GuardedRoute exact path="/rechercheCondidat" component={RechercheCondidat} />
+              
             </Switch>
           </GuardProvider>
 

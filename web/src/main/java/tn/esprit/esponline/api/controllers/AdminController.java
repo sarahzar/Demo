@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 import tn.esprit.esponline.api.DTO.*;
 import tn.esprit.esponline.api.utilities.Mapper;
+import tn.esprit.esponline.metier.authentification.IRoleService;
+import tn.esprit.esponline.metier.authentification.IUserService;
 import tn.esprit.esponline.metier.condidature.ICondidatService;
 import tn.esprit.esponline.metier.nomenclatures.IDiplomeService;
 import tn.esprit.esponline.metier.nomenclatures.IDomaineService;
-import tn.esprit.esponline.persistence.entities.Condidat;
-import tn.esprit.esponline.persistence.entities.Diplome;
-import tn.esprit.esponline.persistence.entities.Domaine;
+import tn.esprit.esponline.persistence.entities.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -29,6 +29,10 @@ public class AdminController {
     private IDomaineService domaineService;
     @Autowired
     private IDiplomeService diplomeService;
+    @Autowired
+    private IUserService userService;
+    @Autowired
+    private IRoleService roleService;
 
 
     @GetMapping("/getReport")
@@ -84,6 +88,80 @@ public class AdminController {
         Mapper mapper = new Mapper();
         List<CondidatDto> condidatDtoList=mapper.mapAll(condidats,CondidatDto.class);
         return ResponseEntity.ok().body(condidatDtoList);
+    }
+
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<List<UtilisateurAdminDto>> getAll(){
+        int indice=0;
+        List<Condidat> allUsers=condidatService.getAll();
+        Mapper mapper = new Mapper();
+        List<UtilisateurAdminDto>  allUsersDto= mapper.mapAll(allUsers,UtilisateurAdminDto.class);
+
+
+            for(Condidat u:allUsers) {
+                allUsersDto.get(indice).setRole(u.getRoles().get(0).getName());
+                indice++;
+            }
+       return ResponseEntity.ok().body(allUsersDto);
+    }
+
+    @PostMapping("/lock/{username}/{lock}")
+    public void lockUser(@PathVariable String username,@PathVariable boolean lock){
+         Condidat c= this.condidatService.getCondidatByUsername(username);
+         c.setActive(lock);
+        this.condidatService.saveCondidat(c);
+    }
+
+    @PostMapping("/confirm/{username}/{confirm}")
+    public void confirmeUser(@PathVariable String username,@PathVariable boolean confirm){
+        Condidat c= this.condidatService.getCondidatByUsername(username);
+        c.setaConfirmer(confirm);
+        this.condidatService.saveCondidat(c);
+    }
+
+    @DeleteMapping("/delete/{username}")
+    public void deleteUser(@PathVariable String username){
+        Utilisateur u= this.userService.getUsrConnected(username);
+        u.setRoles(null);
+        this.userService.delete(u);
+    }
+
+    @PostMapping("/affecte/{username}/{roleName}")
+    public ResponseEntity<ResponseDto> affecteRoleToUser(@PathVariable String username,@PathVariable String roleName){
+        ResponseDto resp=new ResponseDto();
+        int res=userService.affectRoleToUser(roleName,username);
+        if(res == 1){
+            resp.setSuccesMessage("le role "+roleName+" est affecté à l'utilisateur "+username+" avec succès!");
+        }else{
+            resp.setErrorMessage("le role "+roleName+" ne peut pas être  affecter à l'utilisateur "+username+", veuillez vérifier le nom du role ou le nom d'utilisateur!");
+        }
+
+        return ResponseEntity.ok().body(resp);
+    }
+
+    @GetMapping("/getRoles/{username}")
+    public ResponseEntity<List<Role>> getUserRoles(@PathVariable String username){
+        List<Role> roles=userService.getUserRoles(username);
+        return ResponseEntity.ok().body(roles);
+    }
+
+    @DeleteMapping("/deleteRole/{username}/{roleName}")
+    public ResponseEntity<ResponseDto> deleteUserRole(@PathVariable String username,@PathVariable String roleName){
+        ResponseDto resp=new ResponseDto();
+        int res=userService.deleteRoleFromUserRoles(roleName,username);
+        if(res == 1){
+            resp.setSuccesMessage("le role "+roleName+" est supprimé avec succès!");
+        }else{
+            resp.setErrorMessage("le role "+roleName+" ne peut pas être  supprimé, veuillez vérifier le nom du role ou le nom d'utilisateur!");
+        }
+
+        return ResponseEntity.ok().body(resp);
+    }
+
+    @GetMapping("/getAllRoles")
+    public ResponseEntity<List<Role>> getAlloles(){
+        List<Role> roles=roleService.allRoles();
+        return ResponseEntity.ok().body(roles);
     }
 
 }

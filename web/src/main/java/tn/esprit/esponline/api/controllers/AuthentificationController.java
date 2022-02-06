@@ -69,7 +69,8 @@ public class AuthentificationController {
         Utilisateur connectedUser=userService.getUsrConnected(username);
         UserDto userDto= connectedUser != null
                 ?
-                new UserDto(connectedUser.getId(),connectedUser.getMail(),connectedUser.getUsername(),connectedUser.getRoles().get(0).getName())
+                new UserDto(connectedUser.getId(),connectedUser.getMail(),connectedUser.getUsername(),
+                        connectedUser.getRoles()!=null && !connectedUser.getRoles().isEmpty() ? connectedUser.getRoles().get(0).getName(): null)
                 : null;
        // String hashed=encoder.encode(connectedUser.getPassword());
         boolean testpassword=connectedUser != null ?  encoder.matches(password,connectedUser.getPassword()) : false;

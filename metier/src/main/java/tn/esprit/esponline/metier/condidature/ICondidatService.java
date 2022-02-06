@@ -20,6 +20,7 @@ public interface ICondidatService  {
     public Map<String,Long> countByDomaines(List<Domaine> allDomaines);
     public Map<String,Long> countByDiplome(List<Diplome> allDiplomes);
     public List<Condidat> getBySpecificCriteria(String nom,String prenom,long idDiplome);
+    public List<Condidat> getAll();
 
 
 }

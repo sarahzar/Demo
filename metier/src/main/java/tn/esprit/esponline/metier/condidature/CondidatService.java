@@ -106,5 +106,10 @@ public class CondidatService implements ICondidatService {
         return condidatRepository.findAll(genericSpesification);
     }
 
+    @Override
+    public List<Condidat> getAll() {
+        return condidatRepository.findAll();
+    }
+
 
 }

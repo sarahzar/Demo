@@ -135,7 +135,10 @@ export class Leftside extends Component {
                     <div id="collapsePages" className="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                         <div className="bg-white py-2 collapse-inner rounded">
                             {/* <h6 className="collapse-header">Custom Components:</h6>   */}
+                            <Link className="collapse-item" to="/adminHome">Dashbord</Link>
                             <Link className="collapse-item" to="/rechercheCondidat">Recherches</Link>
+                            <Link className="collapse-item" to="/users">Utilisateurs</Link>
+                            <Link className="collapse-item" to="/roles">Roles</Link>
                             {/* )}  */}
                         </div>
                     </div>

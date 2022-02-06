@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import tn.esprit.esponline.persistence.entities.Role;
 import tn.esprit.esponline.persistence.repositories.authentification.RoleRepository;
 
+import java.util.List;
+
 
 @Service
 public class RoleService implements IRoleService {
@@ -21,5 +23,10 @@ public class RoleService implements IRoleService {
     @Override
     public void save(Role role) {
         roleRepo.save(role);
+    }
+
+    @Override
+    public List<Role> allRoles() {
+        return roleRepo.findAll();
     }
 }
